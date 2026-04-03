@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 def run_preprocessing_pipeline(file_path):
     '''file_path : csv 파일명'''
@@ -13,7 +14,7 @@ def run_preprocessing_pipeline(file_path):
     df['age'] = df['age'].fillna(df['age'].median())
     df['salary'] = df['salary'].fillna(df['salary'].median())
     # score 선형보간 하고 양끝에 남은 nan은 앞뒤 값으로 채움
-    df['score'] = df['score'].interpolate(method='linear')
+    df['score'] = df['score'].interpolate(method='linear').round(2)
     df['score'] = df['score'].bfill().ffill()
     # 이상치 처리 capping(경계값으로 이상치를 대치)
     numeric_cols = ['age','salary','score']
@@ -29,9 +30,11 @@ def run_preprocessing_pipeline(file_path):
     # 종료
     print(f'파이프라인 종료')
     print(f'shape = {df.shape}')
+    df = df.reset_index(drop=True)
+    return df
 
 if __name__ == "__main__":
-    file_path = 'data/messy_data.csv'
+    file_path = r'C:\skn29_lecture\데이터분석\판다스\결측치_중복데이터_이상치\data\messy_data.csv'
     clean_df = run_preprocessing_pipeline(file_path)
-    clean_df.to_csv('data/clean_data.csv',encording='utf-8')
+    clean_df.to_csv('clean_data.csv',encoding='utf-8')
     print('데이터 저장완료')   
