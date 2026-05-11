@@ -1,0 +1,91 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#f8f9fa" rx="20"/>
+  
+  <!-- Labels and Icons Styles -->
+  <style>
+    .label { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; fill: #333; }
+    .op-label { font-family: 'Segoe UI', sans-serif; font-size: 18px; font-weight: bold; fill: #fff; text-anchor: middle; dominant-baseline: central; }
+    .gate-box { stroke-width: 2; rx: 10; }
+    .arrow { stroke: #555; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    .line { stroke: #555; stroke-width: 2; fill: none; }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555" />
+    </marker>
+    <!-- Gradients -->
+    <linearGradient id="forgetGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff9a9e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fad0c4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="inputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a1c4fd;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c2e9fb;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="outputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#84fab0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8fd3f4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cellGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fccb90;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d57eeb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Cell State Path (Top) -->
+  <path d="M 50 100 L 750 100" class="line" stroke-dasharray="5,5" />
+  <circle cx="250" cy="100" r="20" fill="#666" />
+  <text x="250" y="100" class="op-label">×</text>
+  <circle cx="450" cy="100" r="20" fill="#666" />
+  <text x="450" y="100" class="op-label">+</text>
+  
+  <text x="50" y="80" class="label">Cell State (C_{t-1})</text>
+  <text x="700" y="80" class="label">Cell State (C_t)</text>
+
+  <!-- Inputs -->
+  <path d="M 100 450 L 100 350" class="arrow" />
+  <text x="80" y="470" class="label">Input (x_t)</text>
+  
+  <path d="M 50 350 L 100 350" class="arrow" />
+  <text x="20" y="370" class="label">Hidden State (h_{t-1})</text>
+
+  <!-- Forget Gate -->
+  <rect x="200" y="250" width="100" height="60" fill="url(#forgetGrad)" class="gate-box" stroke="#e74c3c" />
+  <text x="250" y="285" class="op-label">σ</text>
+  <text x="210" y="330" class="label">Forget Gate</text>
+  <path d="M 100 350 L 250 350 L 250 310" class="arrow" />
+  <path d="M 250 250 L 250 120" class="arrow" />
+
+  <!-- Input Gate -->
+  <rect x="350" y="250" width="80" height="60" fill="url(#inputGrad)" class="gate-box" stroke="#3498db" />
+  <text x="390" y="285" class="op-label">σ</text>
+  <rect x="450" y="250" width="80" height="60" fill="url(#inputGrad)" class="gate-box" stroke="#3498db" />
+  <text x="490" y="285" class="op-label">tanh</text>
+  <text x="400" y="330" class="label">Input Gate</text>
+  
+  <path d="M 250 350 L 390 350 L 390 310" class="arrow" />
+  <path d="M 390 350 L 490 350 L 490 310" class="arrow" />
+  
+  <!-- Input Gate Combination -->
+  <circle cx="450" cy="180" r="15" fill="#666" />
+  <text x="450" y="180" class="op-label">×</text>
+  <path d="M 390 250 L 390 180 L 435 180" class="arrow" />
+  <path d="M 490 250 L 490 180 L 465 180" class="arrow" />
+  <path d="M 450 165 L 450 120" class="arrow" />
+
+  <!-- Output Gate -->
+  <rect x="600" y="250" width="100" height="60" fill="url(#outputGrad)" class="gate-box" stroke="#2ecc71" />
+  <text x="650" y="285" class="op-label">σ</text>
+  <text x="610" y="330" class="label">Output Gate</text>
+  <path d="M 490 350 L 650 350 L 650 310" class="arrow" />
+  
+  <!-- Final Hidden State -->
+  <circle cx="700" cy="200" r="15" fill="#666" />
+  <text x="700" y="200" class="op-label">×</text>
+  <path d="M 650 250 L 650 200 L 685 200" class="arrow" />
+  <path d="M 600 100 L 700 100 L 700 185" class="arrow" />
+  <path d="M 700 215 L 700 450" class="arrow" />
+  <text x="680" y="470" class="label">Hidden State (h_t)</text>
+</svg>
