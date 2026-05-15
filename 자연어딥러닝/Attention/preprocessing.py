@@ -51,3 +51,35 @@ def keep_korean_only(text: str) -> str:
     text = re.sub(r"[^가-힣\s]", " ", text)
     text = re.sub(r"\s+", " ", text)
     return text.strip()
+from typing import Dict, Iterable,List,Optional,Sequence,Tuple
+
+def tokenized(text:str) ->List[str]:
+    """공백 기준으로 토큰을 나눈다.
+
+    역할:
+    - 가장 단순한 공백 기준 토큰화 방식이다.
+
+    예:
+        "영화가 정말 재미있다" -> ["영화가", "정말", "재미있다"]        
+    """    
+    text = text.strip()
+    if not text:
+        return []
+    return text.split()
+
+def remove_stopwords(token:Sequence[str], stopwords:Optional[Iterable[str]] = None) ->List[str]:
+    """불용어를 제거한다.
+
+    역할:
+    - 감정 판단에 덜 중요한 단어를 제외한다.
+    - 불용어 목록은 기본값을 사용하거나 사용자가 직접 전달할 수 있다.
+
+    입력:
+        tokens: 토큰 리스트
+        stopwords: 제거할 단어 목록
+
+    출력:
+        불용어가 제거된 토큰 리스트
+    """
+    stopword_set = set(DEFAULT_STOPWORDS if stopwords is None else stopwords)
+    return [token for token in tokens if token not in stopword_set and token.strip()]    
