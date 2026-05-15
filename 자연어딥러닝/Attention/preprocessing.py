@@ -188,7 +188,7 @@ def preprocess_dataframe(
     processed["clean_text"] = processed[text_col].astype(str).map(clean_text).map(keep_korean_only)
 
     # 2) 토큰화
-    processed["tokens"] = processed["clean_text"].map(tokenize)
+    processed["tokens"] = processed["clean_text"].map(tokenized)
 
     # 3) 불용어 제거
     processed["tokens"] = processed["tokens"].map(lambda tokens: remove_stopwords(tokens, stopwords=stopwords))
