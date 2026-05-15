@@ -229,3 +229,83 @@ class KoreanSentimentDataset(Dataset):
 
     def __getitem__(self, idx: int):
         return self.input_ids[idx], self.labels[idx], self.lengths[idx]
+
+# -----------------------------
+# 8. 샘플 데이터 및 실행
+# -----------------------------
+def make_sample_dataframe() -> pd.DataFrame:
+    """샘플 데이터프레임을 만든다."""
+    return pd.DataFrame(
+        {
+            "review": [
+                "이 영화는 정말 재미있고 감동적이었다!",
+                "스토리가 너무 지루하고 별로였다.",
+                "배우 연기가 훌륭해서 보는 내내 집중했다.",
+                "기대했는데 너무 실망스러운 작품이었다.",
+            ],
+            "sentiment": [1, 0, 1, 0],
+        }
+    )
+
+
+def print_shapes(processed_df: pd.DataFrame, dataset: KoreanSentimentDataset) -> None:
+    """전처리 결과의 shape를 출력한다."""
+    print("[DataFrame shape]", processed_df.shape)
+    print("[input_ids shape]", tuple(dataset.input_ids.shape))
+    print("[labels shape]", tuple(dataset.labels.shape))
+    print("[lengths shape]", tuple(dataset.lengths.shape))
+
+
+def load_or_create_dataframe(csv_path: Optional[str] = None) -> pd.DataFrame:
+    """CSV 파일이 있으면 읽고, 없으면 샘플 데이터를 만든다."""
+    if csv_path:
+        path = Path(csv_path)
+        if path.exists():
+            return pd.read_csv(path)
+
+    return make_sample_dataframe()
+
+
+def main() -> None:
+    """전처리 실행 함수."""
+    # Windows 기준 경로. 실제 파일이 없으면 샘플 데이터로 대체된다.
+    csv_path = r"data\raw\korean_movie_reviews.csv"
+
+    df = load_or_create_dataframe(csv_path)
+    print("[원본 데이터]")
+    print(df.head())
+    print()
+
+    processed_df, vocab = preprocess_dataframe(
+        df,
+        text_col="review",
+        label_col="sentiment",
+        max_len=12,
+        stopwords=DEFAULT_STOPWORDS,
+        min_freq=1,
+    )
+
+    dataset = KoreanSentimentDataset(processed_df)
+
+    print("[전처리 데이터]")
+    print(processed_df[["review", "clean_text", "tokens", "token_ids", "padded_ids", "length", "label"]].head())
+    print()
+
+    print("[vocab 일부]")
+    vocab_preview = list(vocab.items())[:15]
+    print(vocab_preview)
+    print()
+
+    print_shapes(processed_df, dataset)
+    print()
+
+    # 첫 번째 샘플 확인
+    sample_input_ids, sample_label, sample_length = dataset[0]
+    print("[첫 번째 샘플]")
+    print("input_ids:", sample_input_ids)
+    print("label:", sample_label)
+    print("length:", sample_length)
+
+
+if __name__ == "__main__":
+    main()
