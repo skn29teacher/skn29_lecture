@@ -255,7 +255,7 @@ def print_shapes(processed_df: pd.DataFrame, dataset: KoreanSentimentDataset) ->
     print("[labels shape]", tuple(dataset.labels.shape))
     print("[lengths shape]", tuple(dataset.lengths.shape))
 
-
+from pathlib import Path
 def load_or_create_dataframe(csv_path: Optional[str] = None) -> pd.DataFrame:
     """CSV 파일이 있으면 읽고, 없으면 샘플 데이터를 만든다."""
     if csv_path:
