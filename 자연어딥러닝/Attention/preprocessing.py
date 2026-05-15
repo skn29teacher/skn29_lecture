@@ -36,3 +36,18 @@ def clean_text(text: str) ->str:
 
     # 앞뒤 공백 제거
     return text.strip()    
+
+def keep_korean_only(text: str) -> str:
+    """한국어만 남기는 전용 함수.
+
+    역할:
+    - clean_text 이후에도 혹시 남아 있을 수 있는 비한국어 토큰을 제거한다.
+    - 초보자가 단계별로 확인하기 쉽도록 별도 함수로 분리했다.
+
+    주의:
+    - 여기서는 한글 음절(가-힣)과 공백만 남긴다.
+    - 필요하면 조사/어미 분석은 별도의 형태소 분석기로 확장하면 된다.
+    """
+    text = re.sub(r"[^가-힣\s]", " ", text)
+    text = re.sub(r"\s+", " ", text)
+    return text.strip()
