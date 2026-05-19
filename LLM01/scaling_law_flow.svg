@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Scaling Law 관계도</title>
+  <desc id="desc">계산 예산 C가 모델 크기 N과 훈련 토큰 수 D에 배분되고, 두 요소가 손실 L을 거쳐 모델 성능으로 이어지는 흐름</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#344054"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#101828" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="360" fill="#f8fafc"/>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="480" y="42" text-anchor="middle" font-size="24" font-weight="700" fill="#101828">Scaling Law의 핵심 관계</text>
+    <text x="480" y="72" text-anchor="middle" font-size="15" fill="#475467">같은 계산 예산 안에서 모델 크기와 데이터양을 어떻게 나누느냐가 손실과 성능을 결정합니다.</text>
+
+    <g filter="url(#shadow)">
+      <rect x="56" y="137" width="170" height="86" rx="12" fill="#ffffff" stroke="#98a2b3" stroke-width="2"/>
+      <text x="141" y="172" text-anchor="middle" font-size="18" font-weight="700" fill="#101828">계산 예산 C</text>
+      <text x="141" y="198" text-anchor="middle" font-size="13" fill="#667085">총 학습 비용</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="326" y="84" width="178" height="78" rx="12" fill="#eff8ff" stroke="#2e90fa" stroke-width="2"/>
+      <text x="415" y="117" text-anchor="middle" font-size="17" font-weight="700" fill="#175cd3">모델 크기 N</text>
+      <text x="415" y="141" text-anchor="middle" font-size="13" fill="#1849a9">파라미터 수</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="326" y="214" width="178" height="78" rx="12" fill="#ecfdf3" stroke="#12b76a" stroke-width="2"/>
+      <text x="415" y="247" text-anchor="middle" font-size="17" font-weight="700" fill="#067647">훈련 토큰 수 D</text>
+      <text x="415" y="271" text-anchor="middle" font-size="13" fill="#087443">데이터양</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="612" y="137" width="146" height="86" rx="12" fill="#fff6ed" stroke="#f79009" stroke-width="2"/>
+      <text x="685" y="172" text-anchor="middle" font-size="18" font-weight="700" fill="#b54708">손실 L</text>
+      <text x="685" y="198" text-anchor="middle" font-size="13" fill="#93370d">낮을수록 좋음</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="816" y="137" width="116" height="86" rx="12" fill="#f4f3ff" stroke="#7a5af8" stroke-width="2"/>
+      <text x="874" y="172" text-anchor="middle" font-size="18" font-weight="700" fill="#5925dc">모델 성능</text>
+      <text x="874" y="198" text-anchor="middle" font-size="13" fill="#4a1fb8">예측 품질</text>
+    </g>
+
+    <path d="M226 168 C262 148, 285 132, 326 123" fill="none" stroke="#344054" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M226 192 C262 212, 285 236, 326 253" fill="none" stroke="#344054" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M504 123 C550 134, 574 151, 612 168" fill="none" stroke="#344054" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M504 253 C550 236, 574 210, 612 192" fill="none" stroke="#344054" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M758 180 L816 180" fill="none" stroke="#344054" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <text x="276" y="130" text-anchor="middle" font-size="13" fill="#475467">예산 배분</text>
+    <text x="276" y="238" text-anchor="middle" font-size="13" fill="#475467">예산 배분</text>
+    <text x="555" y="132" text-anchor="middle" font-size="13" fill="#475467">영향</text>
+    <text x="555" y="238" text-anchor="middle" font-size="13" fill="#475467">영향</text>
+    <text x="787" y="165" text-anchor="middle" font-size="13" fill="#475467">결과</text>
+
+    <text x="480" y="328" text-anchor="middle" font-size="14" fill="#475467">핵심: N만 키우거나 D만 늘리는 것이 아니라, 계산 예산 C 안에서 둘의 균형을 맞추는 것이 중요합니다.</text>
+  </g>
+</svg>
