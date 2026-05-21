@@ -1,2 +1,0 @@
-{"prompt": "다음 법률 문장을 6개 코드 중 하나로 분류하라. 응답은 JSON으로 label만 포함하라.\n문장: 사업자는 이용자의 개인정보를 안전하게 관리하여야 한다.\n응답 예: {\"label\":\"RIGHT\"}", "completion": "{\"label\": \"RIGHT\"}"}
-{"prompt": "다음 법률 문장을 6개 코드 중 하나로 분류하라. 응답은 JSON으로 label만 포함하라.\n문장: 후보자는 선거일 현재 25세 이상인 국민이어야 한다.\n응답 예: {\"label\":\"RIGHT\"}", "completion": "{\"label\": \"CRIT\"}"}
