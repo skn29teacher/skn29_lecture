@@ -1,0 +1,16 @@
+accelerate
+bitsandbytes
+datasets
+einops
+huggingface_hub
+hf_xet
+ipykernel
+ipywidgets
+peft
+protobuf
+python-dotenv
+safetensors
+sentencepiece
+tqdm
+transformers==5.1.0
+trl
