@@ -1,7 +1,6 @@
-transformers==4.51.3
-tokenizers==0.21.1
-accelerate==1.6.0
-safetensors
+torch>=2.0.0
+transformers>=4.41.0
+accelerate
 sentencepiece
-protobuf
 einops
+protobuf
