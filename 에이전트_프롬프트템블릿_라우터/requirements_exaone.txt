@@ -1,8 +1,7 @@
-pip install \
-transformers==4.51.3 \
-tokenizers==0.21.1 \
-accelerate==1.6.0 \
-safetensors \
-sentencepiece \
-protobuf \
+transformers==4.51.3
+tokenizers==0.21.1
+accelerate==1.6.0
+safetensors
+sentencepiece
+protobuf
 einops
