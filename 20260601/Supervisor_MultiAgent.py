@@ -333,19 +333,12 @@ app = workflow.compile()
 
 result = app.invoke(
     {
-        "task":
-        "LangGraph Supervisor 기반 멀티 에이전트 패턴 설명",
-
+        "task":"LangGraph Supervisor 기반 멀티 에이전트 패턴 설명",
         "research_notes": "",
-
         "draft": "",
-
         "critique": "",
-
         "score": 0,
-
         "revision_count": 0,
-
         "final_answer": "",
     }
 )
@@ -363,3 +356,4 @@ print("\n=== CRITIQUE ===")
 print(result["critique"])
 
 # %%
+#  https://docs.langchain.com/  참고해서 코드 작성할것
