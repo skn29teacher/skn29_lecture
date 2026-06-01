@@ -156,3 +156,98 @@ print('answer')
 print(result['answer'])
 
 # %%
+# 기업문서를 벡터Db화  pdf
+from pathlib import Path
+from typing import Iterable
+from uuid import uuid4
+
+import chromadb
+from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+from pypdf import PdfReader
+
+# 문서경로 지정
+enterprise_folder = Path(r'C:\skn29_자연어\20260601\documents\enterprise.pdf')
+# pdf 파일 읽기
+def read_pdf_file(path:Path)->str:
+    reader = PdfReader(str(path))
+    pages:list[str]=[]
+
+    for page in reader.pages:    
+        pages.append(page.extract_text() or "")
+    return '\n'.join(pages)
+    
+enterprise_embedding = SentenceTransformerEmbeddingFunction(model_name='all-MiniLM-L6-v2')
+enterprize_client = chromadb.PersistentClient()
+enterprise_collection = enterprize_client.get_or_create_collection(
+    name='enterprise_document',
+    embedding_function=enterprise_embedding,
+    metadata={'hnsw:space':'cosine'}
+)
+# txt, md 파일처럼 일반 파일
+def read_text_file(path:Path)->str:
+    return path.read_text(encoding='utf-8',errors='ignore')
+
+def chunk_text(text:str, chunk_size:int=900, overlab:int=150)->list[str]:
+    cleaned = " ".join(text.split())
+    if not cleaned:
+        return []
+    chunks : list[str] = []
+    start = 0
+    while start < len(cleaned):
+        end = min(start+chunk_size, len(cleaned))
+        chunks.append(cleaned[start:end])
+        if end >= len(cleaned):
+            break
+        start = end-overlab
+    return chunks
+
+from glob import glob
+def iter_documents(folder:Path)->Iterable[tuple[Path,str]]:
+    for path in folder.rglob('*'):
+        if path.is_file():
+            surffix = path.suffix.lower()
+            if surffix in {'.txt', ".md"}:
+                yield path, read_text_file(path)
+            elif surffix == 'pdf':
+                yield path, read_pdf_file(path)
+        
+
+documents_to_add: list[str] = []
+metadatas: list[dict[str, str]] = []
+ids: list[str] = []
+
+if not enterprise_folder.exists():
+    print(f"경고: 기업 문서 폴더가 없습니다: {enterprise_folder}")
+    print("폴더 경로를 확인하거나 폴더를 생성한 뒤 다시 실행하세요.")
+else:
+    for file_path, raw_text in iter_documents(enterprise_folder):
+        for index, chunk in enumerate(chunk_text(raw_text), start=1):
+            ids.append(f"{file_path.stem}-{index}-{uuid4().hex[:8]}")
+            documents_to_add.append(chunk)
+            metadatas.append({
+                "source_file": file_path.name,
+                "source_type": file_path.suffix.lower().lstrip("."),
+                "chunk_index": str(index),
+            })
+
+    if documents_to_add:
+        enterprise_collection.add(
+            ids=ids,
+            documents=documents_to_add,
+            metadatas=metadatas,
+        )
+        print(f"기업 문서 {len(ids)}개 청크를 벡터DB에 저장했다.")
+    else:
+        print("enterprise_documents/ 폴더에서 적재할 문서를 찾지 못했다.")
+
+    print("collection count:", enterprise_collection.count())
+
+# %%
+test = ''
+' '.join(test.split())
+
+# %%
+test = "hello"
+test or "None"
+
+# %%
