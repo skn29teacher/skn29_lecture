@@ -262,7 +262,11 @@ print(response.choices[0].message.content.strip())
 
 # %%
 # 내부문서 기반 RAG (출처 포함)
-
+from openai import OpenAI
+import os
+import json
+from typing_extensions import TypedDict
+from langgraph.graph import StateGraph,START, END
 
 class EnterpriseRAGState(TypedDict):
     question:str
@@ -286,6 +290,7 @@ def retrieve_with_sources(state:EnterpriseRAGState):
     documents = result.get('documents',[[]])[0]
     metadatas = result.get('metadatas',[[]])[0]
     distances = result.get('distances',[[]])[0]
+    
     source_items: list[dict[str, str]] = []
     context_lines: list[str] = []
 
@@ -357,7 +362,7 @@ def answer_with_sources(state: EnterpriseRAGState):
 
     source_labels = ", ".join(item["source_id"] for item in state["source_items"])
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5.4-nano",
         temperature=0,
         messages=[
             {
@@ -400,7 +405,7 @@ enterprise_rag.add_edge("external_reference_dummy", "answer_with_sources")
 enterprise_rag.add_edge("answer_with_sources", END)
 enterprise_rag_app = enterprise_rag.compile()
 
-question = "우리 회사 문서 기준으로 해당 정책의 핵심 절차를 설명해줘"
+question = "내가 판사가 되려면 어떻게 공부해야 돼?"
 result = enterprise_rag_app.invoke(
     {
         "question": question,
@@ -423,3 +428,172 @@ if result["source_items"]:
         )
 else:
     print("검색된 출처가 없습니다.")
+
+# %%
+################################################
+# LangGraph StateGraph 상태 설계
+################################################
+# openai가 질문의도를 읽고 chromadb가 실제 문서를 검색, 검색 결과를 바탕으로 답변을 생성
+
+######## 상태설계를 먼저해야 하는 이유 ##########
+# 질문을 정규화 -> 의도를 추론 -> chromaDB에서 실제 근거를 찾고 -> openai가 그 근거를 바탕으로 답변을 생성
+
+from pathlib import Path
+from typing_extensions import TypedDict
+from openai import OpenAI
+from dotenv import load_dotenv
+load_dotenv(override=True)
+import os
+from sentence_transformers import SentenceTransformer
+import chromadb
+
+
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+class StableEmbeddingFunction:
+    def __init__(self):
+        self.model = SentenceTransformer('all-MiniLM-L6-V2')
+    def __call__(self,input):
+        vectors = self.model.encode(
+            input,
+            convert_to_numpy=True,
+            normalize_embeddings=True
+        )
+        return vectors.tolist()
+
+    def embed_query(self,input):
+        return self.__call__(input)
+    
+chroma_client = chromadb.PersistentClient()
+chroma_client.get_or_create_collection(
+    name='test',
+    embedding_function=StableEmbeddingFunction()
+)
+
+# collection 에 데이터 추가
+if collection.count() == 0:
+    collection.add(
+        ids=["doc_langgraph", "doc_react", "doc_rag", "doc_chroma"],
+        documents=[
+            "LangGraph는 상태 기반 그래프로 다단계 에이전트를 설계한다.",
+            "ReAct는 reasoning과 acting을 번갈아 수행해 도구 사용을 결합한다.",
+            "RAG는 벡터DB 검색 결과를 근거로 답변 품질을 높인다.",
+            "ChromaDB는 문서 임베딩을 저장하고 유사한 문서를 검색하는 벡터DB다.",
+        ],
+    )   
+
+# 노드에 적용할 함수
+# 그래프 노드에 추가
+# 엣지적용
+# 컴파일  app
+# app.invoke --> 결과 
+class StateDesignState(TypedDict):
+    question: str
+    normalized_question: str
+    query_intent: str
+    retrieved_context: str
+    draft_answer: str
+    final_answer: str
+
+
+def normalize_question(state: StateDesignState):
+    normalized = re.sub(r"\s+", " ", state["question"].strip().lower())
+    return {"normalized_question": normalized}
+
+
+def infer_intent(state: StateDesignState):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "질문의 의도를 search, explain, compare 중 하나로만 출력한다.",
+            },
+            {"role": "user", "content": state["normalized_question"]},
+        ],
+        temperature=0,
+    )
+    intent = response.choices[0].message.content.strip().lower()
+    if intent not in {"search", "explain", "compare"}:
+        text = state["normalized_question"]
+        if "비교" in text or "차이" in text:
+            intent = "compare"
+        elif "설명" in text or "왜" in text or "무엇" in text:
+            intent = "explain"
+        else:
+            intent = "search"
+    return {"query_intent": intent}
+
+
+def retrieve_context(state: StateDesignState):
+    result = collection.query(query_texts=[state["normalized_question"]], n_results=2)
+    context = "\n".join(result["documents"][0])
+    return {"retrieved_context": context}
+
+
+def draft_answer(state: StateDesignState):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "주어진 근거를 바탕으로 3문장 이내의 한국어 답변 초안을 만든다.",
+            },
+            {
+                "role": "user",
+                "content": f"질문: {state['question']}\n의도: {state['query_intent']}\n\n근거:\n{state['retrieved_context']}",
+            },
+        ],
+        temperature=0,
+    )
+    return {"draft_answer": response.choices[0].message.content.strip()}
+
+
+def finalize_answer(state: StateDesignState):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "초안을 정리하고, 마지막에 한 줄로 이유를 덧붙인다.",
+            },
+            {
+                "role": "user",
+                "content": f"질문: {state['question']}\n초안: {state['draft_answer']}",
+            },
+        ],
+        temperature=0,
+    )
+    return {"final_answer": response.choices[0].message.content.strip()}
+
+
+workflow = StateGraph(StateDesignState)
+workflow.add_node("normalize_question", normalize_question)
+workflow.add_node("infer_intent", infer_intent)
+workflow.add_node("retrieve_context", retrieve_context)
+workflow.add_node("draft_answer", draft_answer)
+workflow.add_node("finalize_answer", finalize_answer)
+workflow.add_edge(START, "normalize_question")
+workflow.add_edge("normalize_question", "infer_intent")
+workflow.add_edge("infer_intent", "retrieve_context")
+workflow.add_edge("retrieve_context", "draft_answer")
+workflow.add_edge("draft_answer", "finalize_answer")
+workflow.add_edge("finalize_answer", END)
+app = workflow.compile()
+
+result = app.invoke(
+    {
+        "question": "LangGraph와 RAG의 상태 설계가 왜 중요한가?",
+        "normalized_question": "",
+        "query_intent": "",
+        "retrieved_context": "",
+        "draft_answer": "",
+        "final_answer": "",
+    }
+)
+print("normalized:", result["normalized_question"])
+print("intent:", result["query_intent"])
+print("context:")
+print(result["retrieved_context"])
+print("answer:")
+print(result["final_answer"])
