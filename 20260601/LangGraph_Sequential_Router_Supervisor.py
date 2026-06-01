@@ -243,11 +243,21 @@ else:
     print("collection count:", enterprise_collection.count())
 
 # %%
-test = ''
-' '.join(test.split())
-
-# %%
-test = "hello"
-test or "None"
+# 생성한 벡터db에서 문장이나 단어를 검색해 보세요
+from openai import OpenAI
+import os
+import json
+result = enterprise_collection.query(query_texts=['대회 규칙에 대해서 알려주세요'], n_results=2)
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+response = client.chat.completions.create(
+        model = 'gpt-5.4-nano',
+        messages=[
+            {'role':'system',
+             'content':'당신은 기업내부또는 외부문서을 기반으로 답변하는 친절한 페르소나 입니다.\n문서에서 추출한 청크들을 기반으로 답변해주세요'},
+            {'role':'user','content':json.dumps(result,ensure_ascii=False)}
+        ],
+        temperature=0
+    )
+print(response.choices[0].message.content.strip())
 
 # %%
