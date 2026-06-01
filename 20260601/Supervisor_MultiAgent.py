@@ -70,36 +70,66 @@ if collection.count() == 0:
         ],
     )
 
+# --------------------------------------------------
+# State
+# --------------------------------------------------
+
 class SupervisorState(TypedDict):
-    task:str
-    research_notes:str
-    draft:str
-    critique:str
-    final_answer:str
+    task: str
+    research_notes: str
+    draft: str
+    critique: str
+    score: int
+    revision_count: int
+    final_answer: str
 
-def supervisor(state:SupervisorState):
-    return state
+# --------------------------------------------------
+# Research Agent
+# --------------------------------------------------
 
-def researcher(state:SupervisorState):
+def researcher(state: SupervisorState):
+
     result = collection.query(
-        query_texts=[state['task']],
-        n_results=3
+        query_texts=[state["task"]],
+        n_results=3,
     )
-    context = '\n'.join(result['documents'][0])
+
+    context = "\n".join(
+        result["documents"][0]
+    )
+
     response = client.chat.completions.create(
-        model='gpt-5.4-nano',
+        model="gpt-5.4-nano",
         messages=[
-            {'role':'system','content':'너는 Reasearch Agent이고 주어진 근거를 요약합니다.'},
-            {'role':'user','content':f"작업:{state['task']}\n\n근거:{context}"}
+            {
+                "role": "system",
+                "content":
+                "당신은 Research Agent이다. "
+                "근거를 간결하게 정리하라."
+            },
+            {
+                "role": "user",
+                "content":
+                f"""
+작업:
+{state['task']}
+
+근거:
+{context}
+"""
+            }
         ]
-    )    
+    )
+
     return {
-        'research_notes': response.choices[0].message.content.strip()
+        "research_notes":
+        response.choices[0].message.content.strip()
     }
 
-# -------------------------
+
+# --------------------------------------------------
 # Writer Agent
-# -------------------------
+# --------------------------------------------------
 
 def writer(state: SupervisorState):
 
@@ -118,33 +148,45 @@ def writer(state: SupervisorState):
 작업:
 {state['task']}
 
-조사 내용:
+조사내용:
 {state['research_notes']}
 
-설명문 초안을 작성하라.
+이전 비평:
+{state['critique']}
+
+비평을 반영하여 설명문을 작성하라.
 """
-            },
-        ],
+            }
+        ]
     )
 
     return {
-        "draft": response.choices[0].message.content.strip()
+        "draft":
+        response.choices[0].message.content.strip()
     }
 
 
-# -------------------------
+# --------------------------------------------------
 # Critic Agent
-# -------------------------
+# --------------------------------------------------
 
 def critic(state: SupervisorState):
-
     response = client.chat.completions.create(
         model="gpt-5.4-nano",
         messages=[
             {
                 "role": "system",
                 "content":
-                "당신은 Critic Agent이다."
+                """
+당신은 Critic Agent이다.
+
+반드시 아래 형식으로 답한다.
+
+SCORE: 숫자
+
+CRITIQUE:
+비평 내용
+"""
             },
             {
                 "role": "user",
@@ -155,21 +197,69 @@ def critic(state: SupervisorState):
 
 초안:
 {state['draft']}
-
-부족한 점과 개선점을 평가하라.
 """
-            },
-        ],
+            }
+        ]
     )
 
+    text = response.choices[0].message.content.strip()
+
+    score = 50
+
+    try:
+        import re
+
+        match = re.search(
+            r"SCORE:\s*(\d+)",
+            text
+        )
+
+        if match:
+            score = int(match.group(1))
+
+    except Exception:
+        pass
+
     return {
-        "critique":response.choices[0].message.content.strip()
+        "critique": text,
+        "score": score,
     }
 
 
-# -------------------------
-# Finalizer Agent
-# -------------------------
+# --------------------------------------------------
+# Supervisor
+# --------------------------------------------------
+
+def supervisor(state: SupervisorState):
+    score = state["score"]
+    revision_count = state["revision_count"]
+    if score >= 80:
+        return {}
+
+    return {
+        "revision_count":
+        revision_count + 1
+    }
+
+# --------------------------------------------------
+# Routing
+# --------------------------------------------------
+
+def route_after_critic(
+    state: SupervisorState
+):
+    if state["score"] >= 80:
+        return "finalizer"
+    
+    if state["revision_count"] >= 2:
+        return "finalizer"
+
+    return "writer"
+
+
+# --------------------------------------------------
+# Finalizer
+# --------------------------------------------------
 
 def finalizer(state: SupervisorState):
 
@@ -191,16 +281,16 @@ def finalizer(state: SupervisorState):
 조사:
 {state['research_notes']}
 
-초안:
+최종 초안:
 {state['draft']}
 
 비평:
 {state['critique']}
 
-비평을 반영하여 최종 답변을 작성하라.
+최종 답변 작성
 """
-            },
-        ],
+            }
+        ]
     )
 
     return {
@@ -209,26 +299,94 @@ def finalizer(state: SupervisorState):
     }
 
 
-graph = StateGraph(    SupervisorState)
-graph.add_node(    "supervisor",    supervisor)
-graph.add_node(    "researcher",    researcher)
-graph.add_node(    "writer",    writer)
-graph.add_node(    "critic",    critic)
-graph.add_node(    "finalizer",    finalizer)
-graph.add_edge(    START,    "supervisor")
-graph.add_edge(    "supervisor",    "researcher")
-graph.add_edge(    "researcher",    "writer")
-graph.add_edge(    "writer",    "critic")
-graph.add_edge(    "critic",    "finalizer")
-graph.add_edge(    "finalizer",    END)
-app = graph.compile()
+# --------------------------------------------------
+# Graph
+# --------------------------------------------------
+
+workflow = StateGraph(
+    SupervisorState
+)
+
+workflow.add_node(
+    "researcher",
+    researcher
+)
+
+workflow.add_node(
+    "writer",
+    writer
+)
+
+workflow.add_node(
+    "critic",
+    critic
+)
+
+workflow.add_node(
+    "supervisor",
+    supervisor
+)
+
+workflow.add_node(
+    "finalizer",
+    finalizer
+)
+
+workflow.add_edge(
+    START,
+    "researcher"
+)
+
+workflow.add_edge(
+    "researcher",
+    "writer"
+)
+
+workflow.add_edge(
+    "writer",
+    "critic"
+)
+
+workflow.add_edge(
+    "critic",
+    "supervisor"
+)
+
+workflow.add_conditional_edges(
+    "supervisor",
+    route_after_critic,
+    {
+        "writer": "writer",
+        "finalizer": "finalizer",
+    }
+)
+
+workflow.add_edge(
+    "finalizer",
+    END
+)
+
+app = workflow.compile()
+
+# --------------------------------------------------
+# Run
+# --------------------------------------------------
+
 result = app.invoke(
     {
         "task":
-        "LangGraph Supervisor 패턴을 설명하라",
+        "LangGraph Supervisor 기반 멀티 에이전트 패턴 설명",
+
         "research_notes": "",
+
         "draft": "",
+
         "critique": "",
+
+        "score": 0,
+
+        "revision_count": 0,
+
         "final_answer": "",
     }
 )
@@ -236,8 +394,11 @@ result = app.invoke(
 print("\n=== FINAL ===")
 print(result["final_answer"])
 
-print("\n=== RESEARCH ===")
-print(result["research_notes"])
+print("\n=== SCORE ===")
+print(result["score"])
+
+print("\n=== REVISION ===")
+print(result["revision_count"])
 
 print("\n=== CRITIQUE ===")
 print(result["critique"])
