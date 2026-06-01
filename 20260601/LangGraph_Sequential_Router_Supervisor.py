@@ -108,13 +108,13 @@ def think(state:ReActRAGState):
 
 
 def search_context(state:ReActRAGState):# 내부문서
-    result = collection.query(query_texts=[state['question']], n_result=2)
+    result = collection.query(query_texts=[state['question']], n_results=2)
     context = '\n'.join(result['documents'][0])
     return {'tool_result':context}
 
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 def respond(state:ReActRAGState):  # LLM이 답변
-    answer = f"질문:{state['question']}\n생각:{state['thought']}\n도구:{state['retrieved_context']}\n\n답변을 생성하세요"
+    answer = f"질문:{state['question']}\n생각:{state['thought']}\n도구:{state['tool_result']}\n\n답변을 생성하세요"
     response = client.chat.completions.create(
         model = 'gpt-5.4-nano',
         messages=[
@@ -126,7 +126,7 @@ def respond(state:ReActRAGState):  # LLM이 답변
     return {'answer':response.choices[0].message.content.strip()}
 
 # graph구성
-workflow = StateGraph(ReActState)   
+workflow = StateGraph(ReActRAGState)   
 workflow.add_node('think',think)
 workflow.add_node('search_context',search_context)
 workflow.add_node('respond',respond)
@@ -149,8 +149,10 @@ kwargs = {
 }
 result = app.invoke(kwargs)
 print('route', result['action'])
-print('throught', result['throught'])
+print('thought', result['thought'])
 print('context')
 print(result['tool_result'])
 print('answer')
 print(result['answer'])
+
+# %%
