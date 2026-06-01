@@ -307,51 +307,15 @@ workflow = StateGraph(
     SupervisorState
 )
 
-workflow.add_node(
-    "researcher",
-    researcher
-)
-
-workflow.add_node(
-    "writer",
-    writer
-)
-
-workflow.add_node(
-    "critic",
-    critic
-)
-
-workflow.add_node(
-    "supervisor",
-    supervisor
-)
-
-workflow.add_node(
-    "finalizer",
-    finalizer
-)
-
-workflow.add_edge(
-    START,
-    "researcher"
-)
-
-workflow.add_edge(
-    "researcher",
-    "writer"
-)
-
-workflow.add_edge(
-    "writer",
-    "critic"
-)
-
-workflow.add_edge(
-    "critic",
-    "supervisor"
-)
-
+workflow.add_node(    "researcher",    researcher)
+workflow.add_node(    "writer",    writer)
+workflow.add_node(    "critic",    critic)
+workflow.add_node(    "supervisor",    supervisor)
+workflow.add_node(    "finalizer",    finalizer)
+workflow.add_edge(    START,    "researcher")
+workflow.add_edge(    "researcher",    "writer")
+workflow.add_edge(    "writer",    "critic")
+workflow.add_edge(    "critic",    "supervisor")
 workflow.add_conditional_edges(
     "supervisor",
     route_after_critic,
@@ -360,12 +324,7 @@ workflow.add_conditional_edges(
         "finalizer": "finalizer",
     }
 )
-
-workflow.add_edge(
-    "finalizer",
-    END
-)
-
+workflow.add_edge(    "finalizer",    END)
 app = workflow.compile()
 
 # --------------------------------------------------
