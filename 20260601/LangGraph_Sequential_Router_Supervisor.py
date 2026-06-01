@@ -320,3 +320,106 @@ def retrieve_with_sources(state:EnterpriseRAGState):
         "source_items": [],
         "route": "external",
     }
+
+def external_reference_dummy(state: EnterpriseRAGState):
+    source_items = [
+        {
+            "source_id": "E1",
+            "file_name": "external_policy_reference.md",
+            "chunk_index": "1",
+            "distance": "N/A",
+        },
+        {
+            "source_id": "E2",
+            "file_name": "external_rag_reference.md",
+            "chunk_index": "1",
+            "distance": "N/A",
+        },
+    ]
+    retrieved_context = (
+        "[E1] file=external_policy_reference.md, chunk=1, distance=N/A\n"
+        f"질문 '{state['question']}'에 대해 외부 공개 문서의 정책 구조는 일반적으로 목적, 범위, 책임, 절차, 예외 처리로 구성된다.\n\n"
+        "[E2] file=external_rag_reference.md, chunk=1, distance=N/A\n"
+        "검색된 내부 문서가 없을 때는 외부 공개 자료를 참고해 답변의 뼈대를 만들고, 실제 운영 규정은 반드시 내부 문서로 재검증해야 한다."
+    )
+    return {
+        "retrieved_context": retrieved_context,
+        "source_items": source_items,
+        "route": "external",
+    }
+
+
+def answer_with_sources(state: EnterpriseRAGState):
+    if not state["retrieved_context"].strip():
+        return {
+            "answer": "검색된 기업 내부 문서가 없어 답변을 생성할 수 없다. 먼저 문서를 벡터DB에 적재해줘.",
+        }
+
+    source_labels = ", ".join(item["source_id"] for item in state["source_items"])
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        temperature=0,
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "당신은 기업 내부 지식 기반 도우미다. "
+                    "반드시 제공된 문맥만 사용해서 답변하고, 핵심 주장 뒤에 출처 라벨을 붙여라. "
+                    f"사용 가능한 출처 라벨은 {source_labels} 뿐이다."
+                ),
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"질문: {state['question']}\n\n"
+                    f"검색 문맥:\n{state['retrieved_context']}\n\n"
+                    "요구사항:\n"
+                    "1) 답변 본문에 근거 문장 뒤에 [S1] 같은 출처 라벨을 붙여라.\n"
+                    "2) 문맥에 없는 내용은 추측하지 마라."
+                ),
+            },
+        ],
+    )
+    return {"answer": response.choices[0].message.content.strip()}
+
+
+enterprise_rag = StateGraph(EnterpriseRAGState)
+enterprise_rag.add_node("retrieve_with_sources", retrieve_with_sources)
+enterprise_rag.add_node("external_reference_dummy", external_reference_dummy)
+enterprise_rag.add_node("answer_with_sources", answer_with_sources)
+enterprise_rag.add_edge(START, "retrieve_with_sources")
+enterprise_rag.add_conditional_edges(
+    "retrieve_with_sources",
+    lambda state: state["route"],
+    {
+        "internal": "answer_with_sources",
+        "external": "external_reference_dummy",
+    },
+)
+enterprise_rag.add_edge("external_reference_dummy", "answer_with_sources")
+enterprise_rag.add_edge("answer_with_sources", END)
+enterprise_rag_app = enterprise_rag.compile()
+
+question = "우리 회사 문서 기준으로 해당 정책의 핵심 절차를 설명해줘"
+result = enterprise_rag_app.invoke(
+    {
+        "question": question,
+        "retrieved_context": "",
+        "source_items": [],
+        "answer": "",
+        "route": "",
+    }
+)
+
+print("question:", question)
+print("route:", result.get("route", ""))
+print("\nanswer:\n", result["answer"])
+
+print("\n[출처 목록]")
+if result["source_items"]:
+    for item in result["source_items"]:
+        print(
+            f"[{item['source_id']}] file={item['file_name']}, chunk={item['chunk_index']}, distance={item['distance']}"
+        )
+else:
+    print("검색된 출처가 없습니다.")
