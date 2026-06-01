@@ -166,7 +166,7 @@ from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunct
 from pypdf import PdfReader
 
 # 문서경로 지정
-enterprise_folder = Path(r'C:\skn29_자연어\20260601\documents\enterprise.pdf')
+enterprise_folder = Path(r'.\documents')
 # pdf 파일 읽기
 def read_pdf_file(path:Path)->str:
     reader = PdfReader(str(path))
@@ -208,7 +208,7 @@ def iter_documents(folder:Path)->Iterable[tuple[Path,str]]:
             surffix = path.suffix.lower()
             if surffix in {'.txt', ".md"}:
                 yield path, read_text_file(path)
-            elif surffix == 'pdf':
+            elif surffix == '.pdf':
                 yield path, read_pdf_file(path)
         
 
