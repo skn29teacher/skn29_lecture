@@ -438,6 +438,7 @@ else:
 ######## 상태설계를 먼저해야 하는 이유 ##########
 # 질문을 정규화 -> 의도를 추론 -> chromaDB에서 실제 근거를 찾고 -> openai가 그 근거를 바탕으로 답변을 생성
 
+import re
 from pathlib import Path
 from typing_extensions import TypedDict
 from openai import OpenAI
@@ -453,6 +454,10 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 class StableEmbeddingFunction:
     def __init__(self):
         self.model = SentenceTransformer('all-MiniLM-L6-V2')
+    
+    def name(self):
+        return 'stable_local'        
+    
     def __call__(self,input):
         vectors = self.model.encode(
             input,
@@ -465,7 +470,7 @@ class StableEmbeddingFunction:
         return self.__call__(input)
     
 chroma_client = chromadb.PersistentClient()
-chroma_client.get_or_create_collection(
+collection = chroma_client.get_or_create_collection(
     name='test',
     embedding_function=StableEmbeddingFunction()
 )
@@ -597,3 +602,5 @@ print("context:")
 print(result["retrieved_context"])
 print("answer:")
 print(result["final_answer"])
+
+# %%
