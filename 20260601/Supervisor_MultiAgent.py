@@ -74,7 +74,7 @@ class SupervisorState(TypedDict):
     task:str
     research_notes:str
     draft:str
-    cirtique:str
+    critique:str
     final_answer:str
 
 def supervisor(state:SupervisorState):
@@ -92,9 +92,9 @@ def researcher(state:SupervisorState):
             {'role':'system','content':'너는 Reasearch Agent이고 주어진 근거를 요약합니다.'},
             {'role':'user','content':f"작업:{state['task']}\n\n근거:{context}"}
         ]
-    )
+    )    
     return {
-        'research_notes': response.choices[0].message.construct.strip()
+        'research_notes': response.choices[0].message.content.strip()
     }
 
 # -------------------------
@@ -128,8 +128,7 @@ def writer(state: SupervisorState):
     )
 
     return {
-        "draft":
-        response.choices[0].message.content.strip()
+        "draft": response.choices[0].message.content.strip()
     }
 
 
@@ -164,8 +163,7 @@ def critic(state: SupervisorState):
     )
 
     return {
-        "critique":
-        response.choices[0].message.content.strip()
+        "critique":response.choices[0].message.content.strip()
     }
 
 
@@ -243,3 +241,5 @@ print(result["research_notes"])
 
 print("\n=== CRITIQUE ===")
 print(result["critique"])
+
+# %%
