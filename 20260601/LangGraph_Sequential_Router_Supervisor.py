@@ -261,3 +261,62 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content.strip())
 
 # %%
+# 내부문서 기반 RAG (출처 포함)
+
+
+class EnterpriseRAGState(TypedDict):
+    question:str
+    retrieved_context:str
+    source_items : list[dict[str,str]]
+    answer :str
+    route:str
+
+def retrieve_with_sources(state:EnterpriseRAGState):
+    if enterprise_collection.count == 0:
+        return{
+            'retrieved_context':'',
+            'source_items':[],
+            'route':'external'  # 외부문서
+        }
+    result = enterprise_collection.query(
+        query_texts=[state['question']],
+        n_results=4,
+        include=['documents','metadatas','distances']
+    )
+    documents = result.get('documents',[[]])[0]
+    metadatas = result.get('metadatas',[[]])[0]
+    distances = result.get('distances',[[]])[0]
+    source_items: list[dict[str, str]] = []
+    context_lines: list[str] = []
+
+    for idx, (doc, meta, dist) in enumerate(zip(documents, metadatas, distances), start=1):
+        source_id = f"S{idx}"
+        file_name = (meta or {}).get("source_file", "unknown")
+        chunk_index = (meta or {}).get("chunk_index", "?")
+        distance = f"{float(dist):.4f}" if dist is not None else "N/A"
+
+        source_items.append(
+            {
+                "source_id": source_id,
+                "file_name": str(file_name),
+                "chunk_index": str(chunk_index),
+                "distance": distance,
+            }
+        )
+
+        context_lines.append(
+            f"[{source_id}] file={file_name}, chunk={chunk_index}, distance={distance}\n{doc}"
+        )
+
+    if context_lines:
+        return {
+            "retrieved_context": "\n\n".join(context_lines),
+            "source_items": source_items,
+            "route": "internal",
+        }
+
+    return {
+        "retrieved_context": "",
+        "source_items": [],
+        "route": "external",
+    }
