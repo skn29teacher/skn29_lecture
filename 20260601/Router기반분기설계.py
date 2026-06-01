@@ -42,7 +42,7 @@ if collection.count() == 0:
 
 class RouterState(TypedDict):
     question:str
-    router:str
+    route:str
     retrived_context:str
     answer:str
 
@@ -62,7 +62,7 @@ def classify_route(state:RouterState):
             messages=prompt,
             temperature=0
         )
-        router = (
+        route = (
             response.choices[0]
             .message.content
             .strip()
@@ -132,7 +132,7 @@ def faq_answer(state: RouterState):
 
 def rag_answer(state: RouterState):
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5.4-nano",
         messages=[
             {
                 "role": "system",
@@ -181,7 +181,7 @@ def tool_answer(state: RouterState):
         )
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5.4-nano",
         messages=[
             {
                 "role": "system",
@@ -208,36 +208,12 @@ def tool_answer(state: RouterState):
 
 workflow = StateGraph(RouterState)
 
-workflow.add_node(
-    "classify_route",
-    classify_route
-)
-
-workflow.add_node(
-    "retrieve_context",
-    retrieve_context
-)
-
-workflow.add_node(
-    "faq_answer",
-    faq_answer
-)
-
-workflow.add_node(
-    "rag_answer",
-    rag_answer
-)
-
-workflow.add_node(
-    "tool_answer",
-    tool_answer
-)
-
-workflow.add_edge(
-    START,
-    "classify_route"
-)
-
+workflow.add_node("classify_route", classify_route)
+workflow.add_node("retrieve_context", retrieve_context)
+workflow.add_node("faq_answer", faq_answer)
+workflow.add_node("rag_answer", rag_answer)
+workflow.add_node("tool_answer",tool_answer)
+workflow.add_edge(START,"classify_route")
 workflow.add_conditional_edges(
     "classify_route",
     lambda state: state["route"],
@@ -248,39 +224,20 @@ workflow.add_conditional_edges(
     },
 )
 
-workflow.add_edge(
-    "retrieve_context",
-    "rag_answer"
-)
-
-workflow.add_edge(
-    "faq_answer",
-    END
-)
-
-workflow.add_edge(
-    "rag_answer",
-    END
-)
-
-workflow.add_edge(
-    "tool_answer",
-    END
-)
-
+workflow.add_edge("retrieve_context","rag_answer")
+workflow.add_edge("faq_answer",END)
+workflow.add_edge("rag_answer",END)
+workflow.add_edge("tool_answer",END)
 app = workflow.compile()
-
 result = app.invoke(
     {
         "question": "LangGraph의 정의가 무엇인가?",
         "route": "",
-        "retrieved_context": "",
+        "retrived_context": "",
         "answer": "",
     }
 )
-
 print("route:", result["route"])
 print(result["answer"])
 
 # %%
-client
