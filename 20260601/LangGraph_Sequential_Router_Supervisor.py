@@ -469,7 +469,14 @@ class StableEmbeddingFunction:
     def embed_query(self,input):
         return self.__call__(input)
     
+    
 chroma_client = chromadb.PersistentClient()
+
+try:  # 컬렉션은 있으면 생성오류가 발생 그리고 벡터db의 저장할 데이터의 형태가 변경되어도 기존에 존재하면 반영안됨
+    chroma_client.delete_collection('test')
+except:
+    pass
+
 collection = chroma_client.get_or_create_collection(
     name='test',
     embedding_function=StableEmbeddingFunction()
@@ -508,7 +515,7 @@ def normalize_question(state: StateDesignState):
 
 def infer_intent(state: StateDesignState):
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5.4-nano",
         messages=[
             {
                 "role": "system",
@@ -538,7 +545,7 @@ def retrieve_context(state: StateDesignState):
 
 def draft_answer(state: StateDesignState):
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5.4-mini",
         messages=[
             {
                 "role": "system",
@@ -556,7 +563,7 @@ def draft_answer(state: StateDesignState):
 
 def finalize_answer(state: StateDesignState):
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5.4-nano",
         messages=[
             {
                 "role": "system",
@@ -578,12 +585,14 @@ workflow.add_node("infer_intent", infer_intent)
 workflow.add_node("retrieve_context", retrieve_context)
 workflow.add_node("draft_answer", draft_answer)
 workflow.add_node("finalize_answer", finalize_answer)
+
 workflow.add_edge(START, "normalize_question")
 workflow.add_edge("normalize_question", "infer_intent")
 workflow.add_edge("infer_intent", "retrieve_context")
 workflow.add_edge("retrieve_context", "draft_answer")
 workflow.add_edge("draft_answer", "finalize_answer")
 workflow.add_edge("finalize_answer", END)
+
 app = workflow.compile()
 
 result = app.invoke(
