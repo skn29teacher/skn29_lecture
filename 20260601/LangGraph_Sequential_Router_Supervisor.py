@@ -167,6 +167,9 @@ from pypdf import PdfReader
 
 # 문서경로 지정
 enterprise_folder = Path(r'.\documents')
+# txt, md 파일처럼 일반 파일
+def read_text_file(path:Path)->str:
+    return path.read_text(encoding='utf-8',errors='ignore')
 # pdf 파일 읽기
 def read_pdf_file(path:Path)->str:
     reader = PdfReader(str(path))
@@ -174,18 +177,8 @@ def read_pdf_file(path:Path)->str:
 
     for page in reader.pages:    
         pages.append(page.extract_text() or "")
-    return '\n'.join(pages)
-    
-enterprise_embedding = SentenceTransformerEmbeddingFunction(model_name='all-MiniLM-L6-v2')
-enterprize_client = chromadb.PersistentClient()
-enterprise_collection = enterprize_client.get_or_create_collection(
-    name='enterprise_document',
-    embedding_function=enterprise_embedding,
-    metadata={'hnsw:space':'cosine'}
-)
-# txt, md 파일처럼 일반 파일
-def read_text_file(path:Path)->str:
-    return path.read_text(encoding='utf-8',errors='ignore')
+    return '\n'.join(pages)    
+
 
 def chunk_text(text:str, chunk_size:int=900, overlab:int=150)->list[str]:
     cleaned = " ".join(text.split())
@@ -211,6 +204,15 @@ def iter_documents(folder:Path)->Iterable[tuple[Path,str]]:
             elif surffix == '.pdf':
                 yield path, read_pdf_file(path)
         
+
+enterprise_embedding = SentenceTransformerEmbeddingFunction(model_name='all-MiniLM-L6-v2')
+enterprize_client = chromadb.PersistentClient()
+enterprise_collection = enterprize_client.get_or_create_collection(
+    name='enterprise_document',
+    embedding_function=enterprise_embedding,
+    metadata={'hnsw:space':'cosine'}
+)
+
 
 documents_to_add: list[str] = []
 metadatas: list[dict[str, str]] = []
@@ -481,6 +483,10 @@ collection = chroma_client.get_or_create_collection(
     name='test',
     embedding_function=StableEmbeddingFunction()
 )
+
+
+
+
 
 # collection 에 데이터 추가
 if collection.count() == 0:
