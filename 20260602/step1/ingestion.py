@@ -55,3 +55,7 @@ class DocumentIngestion:
                     print(f'{file} {str(e)}')
         print(f'총 {len(documents)}개 문서 로딩 완료')
         return documents
+    
+if __name__ =='__main__'    :
+    temp = DocumentIngestion()
+    temp.load_documents()
