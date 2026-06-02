@@ -134,5 +134,5 @@ class RAGSystem:
     
 if __name__ == '__main__':
     rag = RAGSystem()
-    result = rag.ask('휴가 규정 알려줘')
+    result = rag.ask('대회 규칙 알려줘')
     print(result)
