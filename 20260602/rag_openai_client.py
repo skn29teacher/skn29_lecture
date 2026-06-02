@@ -28,7 +28,7 @@ async def main():
 
             # 서버의 get_greeting Tool 호출
             print(f'[질문] 바나나는 어떤 특징이 있나요?')
-            query = '바나나는 어떤 특징이 있나요?'
+            query = '바나나'
             result =  await session.call_tool(
                 "search_documents",
                 arguments={'query':query}
@@ -48,7 +48,7 @@ async def main():
 {query}
 '''
             # openai 호출
-            response = client.chat.completions.create(
+            response = await client.chat.completions.create(
                 model = 'gpt-5.4-nano',
                 messages=[
                     {'role':'system',"content":"당신은 제공된 문서를 기반으로 답변하는 RAG시스템입니다."},
