@@ -57,5 +57,6 @@ class DocumentIngestion:
         return documents
     
 if __name__ =='__main__'    :
+    config.validate()
     temp = DocumentIngestion()
     temp.load_documents()
