@@ -76,9 +76,18 @@ def get_database_shema()->str:
     shemas = [row[0] for row in cursor.fetchall() if row[0]]
     conn.close()
     return "\n\n".join(shemas)
+
+@mcp.tool()
+def execute_sql_query(query:str)->str:
+    '''sqlite 데이터베이스에 select sql 쿼리를 실행하고 결과를 json형태로 반환
+    주의:안전한실행을 위해서 반드시 select 쿼리만 허용됩니다.    
+    '''
+    
+
+
 if __name__ == '__main__':
     init_db()
-    #insert_dummy/data(100)
+    insert_dummy_data(100)
     mcp.run()
 
 # uv pip install fastmcp
