@@ -36,7 +36,7 @@ def insert_emp(name: str, department: str, position: str, salary: int, age: int)
     conn.close()
     return new_id
 
-
+@mcp.tool()
 def insert_dummy_data(count: int = 100):
     """가상의 직원 데이터를 count건 삽입합니다."""
     names = [
@@ -82,7 +82,26 @@ def execute_sql_query(query:str)->str:
     '''sqlite 데이터베이스에 select sql 쿼리를 실행하고 결과를 json형태로 반환
     주의:안전한실행을 위해서 반드시 select 쿼리만 허용됩니다.    
     '''
-    
+    # SELECT 쿼리만 허용 (보안)
+    normalized = query.strip().upper()
+    if not normalized.startswith("SELECT"):
+        return json.dumps({"error": "SELECT 쿼리만 허용됩니다."}, ensure_ascii=False)
+
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        conn.row_factory = sqlite3.Row  # 컬럼명 포함 딕셔너리 형태로 반환
+        cursor = conn.cursor()
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        conn.close()
+
+        # Row 객체 -> dict 변환 후 JSON 직렬화
+        result = [dict(row) for row in rows]
+        return json.dumps(result, ensure_ascii=False, indent=2)
+
+    except sqlite3.Error as e:
+        return json.dumps({"error": str(e)}, ensure_ascii=False)
+
 
 
 if __name__ == '__main__':
