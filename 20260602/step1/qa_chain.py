@@ -55,7 +55,7 @@ class RAGSystem:
 
         persist_dir = (
             persist_directory
-            or config.CHROMA_PERSIST_DIRECTORY
+            or config.CHROMA_PRESIST_DIRECTORY
         )
 
         self.vectorstore = Chroma(
