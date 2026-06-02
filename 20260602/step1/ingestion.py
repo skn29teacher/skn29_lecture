@@ -61,12 +61,12 @@ class DocumentIngestion:
     def chunk_documents(self, documents: List[Document])->List[Document]:
         '''문서청킹'''
         print(f'문서청킹시작 : size = {config.CHUNK_SIZE} overlap : {config.CHUNK_OVERLAP}')
-        text_spliter = (RecursiveCharacterTextSplitter(chunk_size=config.CHUNK_SIZE
+        text_spliter = RecursiveCharacterTextSplitter(chunk_size=config.CHUNK_SIZE
                                                       ,chunk_overlap=config.CHUNK_OVERLAP
                                                       ,length_function=len,
                                                       separators = ['\n\n','\n','. ','! ','? ',' ',""]
-                                                      ))
-        chunks = ( text_spliter.split_documents(documents))
+                                                      )
+        chunks = text_spliter.split_documents(documents)        
         for idx, chunk in enumerate(chunks):
             chunk.metadata.update({
                 'chunk_id':idx,
@@ -74,7 +74,8 @@ class DocumentIngestion:
                 'chunk_size':len(chunk.page_content)
             })
         print(f'총 {len(chunks)}개 청크 생성')
-        return chunk
+        return chunks
+        
     def create_vectorstore( self,  chunks: List[Document], ):
         """
         Chroma 벡터스토어 생성
