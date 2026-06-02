@@ -4,6 +4,8 @@ from mcp import ClientSession
 from mcp.client.stdio import stdio_client, StdioServerParameters
 import os
 from dotenv import load_dotenv
+from openai import AsyncOpenAI
+
 load_dotenv(override=True)
 
 async def main():
@@ -34,7 +36,27 @@ async def main():
             context = result.content[0].text
             print(f'검색된 context : {context}')
             print('openai 답변 생성중....')
+            client = AsyncOpenAI()
+            # RAG 프롬프트
+            prompt = f'''
+다음 제공된 문서를 바탕으로 사용자의 질문에 답하세요
 
-           
+[문서]
+{context}
+
+[질문]
+{query}
+'''
+            # openai 호출
+            response = client.chat.completions.create(
+                model = 'gpt-5.4-nano',
+                messages=[
+                    {'role':'system',"content":"당신은 제공된 문서를 기반으로 답변하는 RAG시스템입니다."},
+                    {'role':'user','content':prompt}
+                ],
+                temperature=0
+            )
+            answer = response.choices[0].message.content
+            print(f'최종답변:{answer}')
 if __name__ == '__main__':
     asyncio.run(main())
