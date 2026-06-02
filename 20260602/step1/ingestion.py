@@ -10,7 +10,7 @@ import chromadb
 from langchain_core.documents import Document
 from config import config
 
-class DocumentIngrestion:
+class DocumentIngestion:
     '''문서수집 및 임베딩 처리 클래스'''
     def __init__(self,doc_path:str = None,persist_directory:str = None):
         self.doc_path = doc_path or config.DOCUMENTS_PATH
@@ -54,3 +54,4 @@ class DocumentIngrestion:
                 except Exception as e:
                     print(f'{file} {str(e)}')
         print(f'총 {len(documents)}개 문서 로딩 완료')
+        return documents
