@@ -13,6 +13,10 @@ class Config:
     CHUNK_SIZE = int(os.getenv('CHUNK_SIZE'))
     CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP"))
     DOCUMENTS_PATH = os.getenv('DOCUMENTS_PATH','./data/internal_docs')
+    CHROMA_PRESIST_DIRECTORY = os.getenv('CHROMA_PRESIST_DIRECTORY')
+    CHROMA_COLLECTION_NAME = os.geten('CHROMA_COLLECTION_NAME')
+
+
 
     @classmethod
     def validate(cls):
