@@ -22,7 +22,7 @@ from openai import OpenAI
 # ── 환경변수 로드 ────────────────────────────────────────────────────────────
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-MODEL = "gpt-4o"
+MODEL = "gpt-5.4-nano"
 
 # ── MCP 서버 실행 파라미터 ────────────────────────────────────────────────────
 SERVER_PARAMS = StdioServerParameters(
