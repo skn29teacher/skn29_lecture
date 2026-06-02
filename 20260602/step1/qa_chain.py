@@ -41,11 +41,8 @@ class RAGSystem:
 """
 
     def __init__(self, persist_directory=None):
-
         config.validate()
-
         print("RAG 시스템 초기화 중...")
-
         self.embeddings = HuggingFaceEmbeddings(
             model_name=config.EMBEDDING_MODEL,
             model_kwargs={
@@ -134,3 +131,8 @@ class RAGSystem:
         )
 
         return answer
+    
+if __name__ == '__main__':
+    rag = RAGSystem()
+    result = rag.ask('휴가 규정 알려줘')
+    print(result)
