@@ -28,7 +28,7 @@ async def main():
 
             # 서버의 get_greeting Tool 호출
             print(f'[질문] 바나나는 어떤 특징이 있나요?')
-            query = '바나나'
+            query = '바나나는 어떤 특징이 있나요?'
             result =  await session.call_tool(
                 "search_documents",
                 arguments={'query':query}

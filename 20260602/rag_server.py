@@ -6,7 +6,7 @@ mcp = FastMCP('Retrieval Server')
 
 # 2. Vector DB (ChromaDB) 설정
 chroma_client = chromadb.Client()
-collection = chroma_client.create_collection(name="knowledge_base")
+collection = chroma_client.get_or_create_collection(name="knowledge_base")
 
 # 문서 데이터베이스(RAG 지식베이스)
 KNOWLEDGE_BASE = [
