@@ -9,4 +9,5 @@ def multiply(a:float, b:float)->float:
 if __name__ == '__main__':
     mcp.run()
 
+# uv pip install fastmcp
 # 실행은 uv run server.py    
