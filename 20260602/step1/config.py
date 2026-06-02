@@ -14,7 +14,7 @@ class Config:
     CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP"))
     DOCUMENTS_PATH = os.getenv('DOCUMENTS_PATH','./data/internal_docs')
     CHROMA_PRESIST_DIRECTORY = os.getenv('CHROMA_PRESIST_DIRECTORY')
-    CHROMA_COLLECTION_NAME = os.geten('CHROMA_COLLECTION_NAME')
+    CHROMA_COLLECTION_NAME = os.getenv('CHROMA_COLLECTION_NAME')
 
 
 
