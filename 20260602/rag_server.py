@@ -9,7 +9,7 @@ KNOWLEDGE_BASE = [
     {"id": 4, "content": "MCP(Model Context Protocol)는 AI 모델이 외부 데이터와 안전하게 통신할 수 있게 해주는 개방형 표준입니다."}
 ]
 # 2 클라이언트(LLM 에이전트)가 문서를 검색할 수 있는 tool
-@mcp.tool
+@mcp.tool()
 def search_documents(query:str)->str:
     '''주어진 검색어(query)를 기반으로 지식 베이스에서 관련 문서를 찾아 반환합니다.'''
     # 간단하게 키워드 기반(-->VectorDB로 변경필요)
