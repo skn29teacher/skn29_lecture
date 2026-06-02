@@ -9,6 +9,8 @@ from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 import chromadb
 from langchain_core.documents import Document
 from config import config
+from langchain_chroma import Chroma
+
 
 class DocumentIngestion:
     '''문서수집 및 임베딩 처리 클래스'''
@@ -73,16 +75,11 @@ class DocumentIngestion:
             })
         print(f'총 {len(chunks)}개 청크 생성')
         return chunk
-    def create_vectorstore(
-        self,
-        chunks: List[Document],
-    ) -> Chroma:
+    def create_vectorstore( self,  chunks: List[Document], ):
         """
         Chroma 벡터스토어 생성
         """
-
-        print("\n💾 벡터스토어 생성 중...")
-
+        print("\n 벡터스토어 생성 중...")
         print(
             f"  - 저장 위치: "
             f"{self.persist_directory}"
@@ -102,9 +99,7 @@ class DocumentIngestion:
                 self.persist_directory,
         )
 
-        print(
-            "✅ 벡터스토어 생성 완료"
-        )
+        print(" 벡터스토어 생성 완료"  )
 
         return vectorstore
 
@@ -140,4 +135,4 @@ class DocumentIngestion:
 if __name__ =='__main__'    :
     config.validate()
     temp = DocumentIngestion()
-    temp.load_documents()
+    vectorstores = temp.run()
