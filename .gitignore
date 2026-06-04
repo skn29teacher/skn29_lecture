@@ -12,3 +12,4 @@ chroma.sqlite3
 t5_sentiment_results
 t5_lora_results
 gpt_dpo_results
+gpt2_sft_results
