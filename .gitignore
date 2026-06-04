@@ -7,3 +7,6 @@ chroma.sqlite3
 .gitignore
 *.bin
 .bin
+*.pt
+*.pht
+t5_sentiment_results
