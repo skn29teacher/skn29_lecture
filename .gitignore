@@ -25,3 +25,7 @@ gpt2_dpo_resultscls
 20260608/Qwen-KoAlpaca-Merged/config.json
 20260608/Qwen-KoAlpaca-Merged/generation_config.json
 20260608/Qwen-KoAlpaca-Merged/model.safetensors
+20260608/qwen_koalpaca_fp16.gguf
+20260608/Qwen-KoAlpaca-Merged/chat_template.jinja
+20260608/Qwen-KoAlpaca-Merged/tokenizer_config.json
+20260608/Qwen-KoAlpaca-Merged/tokenizer.json
