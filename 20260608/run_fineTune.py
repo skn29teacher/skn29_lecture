@@ -36,4 +36,4 @@ if __name__=="__main__":
         stop = ["<|im_end|>"]
     )
     print('파인튜닝 완료 모델의 답변')
-    print(output['choices'][0]['text'].stip())
+    print(output['choices'][0]['text'].strip())
