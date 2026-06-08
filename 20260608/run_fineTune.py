@@ -24,7 +24,7 @@ llm = Llama(
 )
 
 if __name__=="__main__":
-    prompt = '프랑스 파리를 여행하려고 해. 꼭 가봐야 할 명소를 두 곳만 추천해줘'
+    prompt = 'Sweater 유래는 어디에서 시작되었나요?'
     # 파인튜닝 시 학습했던 Qwen Chat Template 포맷을 그대로 입력합니다.
     formatted_prompt = f"<|im_start|>system\nYou are a helpful AI assistant. Respond in Korean.<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n"
 
@@ -32,7 +32,7 @@ if __name__=="__main__":
     output = llm(
         formatted_prompt,
         max_tokens=150,
-        temperature=0.7,
+        temperature=0.1,
         stop = ["<|im_end|>"]
     )
     print('파인튜닝 완료 모델의 답변')
