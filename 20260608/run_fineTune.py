@@ -1,3 +1,16 @@
+# # Windows/Mac 로컬 환경 패키지 설치
+# !pip install huggingface_hub gguf
+# # Windows C++ 빌드 에러를 방지하기 위해 사전 컴파일된 CPU 전용 버전을 설치합니다.
+# !pip install llama-cpp-python --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+
+# # 모델을 GGUF로 변환해 주는 공식 스크립트를 쓰기 위해 llama.cpp 저장소 다운로드
+# !git clone https://github.com/ggerganov/llama.cpp.git
+
+# !python -c "from transformers import AutoTokenizer; AutoTokenizer.from_pretrained('Qwen/Qwen2.5-0.5B-Instruct').save_pretrained('./Qwen-KoAlpaca-Merged')"
+
+# # 모델을 FP16 정밀도의 GGUF 포맷으로 변환합니다.
+# !python llama.cpp/convert_hf_to_gguf.py ./Qwen-KoAlpaca-Merged --outtype f16 --outfile qwen_koalpaca_fp16.gguf
+
 # 로컬 CPU 고속 추론 테스트
 from llama_cpp import Llama
 import sys
