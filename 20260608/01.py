@@ -89,7 +89,7 @@ if __name__=='__main__':
     while True:
         try:
             user_question = input("질문\n")
-            if user_question.stip().lower() in ['q','exit','quit']:
+            if user_question.strip().lower() in ['q','exit','quit']:
                 print('프로그램을 종료합니다.')
                 break
             inputs = {'question':user_question}
