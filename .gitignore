@@ -13,7 +13,7 @@ t5_sentiment_results
 t5_lora_results
 gpt_dpo_results
 gpt2_sft_results
-gpt2_dpo_results
+gpt2_dpo_resultscls
 20260602/database.db
 20260608/local_qwen_model/chat_template.jinja
 20260608/local_qwen_model/config.json
@@ -21,3 +21,7 @@ gpt2_dpo_results
 20260608/local_qwen_model/model.safetensors
 20260608/local_qwen_model/tokenizer_config.json
 20260608/local_qwen_model/tokenizer.json
+20260608/Qwen-KoAlpaca-Merged.zip
+20260608/Qwen-KoAlpaca-Merged/config.json
+20260608/Qwen-KoAlpaca-Merged/generation_config.json
+20260608/Qwen-KoAlpaca-Merged/model.safetensors
