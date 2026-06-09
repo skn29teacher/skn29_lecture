@@ -31,3 +31,10 @@ gpt2_dpo_resultscls
 20260608/Qwen-KoAlpaca-Merged/tokenizer.json
 20260608/update_dataset_mapping.py
 20260608/update_runpod_notebook.py
+20260608/Qwen-KoAlpaca-Merged/added_tokens.json
+20260608/Qwen-KoAlpaca-Merged/merges.txt
+20260608/Qwen-KoAlpaca-Merged/model-00001-of-00002.safetensors
+20260608/Qwen-KoAlpaca-Merged/model-00002-of-00002.safetensors
+20260608/Qwen-KoAlpaca-Merged/model.safetensors.index.json
+20260608/Qwen-KoAlpaca-Merged/special_tokens_map.json
+20260608/Qwen-KoAlpaca-Merged/vocab.json

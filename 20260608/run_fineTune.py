@@ -24,14 +24,14 @@ llm = Llama(
 )
 
 if __name__=="__main__":
-    prompt = 'Sweater 유래는 어디에서 시작되었나요?'
+    prompt = '사이보그는 언제 처음 등장한 말이에요?'
     # 파인튜닝 시 학습했던 Qwen Chat Template 포맷을 그대로 입력합니다.
     formatted_prompt = f"<|im_start|>system\nYou are a helpful AI assistant. Respond in Korean.<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n"
 
     print('답변 생성중.....(cpu 추론)')
     output = llm(
         formatted_prompt,
-        max_tokens=150,
+        max_tokens=1500,
         temperature=0.1,
         stop = ["<|im_end|>"]
     )
