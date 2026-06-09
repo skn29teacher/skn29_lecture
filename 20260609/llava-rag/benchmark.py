@@ -37,7 +37,7 @@ def ask_blip(image_path: str) -> tuple[str, float]:
     start = time.time()
 
     captioner = hf_pipeline(
-        "image-to-text",
+        "image-text-to-text",
         model="Salesforce/blip-image-captioning-base"
     )
     result = captioner(image_path)
