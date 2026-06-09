@@ -1,21 +1,20 @@
 from rag_pipeline import MultimodalRAGPipeline
-from vector_store import ImageVectorStore
-from embedder import CLIPEmbedder
 from pathlib import Path
 
 
-def index_images(pipeline: MultimodalRAGPipeline, folder: str = "images"):
-    """실행 시 images/ 폴더 자동 인덱싱"""
-    print(f"\n[INDEX] '{folder}' 폴더 이미지 인덱싱 중...")
-    pipeline.store.add_images_from_folder(folder)
-    stats = pipeline.store.get_stats()
-    print(f"[INDEX] 완료 - 총 {stats['total_images']}개 이미지 인덱싱됨")
-
-
 def print_result(result: dict):
-    """RAG 결과 출력"""
     print("\n" + "-"*60)
-    print("[검색된 이미지]")
+
+    print("[검색된 문서 청크]")
+    if result["retrieved_texts"]:
+        for i, t in enumerate(result["retrieved_texts"], 1):
+            preview = t["text"][:80].replace("\n", " ")
+            print(f"  {i}. [{t['source']}] 유사도: {t['similarity']:.4f}")
+            print(f"     {preview}...")
+    else:
+        print("  없음")
+
+    print("\n[검색된 이미지]")
     if result["retrieved_images"]:
         for i, img in enumerate(result["retrieved_images"], 1):
             print(f"  {i}. {img['file_name']} (유사도: {img['similarity']:.4f})")
@@ -28,22 +27,26 @@ def print_result(result: dict):
 
 
 def main():
-    # 파이프라인 초기화
-    pipeline = MultimodalRAGPipeline(
-        top_k=2   # 상위 2개 이미지 검색 후 LLaVA에 주입
-    )
+    pipeline = MultimodalRAGPipeline(top_k_text=3, top_k_image=2)
 
-    # images/ 폴더 이미지 인덱싱
-    if Path("images").exists():
-        index_images(pipeline)
+    # 문서 인덱싱
+    if Path("docs").exists():
+        print("[INDEX] docs/ 폴더 문서 인덱싱 중...")
+        pipeline.text_store.add_documents_from_folder("docs")
     else:
-        print("[WARN] images/ 폴더 없음. 이미지를 추가한 뒤 다시 실행하세요.")
-        return
+        Path("docs").mkdir()
+        print("[INFO] docs/ 폴더를 생성했습니다. PDF 또는 txt 파일을 넣어주세요.")
 
-    # 대화 루프
+    # 이미지 인덱싱
+    if Path("images").exists():
+        print("[INDEX] images/ 폴더 이미지 인덱싱 중...")
+        pipeline.image_store.add_images_from_folder("images")
+    else:
+        print("[WARN] images/ 폴더 없음")
+
     print("\n" + "="*60)
-    print("로컬 멀티모달 RAG 시스템 준비 완료")
-    print("종료: 'q' 또는 'quit' 입력")
+    print("멀티모달 RAG 시스템 준비 완료 (텍스트 + 이미지)")
+    print("종료: q 입력")
     print("="*60)
 
     while True:
