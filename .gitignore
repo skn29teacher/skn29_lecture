@@ -43,3 +43,5 @@ gpt2_dpo_resultscls
 20260609/extracted_images/page3_img2.png
 20260609/llava-rag/images/page2_img1.png
 20260609/llava-rag/__pycache__/utils.cpython-310.pyc
+20260609/llava-rag/__pycache__/embedder.cpython-310.pyc
+20260609/llava-rag/__pycache__/vector_store.cpython-310.pyc
