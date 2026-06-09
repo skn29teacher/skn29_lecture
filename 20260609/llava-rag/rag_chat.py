@@ -68,3 +68,23 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+'''
+pip install pdfplumber
+
+# docs/ 폴더에 PDF 또는 txt 파일 넣기
+# images/ 폴더에 이미지 파일 넣기
+
+python rag_chat.py
+
+데이터 흐름=============
+docs/report.pdf  → 청크 분할 → 텍스트 임베딩 → chroma_db/text_collection
+images/chart.png → CLIP 임베딩              → chroma_db/image_collection
+
+질문: "3분기 매출이 얼마인가요?"
+  → text_collection 검색 → "3분기 매출은 12억원..." (문서 청크)
+  → image_collection 검색 → chart.png (매출 차트 이미지)
+  → LLaVA: 문장 컨텍스트 + 차트 이미지 보고 → 최종 답변
+'''    
