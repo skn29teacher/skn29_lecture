@@ -33,16 +33,25 @@ def ask_llava(question: str, image_path: str) -> tuple[str, float]:
 
 
 def ask_blip(image_path: str) -> tuple[str, float]:
-    """BLIP 캡셔닝 (기초 방식) - 질문 없이 캡션만 생성"""
+    """BLIP 캡셔닝 (기초 방식) - 프로세서 직접 호출"""
+    from transformers import BlipProcessor, BlipForConditionalGeneration
+    import torch
+
     start = time.time()
 
-    captioner = hf_pipeline(
-        "image-text-to-text",
-        model="Salesforce/blip-image-captioning-base"
-    )
-    result = captioner(image_path)
+    processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+    model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+    model.eval()
+
+    image = Image.open(image_path).convert("RGB")
+    inputs = processor(images=image, return_tensors="pt")
+
+    with torch.no_grad():
+        output = model.generate(**inputs, max_new_tokens=50)
+
+    caption = processor.decode(output[0], skip_special_tokens=True)
     elapsed = time.time() - start
-    caption = result[0]["generated_text"] if result else ""
+
     return caption, elapsed
 
 
