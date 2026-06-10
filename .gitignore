@@ -1,4 +1,5 @@
 .env
+.docs_images
 run_experiment*
 setting*
 자연어
@@ -45,3 +46,4 @@ gpt2_dpo_resultscls
 20260609/llava-rag/__pycache__/utils.cpython-310.pyc
 20260609/llava-rag/__pycache__/embedder.cpython-310.pyc
 20260609/llava-rag/__pycache__/vector_store.cpython-310.pyc
+20260610/docs_images
