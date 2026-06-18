@@ -1,71 +1,334 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- HTML5 표준 선언 -->
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <!-- 인코딩 방식 지정 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 모바일 뷰포트 반응형 대응 설정 -->
+  <title>2차시 실습 - 핵심 태그 실전 (회원가입 & 갤러리)</title>
+  
+  <style>
+    /* 3~4차시에서 본격적으로 CSS 파일로 분리할 예정입니다. 지금은 기본적인 구분을 위한 간소 스타일입니다. */
+    body {
+      font-family: 'Malgun Gothic', sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f6fa;
+      color: #2f3640;
+    }
+    header, footer {
+      background-color: #2f3542;
+      color: #ffffff;
+      text-align: center;
+      padding: 20px;
+    }
+    nav {
+      background-color: #747d8c;
+      padding: 10px;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
+    main {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 25px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    section {
+      margin-bottom: 50px;
+      border-bottom: 2px solid #f1f2f6;
+      padding-bottom: 30px;
+    }
+    section:last-child {
+      border-bottom: none;
+    }
+    h2 {
+      color: #3742fa;
+      border-left: 5px solid #3742fa;
+      padding-left: 10px;
+    }
     
-    <style>
-        body {
-            font-family: 'Malgun Gothic', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f6fa;
-            color: #2f3640;
-        }
-    </style>
+    /* 폼 스타일 */
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group input[type="tel"],
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    
+    /* 갤러리 그리드 스타일 미리 적용 */
+    .gallery-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .gallery-item {
+      flex: 1 1 calc(25% - 15px);
+      min-width: 200px;
+      background-color: #f1f2f6;
+      padding: 10px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .gallery-item img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    
+    /* 표 스타일 */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #dcdde1;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f1f2f6;
+    }
+  </style>
 </head>
-
 <body>
-    
-</body>
-<header>
-    <h1>마크업</h1>
-    <p>회원가입폼, 테이블구조,갤러리 색션</p>
-</header>
 
-<nav>
+  <!-- 상단 헤더 영역 -->
+  <header>
+    <h1>2차시 실습: 핵심 콘텐츠 마크업</h1>
+    <p>회원가입 폼, 테이블 구조화, 갤러리 섹션을 포함한 완성도 높은 HTML5 구조</p>
+  </header>
+
+  <!-- 내비게이션 바 -->
+  <nav>
     <a href="#signup-section">회원가입</a>
-    <a href="#gallery-section">사진갤러리</a>
-    <a href="#course-section">커리큘럼</a>
-    <a href="#definition">용어목록</a>
-</nav>
+    <a href="#gallery-section">사진 갤러리</a>
+    <a href="#course-section">강의 커리큘럼 안내</a>
+    <a href="#definition-section">용어 목록</a>
+  </nav>
 
-<main>
-    <h2>1. 신규 회원 가입</h2>
-    <form action="/signup" method="get">
-        <p>
-            <label>사용자 이름</label>
-            <input type="text" name="username"  placeholder="아이디를 입력하세요" required>
-        </p>
-        <p>
-            <label>패스워드</label>
-            <input type="password" name="userpwd" placeholder="비밀번호를 입력하세요">
-        </p>
-        <p>
-            <label>이메일</label>
-            <input type="email" name="useremail" placeholder="이메일 주소를 입력하세요">
-        </p>
-     
-        <button type="submit">가입</button>
-    </form>
-    <h2>2. 활동 사진첩</h2>
-    <p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p>
-    <p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p>
-    <p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p>
-
-    <h2>3. 종합 커리큘럼</h2>
+  <!-- 메인 주요 영역 -->
+  <main>
     
-    <section id="definition">
-        <h2>4. 표준 용어 정리</h2>
-        <p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p>
-        <p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p>
-        <p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p>
-        <p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p>
-        <p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p><p>내용없음</p>
+    <!-- 
+      [회원가입 폼 섹션]
+      사용자 입력을 받기 위해 <form> 태그를 정의하고,
+      각 입력 요소마다 접근성을 만족하기 위해 <label for="ID">와 <input id="ID">를 쌍으로 설정하였습니다.
+    -->
+    <section id="signup-section">
+      <h2>1. 신규 회원 가입</h2>
+      <!-- action은 백엔드 데이터 수신 위치, method="post"는 데이터를 전송 헤더에 숨겨 안전히 보내는 속성 -->
+      <form action="/signup" method="post">
+        
+        <!-- text 타입 인풋 -->
+        <div class="form-group">
+          <label for="username">사용자 이름</label>
+          <input type="text" id="username" name="username" placeholder="이름을 입력하세요" required>
+        </div>
+
+        <!-- email 타입 인풋: 브라우저가 골뱅이(@) 및 마크 형식을 자동으로 검증 -->
+        <div class="form-group">
+          <label for="useremail">이메일 주소</label>
+          <input type="email" id="useremail" name="useremail" placeholder="example@domain.com" required>
+        </div>
+
+        <!-- password 타입 인풋: 입력 값이 점(●)으로 표시되어 화면 보안성 제공 -->
+        <div class="form-group">
+          <label for="pwd">비밀번호</label>
+          <input type="password" id="pwd" name="pwd" required>
+        </div>
+
+        <!-- tel 타입 인풋: 모바일 브라우저 진입 시 숫자형 키보드 팝업 유도 -->
+        <div class="form-group">
+          <label for="phone">휴대전화번호</label>
+          <input type="tel" id="phone" name="phone" placeholder="010-1234-5678">
+        </div>
+
+        <!-- date 타입 인풋: 브라우저 내장 캘린더 피커 생성 -->
+        <div class="form-group">
+          <label for="birth">생년월일</label>
+          <input type="date" id="birth" name="birth">
+        </div>
+
+        <!-- radio 타입 인풋: 동시 선택 불가한 그룹핑. name 속성이 일치해야 단일 선택이 가능합니다. -->
+        <div class="form-group">
+          <label>관심 백엔드 전공 분야</label>
+          <input type="radio" id="field-java" name="major_field" value="java" checked>
+          <label for="field-java" style="display:inline; font-weight:normal; margin-right:15px;">Java Spring</label>
+          
+          <input type="radio" id="field-python" name="major_field" value="python">
+          <label for="field-python" style="display:inline; font-weight:normal; margin-right:15px;">Python Django</label>
+          
+          <input type="radio" id="field-node" name="major_field" value="node">
+          <label for="field-node" style="display:inline; font-weight:normal;">Node.js Express</label>
+        </div>
+
+        <!-- checkbox 타입 인풋: 다중 선택이 가능합니다. -->
+        <div class="form-group">
+          <label>이용 약관 동의 (다중 선택)</label>
+          <input type="checkbox" id="agree-terms" name="agree_terms" value="terms" required>
+          <label for="agree-terms" style="display:inline; font-weight:normal; margin-right:15px;">이용약관 동의 (필수)</label>
+          
+          <input type="checkbox" id="agree-privacy" name="agree_privacy" value="privacy">
+          <label for="agree-privacy" style="display:inline; font-weight:normal;">개인정보 처리방침 동의 (선택)</label>
+        </div>
+
+        <!-- select / option 드롭다운 메뉴 -->
+        <div class="form-group">
+          <label for="city">거주 지역</label>
+          <select id="city" name="city">
+            <option value="seoul">서울특별시</option>
+            <option value="busan">부산광역시</option>
+            <option value="incheon">인천광역시</option>
+            <option value="daejeon">대전광역시</option>
+          </select>
+        </div>
+
+        <!-- textarea 멀티라인 텍스트 박스 -->
+        <div class="form-group">
+          <label for="intro">가입 동기 및 자기 소개</label>
+          <textarea id="intro" name="intro" rows="4" placeholder="상세 내용을 적어주세요."></textarea>
+        </div>
+
+        <!-- button 태그: type="submit"을 부여하여 전송 처리 버튼을 형성 -->
+        <button type="submit" style="background-color:#3742fa; color:white; border:none; padding:10px 20px; border-radius:4px; font-weight:bold; cursor:pointer;">가입하기</button>
+      </form>
     </section>
-</main>
 
+    <!-- 
+      [갤러리 섹션]
+      <figure>와 <figcaption>을 사용해 사진과 캡션을 세트로 구성하여, 
+      단순 이미지 삽입 이상의 의미론적 연결성을 완성했습니다.
+    -->
+    <section id="gallery-section">
+      <h2>2. 부트캠프 활동 사진첩</h2>
+      <p>실제 학생들이 팀 프로젝트 및 개발 활동을 하고 있는 이미지 아카이브입니다.</p>
+      
+      <div class="gallery-grid">
+        <!-- 갤러리 카드 1 -->
+        <figure class="gallery-item">
+          <!-- img alt 속성을 이용한 접근성 텍스트 설명 -->
+          <img src="https://picsum.photos/300/200?random=1" alt="팀원들과 아이디어 회의를 나누는 학생들">
+          <figcaption>프로젝트 브레인스토밍 회의</figcaption>
+        </figure>
+
+        <!-- 갤러리 카드 2 -->
+        <figure class="gallery-item">
+          <img src="https://picsum.photos/300/200?random=2" alt="노트북 화면에 코딩 테스트 풀이 화면이 열려있는 모습">
+          <figcaption>코딩 모의 테스트 실습 현장</figcaption>
+        </figure>
+
+        <!-- 갤러리 카드 3 -->
+        <figure class="gallery-item">
+          <img src="https://picsum.photos/300/200?random=3" alt="사무실 환경의 개발 모니터와 백엔드 콘솔 창">
+          <figcaption>개발 환경 구축 데모룸</figcaption>
+        </figure>
+
+        <!-- 갤러리 카드 4 -->
+        <figure class="gallery-item">
+          <img src="https://picsum.photos/300/200?random=4" alt="모두 서서 팀 프로젝트 완료 기념 단체 사진">
+          <figcaption>최종 팀 프로젝트 수료식</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 
+      [커리큘럼 테이블 섹션]
+      thead와 tbody로 구분을 명확히 하고, rowspan과 colspan을 이용해 복잡한 테이블을 구조화했습니다.
+    -->
+    <section id="course-section">
+      <h2>3. 부트캠프 종합 강의 커리큘럼</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>차시</th>
+            <th>주요 학습 주제</th>
+            <th>실습 유형</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <!-- rowspan="2"를 통해 2개의 행(HTML 구조화 파트)을 하나로 병합 -->
+            <td rowspan="2">HTML5 기초 마크업</td>
+            <td>1차시</td>
+            <td>문서 표준 구조 및 시맨틱 레이아웃 설계</td>
+            <td>자기소개서 작성</td>
+          </tr>
+          <tr>
+            <td>2차시</td>
+            <td>텍스트, 목록, 멀티미디어 및 폼 양식 태그 마크업</td>
+            <td>회원가입 폼 구축</td>
+          </tr>
+          <tr>
+            <!-- colspan="4"를 이용하여 가로 4개의 셀 전체를 '중간 휴식 시간' 알림으로 통틀어 병합 -->
+            <td colspan="4" style="background-color: #f1f2f6; text-align: center; font-weight: bold;">
+              오전 과정 종료 및 중간 네트워킹 타임 (점심 식사 시간)
+            </td>
+          </tr>
+          <tr>
+            <td rowspan="2">CSS3 스타일링</td>
+            <td>3차시</td>
+            <td>외부 파일 적용 및 기본·결합·가상 선택자 실무</td>
+            <td>다차원 선택자 스타일링</td>
+          </tr>
+          <tr>
+            <td>4차시</td>
+            <td>박스모델 구성 요소 및 텍스트·배경 꾸미기</td>
+            <td>프로필 카드 제작</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 
+      [용어 목록 섹션]
+      dl, dt, dd 태그를 사용하여 용어와 이에 관한 정의를 
+      브라우저가 정확히 읽을 수 있도록 세분화하였습니다.
+    -->
+    <section id="definition-section">
+      <h2>4. 1일차 주요 웹 표준 용어 정리</h2>
+      <dl>
+        <dt>HTML (HyperText Markup Language)</dt>
+        <dd>웹 브라우저 상에 웹 페이지의 뼈대와 내용을 그리기 위한 구조적 마크업 언어입니다.</dd>
+        
+        <dt>CSS (Cascading Style Sheets)</dt>
+        <dd>HTML 문서에 디자인, 스타일, 레이아웃, 크기, 애니메이션 등을 입히는 스타일 기술 언어입니다.</dd>
+        
+        <dt>viewport (뷰포트)</dt>
+        <dd>모바일 등 디지털 디바이스 장치에서 웹 화면이 가독성 있게 표현되도록 크기와 비율을 제어하는 메타 장치입니다.</dd>
+      </dl>
+    </section>
+
+  </main>
+
+  <!-- 하단 푸터 저작권 -->
+  <footer>
+    <p>&copy; 2026 KDT 백엔드 과정 - HTML/CSS 교육 교재.</p>
+  </footer>
+
+</body>
 </html>
-
