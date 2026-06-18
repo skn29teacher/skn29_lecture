@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3차시 실습 - CSS3 선택자 데모</title>
+  <!-- 
+    [외부 스타일시트 연결]
+    HTML 마크업과 디자인 영역(CSS)을 깨끗하게 물리적으로 분리합니다. 
+  -->
+  <link rel="stylesheet" href="practice_03.css">
+</head>
+<body>
+
+  <!-- 전체 레이아웃 래퍼 -->
+  <div id="app-container">
+    
+    <header id="main-header">
+      <h1>실습: CSS 선택자 완벽 가이드</h1>
+      <p>기본 선택자부터 결합, 속성, 가상 클래스, 가상 요소를 결합한 고급 제어 기법 실습</p>
+    </header>
+
+    <main>
+      
+      <!-- 1. 기본 및 결합 선택자 실습 구역 -->
+      <section class="box-section">
+        <h2>1. 결합 선택자 및 기본 선택자 데모</h2>
+        <p class="description">이 문장은 섹션 내부의 일반 설명 단락입니다.</p>
+        
+        <div class="card-box">
+          <h3>카드 타이틀 (Card Title)</h3>
+          <p>카드 내부에 중첩된 일반 설명 텍스트입니다. (자손 선택자 타깃)</p>
+          <a href="https://example.com" class="link-btn">자세히 보기</a>
+        </div>
+
+        <div class="card-box active">
+          <h3>활성화된 카드 (Active Card)</h3>
+          <p>이 카드는 class명에 <strong>active</strong>가 추가되었습니다.</p>
+          <a href="https://example.com/more" class="link-btn">활성 버튼</a>
+        </div>
+      </section>
+
+      <!-- 2. 속성 선택자 및 가상 클래스(표) 실습 구역 -->
+      <section class="box-section">
+        <h2>2. 속성 선택자 및 가상 클래스(:nth-child) 데모</h2>
+        
+        <!-- 링크 속성 데모 -->
+        <div class="links-group">
+          <a href="http://unsafe-site.com">일반 HTTP 링크</a>
+          <a href="https://secure-site.org">보안 HTTPS 링크 (아이콘 자동 부여)</a>
+          <a href="documents/manual.pdf">PDF 매뉴얼 다운로드 (아이콘 자동 부여)</a>
+        </div>
+
+        <!-- nth-child 실습을 위한 6행 표 구조 -->
+        <table id="target-table">
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>학습 항목</th>
+              <th>학습 난이도</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>HTML 문서 구조 설계</td>
+              <td>하</td>
+              <td>완료</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>HTML5 필수 시맨틱 태그</td>
+              <td>하</td>
+              <td>완료</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>CSS 기본 선택자 개념</td>
+              <td>중</td>
+              <td>진행 중</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>결합 및 가상 선택자 활용</td>
+              <td>상</td>
+              <td>대기</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>박스 모델 정밀 속성</td>
+              <td>중</td>
+              <td>대기</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>반응형 웹 미디어쿼리</td>
+              <td>상</td>
+              <td>대기</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 3. 폼 가상 클래스 및 가상 요소 데모 구역 -->
+      <section class="box-section">
+        <h2>3. 폼 상태 가상 클래스 및 가상 요소(::before, ::after)</h2>
+        
+        <form class="demo-form">
+          <div class="form-row">
+            <!-- 가상 요소를 이용해 필수 필드에 빨간 아스테리크(*) 기호를 부여할 예정 -->
+            <label for="user-id" class="required-label">아이디</label>
+            <input type="text" id="user-id" placeholder="아이디를 입력하세요 (포커스 효과)">
+          </div>
+
+          <div class="form-row">
+            <label for="user-email" class="required-label">이메일</label>
+            <input type="email" id="user-email" placeholder="example@domain.com">
+          </div>
+
+          <div class="form-row">
+            <label for="disabled-input">읽기 전용 필드</label>
+            <!-- 비활성화 상태 가상 클래스 테스트용 -->
+            <input type="text" id="disabled-input" value="이 입력창은 비활성 상태입니다." disabled>
+          </div>
+
+          <div class="btn-group">
+            <button type="submit" class="submit-btn">가입신청</button>
+            <button type="reset" class="reset-btn">초기화</button>
+          </div>
+        </form>
+      </section>
+
+    </main>
+
+    <footer id="main-footer">
+      <p>&copy; 2026 CSS3 Selector Practice. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
