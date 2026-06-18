@@ -1,0 +1,7 @@
+
+.profile-card{
+  transition: transform .3s ease;
+}
+.profile-card:hover{
+  transform: translateY(-6px);
+}
