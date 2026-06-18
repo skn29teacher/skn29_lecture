@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실습 - Flexbox 레이아웃 기초</title>
+  <!-- 외부 CSS 링크 -->
+  <link rel="stylesheet" href="practice_05.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>5차시 실습: Flexbox 기본 속성 제어</h1>
+    <p>1차원 정렬의 강력한 도구인 Flexbox 컨테이너와 아이템 속성값을 직접 제어하고 조합하는 코딩 스터디</p>
+  </header>
+
+  <main class="container">
+
+    <!-- 1. justify-content 정렬 데모 -->
+    <section class="demo-section">
+      <h2>1. 주축 정렬 데모 (justify-content)</h2>
+      <p>주축(가로) 방향으로 자식들을 정렬하는 6가지 방법의 시각적 차이를 학습합니다.</p>
+      
+      <div class="playground-group">
+        <!-- 1) flex-start -->
+        <div class="demo-box">
+          <h5>justify-content: flex-start (시작점 정렬)</h5>
+          <div class="flex-container j-start">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+          </div>
+        </div>
+
+        <!-- 2) flex-end -->
+        <div class="demo-box">
+          <h5>justify-content: flex-end (끝점 정렬)</h5>
+          <div class="flex-container j-end">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+          </div>
+        </div>
+
+        <!-- 3) center -->
+        <div class="demo-box">
+          <h5>justify-content: center (중앙 정렬)</h5>
+          <div class="flex-container j-center">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+          </div>
+        </div>
+
+        <!-- 4) space-between -->
+        <div class="demo-box">
+          <h5>justify-content: space-between (양끝 밀착, 간격 균등)</h5>
+          <div class="flex-container j-between">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+          </div>
+        </div>
+
+        <!-- 5) space-around -->
+        <div class="demo-box">
+          <h5>justify-content: space-around (개별 요소 좌우 여백 균등)</h5>
+          <div class="flex-container j-around">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+          </div>
+        </div>
+
+        <!-- 6) space-evenly -->
+        <div class="demo-box">
+          <h5>justify-content: space-evenly (모든 빈 틈 간격 절대 균등)</h5>
+          <div class="flex-container j-evenly">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. align-items 정렬 데모 -->
+    <section class="demo-section">
+      <h2>2. 교차축 정렬 데모 (align-items)</h2>
+      <p>세로 방향(교차축)의 높이가 다른 아이템들을 수직 정렬하는 설정을 비교합니다.</p>
+      
+      <div class="playground-group">
+        <!-- 1) stretch -->
+        <div class="demo-box">
+          <h5>align-items: stretch (부모 높이로 강제 늘림)</h5>
+          <div class="flex-container a-stretch height-large">
+            <div class="flex-item no-height">1 (높이없음)</div>
+            <div class="flex-item no-height">2 (높이없음)</div>
+            <div class="flex-item no-height">3 (높이없음)</div>
+          </div>
+        </div>
+
+        <!-- 2) center -->
+        <div class="demo-box">
+          <h5>align-items: center (수직 중앙 정렬)</h5>
+          <div class="flex-container a-center height-large">
+            <div class="flex-item h-50">1 (50px)</div>
+            <div class="flex-item h-80">2 (80px)</div>
+            <div class="flex-item h-60">3 (60px)</div>
+          </div>
+        </div>
+
+        <!-- 3) flex-start / flex-end -->
+        <div class="demo-box">
+          <h5>align-items: flex-start(위) / flex-end(아래)</h5>
+          <div class="flex-container a-start height-large">
+            <div class="flex-item h-50">start</div>
+            <div class="flex-item h-80 align-self-end">self-end(이탈)</div>
+            <div class="flex-item h-60">start</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. flex-grow / flex-basis 비율 실험실 -->
+    <section class="demo-section">
+      <h2>3. 팽창 비율 제어 (flex-grow)</h2>
+      <p>잉여 여백을 나누어 갖는 아이템들의 크기 비율을 관찰합니다.</p>
+      
+      <div class="flex-container grow-playground">
+        <div class="flex-item grow-1">지분율 1 (grow: 1)</div>
+        <div class="flex-item grow-2">지분율 2 (grow: 2)</div>
+        <div class="flex-item grow-1">지분율 1 (grow: 1)</div>
+      </div>
+    </section>
+
+    <!-- 4. 실습 미션 1: 네비게이션 바 컴포넌트 -->
+    <section class="demo-section">
+      <h2>4. 실습 미션 A: GNB (Global Navigation Bar) 설계</h2>
+      <p>좌측 로고와 우측 주요 메뉴가 양쪽 끝단에 밀착하고 요소들이 세로 중앙에 오도록 설계하는 정렬 기법입니다.</p>
+      
+      <header class="main-navigation">
+        <div class="logo">
+          <a href="#">BACKEND_DEV</a>
+        </div>
+        <nav class="nav-links">
+          <a href="#">강의 소개</a>
+          <a href="#">학습 자료실</a>
+          <a href="#">Q&A 게시판</a>
+          <a href="#" class="special-btn">로그인</a>
+        </nav>
+      </header>
+    </section>
+
+    <!-- 5. 실습 미션 2: 정렬 버튼 그룹 -->
+    <section class="demo-section">
+      <h2>5. 실습 미션 B: 중앙 정렬 버튼 그룹 (Button Group)</h2>
+      <p>가로폭에 무관하게 화면 정중앙에 나열되며, margin 대신 gap으로 버튼 간 일정한 거리를 띄운 컴포넌트입니다.</p>
+      
+      <div class="button-group-wrap">
+        <button class="btn btn-primary">확인 및 제출</button>
+        <button class="btn btn-secondary">수정하기</button>
+        <button class="btn btn-danger">삭제</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>&copy; 2026 Flexbox Basic Education Asset.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,252 @@
+/* ==========================================================================
+   실습: Flexbox 레이아웃 기초 스타일시트 (practice_05.css)
+   ========================================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f6fa;
+  color: #2f3640;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.app-header {
+  text-align: center;
+  background-color: #3f51b5;
+  color: white;
+  padding: 25px;
+  border-radius: 6px;
+  margin-bottom: 25px;
+}
+
+.app-header h1 {
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.app-header p {
+  font-size: 0.95rem;
+  color: #c5cae9;
+}
+
+/* 섹션 공통 */
+.demo-section {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 6px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+}
+
+.demo-section h2 {
+  font-size: 1.25rem;
+  color: #3f51b5;
+  border-left: 4px solid #3f51b5;
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
+.demo-section > p {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   Flexbox 기본 구조 정의 
+   ========================================================================== */
+.flex-container {
+  display: flex; /* 자식을 가로 배치 시키고 Flexbox 제어 활성화 */
+  background-color: #f1f2f6;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+/* 내부 아이템 공통 데코레이션 */
+.flex-item {
+  background-color: #ff4757;
+  color: white;
+  padding: 12px 20px;
+  margin: 5px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  min-width: 60px;
+}
+
+/* ==========================================================================
+   [섹션 1] 주축 정렬 (justify-content) 스타일 매핑
+   ========================================================================== */
+.playground-group .demo-box {
+  margin-bottom: 15px;
+}
+
+.playground-group h5 {
+  font-size: 0.85rem;
+  color: #57606f;
+  margin-bottom: 3px;
+}
+
+.j-start {
+  justify-content: flex-start; /* 좌측 기준 정렬 */
+}
+
+.j-end {
+  justify-content: flex-end; /* 우측 기준 정렬 */
+}
+
+.j-center {
+  justify-content: center; /* 중앙 집중 정렬 */
+}
+
+.j-between {
+  justify-content: space-between; /* 양 끝단 고정 및 내부 여백 자동 동일 배정 */
+}
+
+.j-around {
+  justify-content: space-around; /* 개별 요소 좌우 대칭 균등 마진 분배 */
+}
+
+.j-evenly {
+  justify-content: space-evenly; /* 경계선을 포함하여 모든 여백을 수학적으로 균일 설정 */
+}
+
+/* ==========================================================================
+   [섹션 2] 교차축 정렬 (align-items) 스타일 매핑
+   ========================================================================== */
+.height-large {
+  height: 140px; /* 수직 정렬을 눈으로 확인하기 위해 부모 컨테이너의 높이 확보 */
+}
+
+.a-stretch {
+  align-items: stretch; /* 자식 높이가 없을 때 세로를 꽉 늘려서 채움 */
+}
+
+.a-center {
+  align-items: center; /* 수직축 한가운데 세로 정렬 */
+}
+
+.a-start {
+  align-items: flex-start; /* 수직축 상단 밀착 정렬 */
+}
+
+/* 높이 다양화 */
+.no-height {
+  height: auto;
+}
+
+.h-50 { height: 50px; }
+.h-80 { height: 80px; }
+.h-60 { height: 60px; }
+
+/* align-self -> 특정 아이템만 부모가 정한 align-items: flex-start를 쌩까고 바닥으로 정렬 */
+.align-self-end {
+  align-self: flex-end;
+  background-color: #2ed573; /* 이탈 아이템 강조 */
+}
+
+/* ==========================================================================
+   [섹션 3] 팽창 비율 (flex-grow) 스타일 매핑
+   ========================================================================== */
+.grow-playground {
+  padding: 15px;
+}
+
+.grow-1 {
+  flex-grow: 1; /* 여백 1의 비율만큼 가져감 */
+  background-color: #ffa502;
+}
+
+.grow-2 {
+  flex-grow: 2; /* 여백 2의 비율만큼(1번보다 2배 많이) 가져감 */
+  background-color: #1e90ff;
+}
+
+/* ==========================================================================
+   [섹션 4] 실습 미션 A: GNB 네비게이션 헤더 바 스타일
+   ========================================================================== */
+.main-navigation {
+  display: flex;
+  justify-content: space-between; /* 로고와 메뉴 링크 묶음을 양끝으로 배치 */
+  align-items: center; /* 세로 정렬 가로 한가운데 정합 */
+  background-color: #2f3542;
+  padding: 15px 25px;
+  border-radius: 6px;
+}
+
+.main-navigation .logo a {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: 1.5px;
+}
+
+.main-navigation .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 마진 대신 gap을 사용하여 메뉴 아이템들 사이에만 동일 여백 지정 */
+}
+
+.main-navigation .nav-links a {
+  color: #ced6e0;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.main-navigation .nav-links a:hover {
+  color: #ffffff;
+}
+
+/* 특수 로그인 버튼 스타일 */
+.main-navigation .nav-links .special-btn {
+  background-color: #ff4757;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.main-navigation .nav-links .special-btn:hover {
+  background-color: #ff6b81;
+}
+
+/* ==========================================================================
+   [섹션 5] 실습 미션 B: 중앙 정렬 버튼 그룹 스타일
+   ========================================================================== */
+.button-group-wrap {
+  display: flex;
+  justify-content: center; /* 버튼들의 조합을 한가운데로 정렬 */
+  gap: 12px; /* 버튼 사이 간격 */
+}
+
+.btn {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn-primary { background-color: #3f51b5; color: white; }
+.btn-secondary { background-color: #747d8c; color: white; }
+.btn-danger { background-color: #ff4757; color: white; }
