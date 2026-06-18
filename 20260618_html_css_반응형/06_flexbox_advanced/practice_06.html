@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실습 - Flexbox 실전 레이아웃</title>
+  <!-- Google Fonts 구글 폰트 적용 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- 외부 스타일시트 연결 -->
+  <link rel="stylesheet" href="practice_06.css">
+</head>
+<body>
+
+  <!-- 
+    [GNB 헤더 영역]
+    로고와 메뉴 목록이 좌우 양끝단에 정렬되는 실무 전형적 Flex 모델 
+  -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="site-logo">
+        <a href="#">FLEX_SHOP</a>
+      </div>
+      <nav class="site-nav">
+        <a href="#">NEW ARRIVALS</a>
+        <a href="#">BEST SELLERS</a>
+        <a href="#">CATEGORIES</a>
+        <a href="#">COMMUNITY</a>
+      </nav>
+      <div class="header-actions">
+        <a href="#" class="btn-login">SIGN IN</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 
+    [히어로 베너 영역]
+    내부 텍스트 콘텐츠를 수평/수직 모두 정중앙 배치하기 위해 Flexbox를 씁니다. 
+  -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <h2>Premium Developer Gear</h2>
+      <p>개발 능률을 극대화하는 최상의 기어와 소형 가젯들을 만나보세요.</p>
+      <a href="#" class="btn-cta">Shop Collection</a>
+    </div>
+  </section>
+
+  <!-- 
+    [메인 본문 콘텐츠]
+  -->
+  <main class="main-content">
+    
+    <section class="products-section">
+      <div class="section-title">
+        <h3>인기 추천 상품</h3>
+        <p>실제 사용기 중 가장 평점이 높은 6종의 프리미엄 하드웨어 기기</p>
+      </div>
+
+      <!-- 
+        [1차 부모 Flex 컨테이너] 
+        줄바꿈(wrap)을 허용하여 너비가 좁아지면 아래 줄로 카드를 내립니다.
+      -->
+      <div class="products-grid">
+        
+        <!-- 상품 카드 1: 짧은 설명 텍스트 -->
+        <article class="product-card">
+          <div class="card-img-wrap">
+            <img src="https://picsum.photos/400/300?random=21" alt="기계식 키보드">
+            <span class="badge sale">SALE</span>
+          </div>
+          <!-- 
+            [2차 자식 겸 세부 부모 Flex 컨테이너]
+            카드 박스 내부를 display: flex; flex-direction: column; 으로 선언하여 
+            설명 텍스트 양이 달라도 버튼을 맨 아래 라인으로 밀어붙입니다.
+          -->
+          <div class="card-body">
+            <h4 class="product-title">무선 적축 기계식 키보드</h4>
+            <p class="product-desc">조용하고 쫀득한 타건감을 자랑하는 블루투스 겸용 적축 키보드입니다.</p>
+            <div class="product-price">
+              <span class="price-origin">189,000원</span>
+              <span class="price-current">149,000원</span>
+            </div>
+            <!-- margin-top: auto 속성이 CSS에 부여되어 있어 바닥에 달라붙습니다 -->
+            <button class="btn-cart">장바구니 담기</button>
+          </div>
+        </article>
+
+        <!-- 상품 카드 2: 긴 설명 텍스트 (텍스트 높이 비대칭 유발) -->
+        <article class="product-card">
+          <div class="card-img-wrap">
+            <img src="https://picsum.photos/400/300?random=22" alt="버티컬 마우스">
+          </div>
+          <div class="card-body">
+            <h4 class="product-title">인체공학 무선 버티컬 마우스</h4>
+            <p class="product-desc">손목 터널 증후군을 효과적으로 예방하며 부드러운 트랙을 지원하는 충전식 인체공학 버티컬 마우스 기기입니다. 오랜 코딩 시간에도 손목 피로가 현저히 감소합니다.</p>
+            <div class="product-price">
+              <span class="price-current">89,000원</span>
+            </div>
+            <button class="btn-cart">장바구니 담기</button>
+          </div>
+        </article>
+
+        <!-- 상품 카드 3: 보통 길이 설명 텍스트 -->
+        <article class="product-card">
+          <div class="card-img-wrap">
+            <img src="https://picsum.photos/400/300?random=23" alt="UHD 모니터">
+            <span class="badge new">NEW</span>
+          </div>
+          <div class="card-body">
+            <h4 class="product-title">27인치 4K UHD 모니터</h4>
+            <p class="product-desc">DCI-P3 95% 색역을 지원하여 선명한 개발 환경 및 미디어 시청을 지원합니다.</p>
+            <div class="product-price">
+              <span class="price-current">450,000원</span>
+            </div>
+            <button class="btn-cart">장바구니 담기</button>
+          </div>
+        </article>
+
+        <!-- 상품 카드 4 -->
+        <article class="product-card">
+          <div class="card-img-wrap">
+            <img src="https://picsum.photos/400/300?random=24" alt="노이즈캔슬링 헤드폰">
+          </div>
+          <div class="card-body">
+            <h4 class="product-title">노이즈 캔슬링 무선 헤드폰</h4>
+            <p class="product-desc">코딩에 온전히 집중할 수 있도록 외부 소음을 완벽히 차단해주는 고음질 블루투스 헤드셋.</p>
+            <div class="product-price">
+              <span class="price-current">299,000원</span>
+            </div>
+            <button class="btn-cart">장바구니 담기</button>
+          </div>
+        </article>
+
+        <!-- 상품 카드 5 -->
+        <article class="product-card">
+          <div class="card-img-wrap">
+            <img src="https://picsum.photos/400/300?random=25" alt="노트북 거치대">
+          </div>
+          <div class="card-body">
+            <h4 class="product-title">알루미늄 각도조절 노트북 거치대</h4>
+            <p class="product-desc">튼튼한 알루미늄 프레임으로 흔들림 없는 고정과 눈높이 맞춤 거치 기능을 제공합니다.</p>
+            <div class="product-price">
+              <span class="price-current">39,000원</span>
+            </div>
+            <button class="btn-cart">장바구니 담기</button>
+          </div>
+        </article>
+
+        <!-- 상품 카드 6 -->
+        <article class="product-card">
+          <div class="card-img-wrap">
+            <img src="https://picsum.photos/400/300?random=26" alt="C타입 허브">
+            <span class="badge sale">SALE</span>
+          </div>
+          <div class="card-body">
+            <h4 class="product-title">8-in-1 C타입 멀티 허브</h4>
+            <p class="product-desc">HDMI, SD카드, LAN선 포트 및 고속 PD 충전 단자까지 통합 제공하는 초소형 외장 허브 독 제품군.</p>
+            <div class="product-price">
+              <span class="price-origin">69,000원</span>
+              <span class="price-current">49,000원</span>
+            </div>
+            <button class="btn-cart">장바구니 담기</button>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 
+    [푸터 꼬리말 영역] 
+    3개의 칼럼 블록들을 나란히 배치하기 위해 Flexbox 정렬 기법을 적용합니다. 
+  -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      
+      <!-- 컬럼 1 -->
+      <div class="footer-column brand-info">
+        <h5>FLEX_SHOP</h5>
+        <p>최적의 코딩 환경 구축을 지원하는 개발자 전문 편집 숍입니다. 엄선된 퀄리티의 제품을 만나보세요.</p>
+      </div>
+
+      <!-- 컬럼 2 -->
+      <div class="footer-column footer-links">
+        <h5>QUICK LINKS</h5>
+        <ul>
+          <li><a href="#">회사 소개</a></li>
+          <li><a href="#">이용 약관</a></li>
+          <li><a href="#">개인정보 처리방침</a></li>
+          <li><a href="#">배송/환불 안내</a></li>
+        </ul>
+      </div>
+
+      <!-- 컬럼 3 -->
+      <div class="footer-column footer-contact">
+        <h5>CONTACT US</h5>
+        <p>이메일: support@flexshop.com</p>
+        <p>고객센터: 1544-1234 (오전 10시 ~ 오후 5시)</p>
+        <p>서울특별시 강남구 테헤란로 백엔드 빌딩 5층</p>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 FLEX_SHOP Inc. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

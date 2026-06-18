@@ -1,0 +1,369 @@
+/* ==========================================================================
+   실습: Flexbox 실전 레이아웃 스타일시트 (practice_06.css)
+   ========================================================================== */
+
+/* 
+  CSS Custom Properties (변수 선언)
+  - 색상 코드와 폰트 크기 등을 단일 변수로 묶어 문서 전역에서 호출하고 
+    유지보수를 통합적으로 수행할 수 있게 돕는 고급 문법입니다.
+*/
+:root {
+  --primary-color: #3f51b5;
+  --primary-hover: #303f9f;
+  --accent-color: #ff4757;
+  --accent-hover: #ff6b81;
+  --dark-color: #2f3542;
+  --light-color: #f1f2f6;
+  --gray-text: #747d8c;
+  --border-color: #e2e8f0;
+  
+  --font-family-base: 'Noto Sans KR', 'Inter', sans-serif;
+}
+
+/* 1. 기본 스타일 리셋 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-base);
+  line-height: 1.6;
+  background-color: #f8f9fa;
+  color: var(--dark-color);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ==========================================================================
+   [헤더 영역] Flexbox 스타일
+   ========================================================================== */
+.site-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky; /* 상단 고정 */
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between; /* 로고 - 네비게이션 - 로그인버튼을 3구역 양끝으로 정합 */
+  align-items: center; /* 세로 높이 정중앙 정렬 */
+}
+
+.site-logo a {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  letter-spacing: 1px;
+}
+
+.site-nav {
+  display: flex;
+  gap: 30px; /* 메뉴 링크 사이에만 30px 고정 공백 지정 */
+}
+
+.site-nav a {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  transition: color 0.2s;
+}
+
+.site-nav a:hover {
+  color: var(--primary-color);
+}
+
+.btn-login {
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.btn-login:hover {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   [히어로 영역] Flexbox 정렬 (가로/세로 한가운데)
+   ========================================================================== */
+.hero-banner {
+  background: linear-gradient(135deg, rgba(63,81,181,0.9), rgba(47,53,66,0.95)), 
+              url('https://picsum.photos/1200/400?random=30') no-repeat center/cover;
+  height: 350px;
+  display: flex;
+  justify-content: center; /* 가로 기준 중앙 정합 */
+  align-items: center; /* 세로 기준 중앙 정합 */
+  text-align: center;
+  color: #ffffff;
+  padding: 20px;
+}
+
+.hero-content h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.hero-content p {
+  font-size: 1.05rem;
+  margin-bottom: 25px;
+  color: var(--light-color);
+  font-weight: 300;
+}
+
+.btn-cta {
+  background-color: var(--accent-color);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: background-color 0.2s, transform 0.2s;
+  display: inline-block;
+  box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3);
+}
+
+.btn-cta:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   [메인 상품 카드 그리드 영역] 1차 Flex 컨테이너
+   ========================================================================== */
+.main-content {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.section-title h3 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin-bottom: 8px;
+}
+
+.section-title p {
+  color: var(--gray-text);
+  font-size: 0.95rem;
+}
+
+/* 카드들을 감싸는 1차 부모 Flex 컨테이너 */
+.products-grid {
+  display: flex;
+  flex-wrap: wrap; /* 가로폭 부족 시 줄바꿈 자동 허용 */
+  gap: 24px; /* 카드 개별 상자들간 24px 여백 */
+}
+
+/* 
+  개별 상품 카드: 2차 Flex 컨테이너
+  - 바깥 부모의 Flex Item인 동시에, 내부 자식들을 세로로 정렬하기 위해 
+    자신도 display: flex; flex-direction: column; 으로 선언합니다.
+*/
+.product-card {
+  flex: 1 1 calc(33.333% - 24px); /* 3열 배치 설정 */
+  min-width: 280px; /* 모바일 등 좁은 화면에서 카드가 찌그러지지 않고 한 열로 떨어지도록 유도 */
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column; /* 세로 일직선 배열 */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.card-img-wrap {
+  position: relative;
+  height: 200px;
+  background-color: var(--light-color);
+  overflow: hidden;
+}
+
+.card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.product-card:hover .card-img-wrap img {
+  transform: scale(1.05); /* 마우스 호버 시 이미지 살짝 줌인 효과 */
+}
+
+/* 세일/뉴 뱃지 */
+.badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.badge.sale { background-color: var(--accent-color); }
+.badge.new { background-color: #2ed573; }
+
+/* 
+  카드 텍스트 내용 박스
+  - 여기서도 flex: 1; 을 먹여 바디 부분이 카드의 남은 전체 높이를 채워 먹게 만듭니다.
+*/
+.card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* 설명 텍스트 길이에 따라 카드 높이가 서로 동기화되게 유도 */
+}
+
+.product-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--dark-color);
+}
+
+.product-desc {
+  font-size: 0.85rem;
+  color: var(--gray-text);
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.product-price {
+  margin-bottom: 20px;
+}
+
+.price-origin {
+  text-decoration: line-through;
+  color: #a4b0be;
+  font-size: 0.85rem;
+  margin-right: 5px;
+}
+
+.price-current {
+  font-weight: 700;
+  color: var(--accent-color);
+  font-size: 1.1rem;
+}
+
+/* 
+  장바구니 담기 버튼
+  - [마진 탑 오토(margin-top: auto)] 실무 필수 기법 적용!
+  - 텍스트 길이가 1줄이든 3줄이든, 이 버튼만큼은 언제나 
+    카드의 가장 바닥 구석 라인에 칼같이 일렬로 정렬됩니다.
+*/
+.btn-cart {
+  margin-top: auto; /* 상단 여백을 자동으로 최대로 벌려 바닥에 고정시킴 */
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+.btn-cart:hover {
+  background-color: var(--primary-hover);
+}
+
+/* ==========================================================================
+   [푸터 영역] Flexbox 스타일
+   ========================================================================== */
+.site-footer {
+  background-color: var(--dark-color);
+  color: #a4b0be;
+  padding: 50px 20px 20px;
+  margin-top: 60px;
+  border-top: 4px solid var(--primary-color);
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap; /* 좁은 모바일에서는 컬럼이 한 행으로 떨어지게 유도 */
+  gap: 40px;
+}
+
+/* 3개 기둥의 너비 및 기본 팽창 조절 */
+.footer-column {
+  flex: 1 1 250px;
+}
+
+.footer-column h5 {
+  color: #ffffff;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  border-bottom: 2px solid var(--primary-color);
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.footer-column p {
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.footer-links ul {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  font-size: 0.85rem;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+}
+
+.footer-contact p {
+  margin-bottom: 10px;
+}
+
+/* 푸터 하단 저작권 바 */
+.footer-bottom {
+  max-width: 1200px;
+  margin: 45px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid #4b5563;
+  text-align: center;
+  font-size: 0.8rem;
+}
