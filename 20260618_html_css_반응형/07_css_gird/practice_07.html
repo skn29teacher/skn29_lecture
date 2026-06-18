@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 뷰포트 설정: 반응형 디자인의 기본 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title> — CSS Grid 레이아웃 실습</title>
+  <!-- 외부 CSS 파일 연결 -->
+  <link rel="stylesheet" href="practice_07.css" />
+</head>
+<body>
+
+  <!-- =============================================
+       페이지 전체 헤더
+  ============================================== -->
+  <header class="page-header">
+    <h1>🗂️ CSS Grid 레이아웃 실습</h1>
+    <p>display: grid의 핵심 속성을 단계별로 체험해 보세요.</p>
+  </header>
+
+  <!-- =============================================
+       섹션 1: Grid 기초 데모 (fr / repeat / gap)
+  ============================================== -->
+  <section class="section">
+    <h2 class="section-title">섹션 1: Grid 기초 — fr 단위 &amp; repeat() &amp; gap</h2>
+
+    <!-- -------------------------------------------
+         1-A: fr 단위 데모
+         grid-template-columns: 1fr 2fr 1fr
+         → 전체 너비를 4등분하여 1:2:1 비율로 분배
+    -------------------------------------------- -->
+    <div class="demo-block">
+      <h3 class="demo-title">1-A. fr 단위 — 1fr : 2fr : 1fr 비율 분배</h3>
+      <p class="demo-desc">
+        <code>grid-template-columns: 1fr 2fr 1fr</code><br>
+        전체 너비를 4등분 → 첫 열(25%) / 두 번째 열(50%) / 세 번째 열(25%)
+      </p>
+      <!-- fr-demo 클래스: 그리드 컨테이너 -->
+      <div class="fr-demo">
+        <div class="fr-item fr-1">1fr<br><small>(25%)</small></div>
+        <div class="fr-item fr-2">2fr<br><small>(50%)</small></div>
+        <div class="fr-item fr-1">1fr<br><small>(25%)</small></div>
+      </div>
+    </div>
+
+    <!-- -------------------------------------------
+         1-B: repeat() 함수 데모
+         grid-template-columns: repeat(4, 1fr)
+         → 4개의 동일한 너비 열 생성
+    -------------------------------------------- -->
+    <div class="demo-block">
+      <h3 class="demo-title">1-B. repeat() — 반복 패턴으로 4열 생성</h3>
+      <p class="demo-desc">
+        <code>grid-template-columns: repeat(4, 1fr)</code><br>
+        4열을 동일한 크기로 생성합니다.
+      </p>
+      <!-- repeat-demo 클래스: repeat(4, 1fr) 그리드 -->
+      <div class="repeat-demo">
+        <div class="repeat-item">아이템 1</div>
+        <div class="repeat-item">아이템 2</div>
+        <div class="repeat-item">아이템 3</div>
+        <div class="repeat-item">아이템 4</div>
+        <!-- 5번째 아이템은 다음 행으로 자동 이동 (암묵적 그리드) -->
+        <div class="repeat-item">아이템 5<br><small>(다음 행)</small></div>
+        <div class="repeat-item">아이템 6</div>
+      </div>
+    </div>
+
+    <!-- -------------------------------------------
+         1-C: gap 데모
+         row-gap: 20px / column-gap: 40px
+         행 간격과 열 간격을 각각 다르게 설정
+    -------------------------------------------- -->
+    <div class="demo-block">
+      <h3 class="demo-title">1-C. gap — 행 간격 vs 열 간격 차이</h3>
+      <p class="demo-desc">
+        <code>gap: 30px 60px</code> → <code>row-gap: 30px</code> / <code>column-gap: 60px</code>
+      </p>
+      <!-- gap-demo 클래스: row-gap과 column-gap이 다른 그리드 -->
+      <div class="gap-demo">
+        <div class="gap-item">①</div>
+        <div class="gap-item">②</div>
+        <div class="gap-item">③</div>
+        <div class="gap-item">④</div>
+        <div class="gap-item">⑤</div>
+        <div class="gap-item">⑥</div>
+      </div>
+    </div>
+
+    <!-- -------------------------------------------
+         1-D: minmax() 함수 데모
+         각 열이 최소 150px ~ 최대 1fr 사이에서 유동
+    -------------------------------------------- -->
+    <div class="demo-block">
+      <h3 class="demo-title">1-D. minmax() — 최소·최대 크기 지정</h3>
+      <p class="demo-desc">
+        <code>grid-template-columns: repeat(3, minmax(150px, 1fr))</code><br>
+        각 열은 최소 150px를 보장하면서 남은 공간을 균등 분배합니다.
+      </p>
+      <!-- minmax-demo 클래스: minmax를 사용한 그리드 -->
+      <div class="minmax-demo">
+        <div class="minmax-item">
+          <strong>콘텐츠 짧음</strong><br>최소 150px
+        </div>
+        <div class="minmax-item">
+          <strong>콘텐츠 보통</strong><br>최소 150px ~ 최대 1fr
+        </div>
+        <div class="minmax-item">
+          <strong>콘텐츠가 더 길어도 최대 1fr 안에서</strong><br>최소 150px 보장
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       섹션 2: grid-template-areas 대시보드 레이아웃
+       CSS 코드: 
+         'header header header'
+         'nav    main   aside '
+         'footer footer footer'
+  ============================================== -->
+  <section class="section">
+    <h2 class="section-title">섹션 2: grid-template-areas — 대시보드 레이아웃</h2>
+    <p class="section-desc">
+      <code>grid-template-areas</code>로 영역을 이름으로 정의하고,
+      각 아이템에 <code>grid-area</code>를 지정하여 배치합니다.
+    </p>
+
+    <!-- -------------------------------------------
+         대시보드 컨테이너
+         grid-template-areas 레이아웃:
+           'header header header'
+           'nav    main   aside '
+           'footer footer footer'
+         각 영역은 CSS에서 고유 배경색으로 구분됨
+    -------------------------------------------- -->
+    <div class="dashboard">
+
+      <!-- grid-area: header → 상단 전체 너비 영역 -->
+      <header class="dash-header">
+        <span class="area-label">grid-area: header</span>
+        <h3>🏠 대시보드 헤더</h3>
+        <p>header header header → 3열 전체를 차지합니다.</p>
+      </header>
+
+      <!-- grid-area: nav → 좌측 사이드바 영역 -->
+      <nav class="dash-nav">
+        <span class="area-label">grid-area: nav</span>
+        <h3>📋 사이드 내비게이션</h3>
+        <ul>
+          <li>🏠 홈</li>
+          <li>📊 대시보드</li>
+          <li>👤 프로필</li>
+          <li>⚙️ 설정</li>
+          <li>📞 문의</li>
+        </ul>
+      </nav>
+
+      <!-- grid-area: main → 중앙 메인 콘텐츠 영역 -->
+      <main class="dash-main">
+        <span class="area-label">grid-area: main</span>
+        <h3>📄 메인 콘텐츠 영역</h3>
+        <p>
+          이 영역은 <code>grid-template-columns: 200px 1fr 250px</code>에서
+          <code>1fr</code>을 차지하므로 남은 공간을 모두 사용합니다.
+        </p>
+        <!-- 메인 안에서 내부 그리드로 카드 배치 -->
+        <div class="inner-grid">
+          <div class="stat-card">방문자 수<br><strong>12,458</strong></div>
+          <div class="stat-card">페이지뷰<br><strong>48,920</strong></div>
+          <div class="stat-card">전환율<br><strong>3.2%</strong></div>
+        </div>
+      </main>
+
+      <!-- grid-area: aside → 우측 위젯 영역 -->
+      <aside class="dash-aside">
+        <span class="area-label">grid-area: aside</span>
+        <h3>🔧 위젯 영역</h3>
+        <div class="widget">📅 2026.06.17</div>
+        <div class="widget">🌤️ 맑음 23°C</div>
+        <div class="widget">🔔 알림 3건</div>
+      </aside>
+
+      <!-- grid-area: footer → 하단 전체 너비 영역 -->
+      <footer class="dash-footer">
+        <span class="area-label">grid-area: footer</span>
+        <p>footer footer footer → 3열 전체를 차지합니다. © 2026 Grid Dashboard</p>
+      </footer>
+
+    </div><!-- /.dashboard -->
+  </section>
+
+  <!-- =============================================
+       섹션 3: auto-fit + minmax 반응형 카드 그리드
+       브라우저 창 크기를 줄여보면 열 수가 자동 변경됩니다.
+  ============================================== -->
+  <section class="section">
+    <h2 class="section-title">섹션 3: auto-fit + minmax — 반응형 카드 그리드</h2>
+    <p class="section-desc">
+      <code>grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))</code><br>
+      브라우저 창 너비에 따라 카드 열 수가 자동으로 변경됩니다. 창 크기를 줄여보세요!
+    </p>
+
+    <!-- auto-fit-grid 클래스: 자동 반응형 카드 그리드 -->
+    <div class="auto-fit-grid">
+      <!-- 각 카드는 최소 220px, 최대 1fr 너비로 자동 배치됨 -->
+      <div class="card">
+        <div class="card-icon">🎨</div>
+        <h3 class="card-title">CSS Grid</h3>
+        <p class="card-desc">2차원 레이아웃 시스템으로 행과 열을 동시에 제어합니다.</p>
+        <span class="card-tag">레이아웃</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">📐</div>
+        <h3 class="card-title">Flexbox</h3>
+        <p class="card-desc">1차원 레이아웃 시스템으로 방향 기반 배치를 담당합니다.</p>
+        <span class="card-tag">레이아웃</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">📱</div>
+        <h3 class="card-title">반응형 디자인</h3>
+        <p class="card-desc">미디어 쿼리로 화면 크기에 맞는 레이아웃을 제공합니다.</p>
+        <span class="card-tag">반응형</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3 class="card-title">CSS 변수</h3>
+        <p class="card-desc">Custom Properties로 색상, 크기를 일관성 있게 관리합니다.</p>
+        <span class="card-tag">CSS</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">✨</div>
+        <h3 class="card-title">CSS 애니메이션</h3>
+        <p class="card-desc">transition과 animation으로 부드러운 UI를 만듭니다.</p>
+        <span class="card-tag">효과</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏗️</div>
+        <h3 class="card-title">시맨틱 HTML</h3>
+        <p class="card-desc">의미 있는 태그로 접근성과 SEO를 동시에 향상시킵니다.</p>
+        <span class="card-tag">HTML</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       섹션 4: grid-column/row span — 영역 병합 레이아웃
+       각 아이템이 여러 셀을 가로지르는 복잡한 배치
+  ============================================== -->
+  <section class="section">
+    <h2 class="section-title">섹션 4: grid-column / grid-row — span으로 셀 병합</h2>
+    <p class="section-desc">
+      <code>grid-column: span N</code>과 <code>grid-row: span N</code>으로
+      여러 셀을 병합하는 매거진 스타일 레이아웃을 구성합니다.
+    </p>
+
+    <!-- -------------------------------------------
+         span-grid 클래스: 4×3 그리드
+         각 아이템이 다른 수의 셀을 차지함
+         
+         레이아웃 구조:
+         ┌──────────────┬──────┬──────┐
+         │      A       │  B   │  C   │
+         │  (col 1-3)   │      │      │
+         ├──────┬───────┤      │      │
+         │  D   │   E   │      ├──────┤
+         │      │       ├──────┤  F   │
+         │      │       │  (   │      │
+         └──────┴───────┴──────┴──────┘
+    -------------------------------------------- -->
+    <div class="span-grid">
+
+      <!-- 아이템 A: grid-column: 1 / span 2 → 가로 2칸 차지 -->
+      <div class="span-item span-a">
+        <strong>A</strong><br>
+        <code>grid-column: 1 / span 2</code><br>
+        가로 2칸 차지
+      </div>
+
+      <!-- 아이템 B: grid-row: 1 / span 2 → 세로 2칸 차지 -->
+      <div class="span-item span-b">
+        <strong>B</strong><br>
+        <code>grid-row: 1 / span 2</code><br>
+        세로 2칸 차지
+      </div>
+
+      <!-- 아이템 C: grid-column: span 1, grid-row: span 3 → 세로 3칸 차지 -->
+      <div class="span-item span-c">
+        <strong>C</strong><br>
+        <code>grid-row: 1 / span 3</code><br>
+        세로 3칸 차지
+      </div>
+
+      <!-- 아이템 D: 기본 크기 (1×1) -->
+      <div class="span-item span-d">
+        <strong>D</strong><br>
+        기본 크기<br>
+        <code>1×1 셀</code>
+      </div>
+
+      <!-- 아이템 E: grid-column: span 1, grid-row: span 2 → 세로 2칸 차지 -->
+      <div class="span-item span-e">
+        <strong>E</strong><br>
+        <code>grid-row: span 2</code><br>
+        세로 2칸 차지
+      </div>
+
+      <!-- 아이템 F: 기본 크기 (1×1) -->
+      <div class="span-item span-f">
+        <strong>F</strong><br>
+        기본 크기<br>
+        <code>1×1 셀</code>
+      </div>
+
+    </div><!-- /.span-grid -->
+
+    <!-- 코드 설명 -->
+    <div class="code-explain">
+      <h4>📋 각 아이템 CSS 속성</h4>
+      <table class="prop-table">
+        <thead>
+          <tr>
+            <th>아이템</th>
+            <th>grid-column</th>
+            <th>grid-row</th>
+            <th>설명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A</td>
+            <td><code>1 / span 2</code></td>
+            <td><code>auto</code></td>
+            <td>가로 2열 차지</td>
+          </tr>
+          <tr>
+            <td>B</td>
+            <td><code>auto</code></td>
+            <td><code>1 / span 2</code></td>
+            <td>세로 2행 차지</td>
+          </tr>
+          <tr>
+            <td>C</td>
+            <td><code>auto</code></td>
+            <td><code>1 / span 3</code></td>
+            <td>세로 3행 차지</td>
+          </tr>
+          <tr>
+            <td>D</td>
+            <td><code>auto</code></td>
+            <td><code>auto</code></td>
+            <td>기본 1×1 셀</td>
+          </tr>
+          <tr>
+            <td>E</td>
+            <td><code>auto</code></td>
+            <td><code>span 2</code></td>
+            <td>세로 2행 차지</td>
+          </tr>
+          <tr>
+            <td>F</td>
+            <td><code>auto</code></td>
+            <td><code>auto</code></td>
+            <td>기본 1×1 셀</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- =============================================
+       섹션 5: justify-items / align-items / place-items 정렬 데모
+  ============================================== -->
+  <section class="section">
+    <h2 class="section-title">섹션 5: 정렬 속성 — justify-items &amp; align-items</h2>
+
+    <!-- place-items: center 데모 -->
+    <div class="demo-block">
+      <h3 class="demo-title">place-items: center — 셀 안에서 가운데 정렬</h3>
+      <p class="demo-desc">
+        <code>place-items: center</code> → 모든 그리드 아이템이 셀의 정가운데에 배치됩니다.
+      </p>
+      <!-- align-demo 클래스: place-items: center 적용된 그리드 -->
+      <div class="align-demo align-center">
+        <div class="align-item">①</div>
+        <div class="align-item">②</div>
+        <div class="align-item align-tall">③<br>높이<br>다름</div>
+        <div class="align-item">④</div>
+        <div class="align-item">⑤</div>
+        <div class="align-item">⑥</div>
+      </div>
+    </div>
+
+    <!-- place-items: start 데모 -->
+    <div class="demo-block">
+      <h3 class="demo-title">place-items: start — 셀의 좌상단에 배치</h3>
+      <p class="demo-desc">
+        <code>place-items: start</code> → 아이템이 셀의 왼쪽 위에 붙어서 배치됩니다.
+      </p>
+      <!-- align-demo 클래스: place-items: start 적용된 그리드 -->
+      <div class="align-demo align-start">
+        <div class="align-item">①</div>
+        <div class="align-item">②</div>
+        <div class="align-item align-tall">③<br>높이<br>다름</div>
+        <div class="align-item">④</div>
+        <div class="align-item">⑤</div>
+        <div class="align-item">⑥</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 페이지 하단 -->
+  <footer class="page-footer">
+    <p>CSS Grid 레이아웃 실습 완료 🎉</p>
+    <p>다음 → <strong>8차시: 반응형 웹 디자인 종합 프로젝트</strong></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,706 @@
+/* ====================================================
+   CSS Grid 레이아웃 실습
+   파일명: practice_07.css
+   
+   적용 기술:
+    display: grid (그리드 컨테이너 선언)
+    grid-template-columns (열 트랙 정의)
+    grid-template-rows (행 트랙 정의)
+    grid-template-areas (이름으로 영역 배치)
+    grid-area (아이템 영역 지정)
+    grid-column / grid-row + span (셀 병합)
+    fr 단위 (비율 분배)
+    repeat() (반복 패턴)
+    minmax() (최소/최대 크기)
+    auto-fit (빈 트랙 자동 제거)
+    gap, row-gap, column-gap (간격)
+    justify-items, align-items, place-items (정렬)
+==================================================== */
+
+/* ====================================================
+   CSS Reset — 브라우저 기본 스타일 초기화
+==================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box; /* 패딩/보더를 너비에 포함 */
+  margin: 0;              /* 기본 바깥 여백 제거 */
+  padding: 0;             /* 기본 안쪽 여백 제거 */
+}
+
+/* ====================================================
+   CSS 변수 (Custom Properties) — 색상 팔레트
+==================================================== */
+:root {
+  /* 기본 색상 */
+  --color-primary:   #4361ee;  /* 메인 파란색 */
+  --color-secondary: #3f37c9;  /* 진한 파란색 */
+  --color-accent:    #f72585;  /* 강조 핑크색 */
+  --color-success:   #4cc9f0;  /* 성공/정보 하늘색 */
+
+  /* 영역별 구분 색상 (대시보드용) */
+  --color-header:  #4361ee;   /* 헤더: 파란색 */
+  --color-nav:     #3a0ca3;   /* 네비게이션: 보라색 */
+  --color-main:    #f8f9fa;   /* 메인: 밝은 회색 */
+  --color-aside:   #7209b7;   /* 사이드바: 보라색 */
+  --color-footer:  #560bad;   /* 푸터: 짙은 보라색 */
+
+  /* 배경 및 텍스트 */
+  --bg-page:    #f0f2f5;      /* 페이지 배경 */
+  --bg-white:   #ffffff;
+  --bg-section: #ffffff;
+  --text-dark:  #1a1a2e;      /* 진한 텍스트 */
+  --text-mid:   #495057;      /* 중간 텍스트 */
+  --text-light: #868e96;      /* 밝은 텍스트 */
+
+  /* 간격 및 둥글기 */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --shadow:     0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* ====================================================
+   기본(base) 스타일
+==================================================== */
+body {
+  font-family: 'Segoe UI', 'Malgun Gothic', sans-serif; /* 기본 폰트 */
+  background-color: var(--bg-page);    /* 페이지 배경색 */
+  color: var(--text-dark);             /* 기본 텍스트 색 */
+  line-height: 1.6;                    /* 줄 높이 */
+}
+
+/* 코드 스타일 */
+code {
+  background-color: #e8ecff;           /* 코드 배경 */
+  color: var(--color-secondary);       /* 코드 텍스트 색 */
+  padding: 2px 6px;                    /* 코드 안쪽 여백 */
+  border-radius: var(--radius-sm);     /* 둥근 모서리 */
+  font-size: 0.875rem;                 /* 코드 폰트 크기 */
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+/* ====================================================
+   페이지 헤더
+==================================================== */
+.page-header {
+  /* 그라디언트 배경 */
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: #fff;                         /* 흰색 텍스트 */
+  text-align: center;                  /* 가운데 정렬 */
+  padding: 50px 20px;                  /* 넉넉한 패딩 */
+}
+
+.page-header h1 {
+  font-size: 2.4rem;                   /* 큰 제목 */
+  margin-bottom: 12px;                 /* 제목 아래 여백 */
+}
+
+.page-header p {
+  font-size: 1.1rem;                   /* 부제목 크기 */
+  opacity: 0.85;                       /* 살짝 투명하게 */
+}
+
+/* ====================================================
+   섹션 공통 스타일
+==================================================== */
+.section {
+  max-width: 1200px;                   /* 최대 너비 제한 */
+  margin: 40px auto;                   /* 가운데 정렬 + 위아래 여백 */
+  padding: 0 20px;                     /* 좌우 여백 */
+}
+
+.section-title {
+  font-size: 1.6rem;                   /* 섹션 제목 크기 */
+  color: var(--color-primary);         /* 파란색 제목 */
+  border-left: 5px solid var(--color-primary); /* 왼쪽 강조선 */
+  padding-left: 15px;                  /* 강조선과의 여백 */
+  margin-bottom: 12px;                 /* 제목 아래 여백 */
+}
+
+.section-desc {
+  color: var(--text-mid);              /* 중간 색 텍스트 */
+  margin-bottom: 24px;                 /* 아래 여백 */
+  line-height: 1.8;                    /* 넓은 줄 간격 */
+}
+
+/* 데모 블록 — 각 데모를 감싸는 카드 */
+.demo-block {
+  background: var(--bg-white);         /* 흰색 배경 */
+  border-radius: var(--radius-md);     /* 둥근 모서리 */
+  padding: 24px;                       /* 안쪽 여백 */
+  margin-bottom: 30px;                 /* 데모 사이 여백 */
+  box-shadow: var(--shadow);           /* 그림자 */
+}
+
+.demo-title {
+  font-size: 1.1rem;                   /* 데모 소제목 크기 */
+  color: var(--color-secondary);       /* 짙은 파란색 */
+  margin-bottom: 8px;                  /* 소제목 아래 여백 */
+}
+
+.demo-desc {
+  color: var(--text-mid);              /* 설명 텍스트 색 */
+  margin-bottom: 16px;                 /* 설명 아래 여백 */
+  font-size: 0.9rem;                   /* 약간 작은 폰트 */
+  line-height: 1.7;                    /* 줄 간격 */
+}
+
+/* ====================================================
+   섹션 1-A: fr 단위 데모
+   grid-template-columns: 1fr 2fr 1fr
+   → 1:2:1 비율로 3열 분배
+==================================================== */
+.fr-demo {
+  display: grid;                       /* 그리드 컨테이너 선언 */
+  grid-template-columns: 1fr 2fr 1fr; /* 1:2:1 비율로 3열 */
+  gap: 10px;                           /* 열 사이 간격 */
+}
+
+/* fr 단위 아이템 공통 스타일 */
+.fr-item {
+  background-color: var(--color-primary); /* 파란색 배경 */
+  color: #fff;                            /* 흰색 텍스트 */
+  padding: 20px;                          /* 안쪽 여백 */
+  border-radius: var(--radius-sm);        /* 둥근 모서리 */
+  text-align: center;                     /* 텍스트 가운데 정렬 */
+  font-weight: 600;                       /* 굵은 텍스트 */
+}
+
+/* 두 번째 열 (2fr): 강조 색상 */
+.fr-2 {
+  background-color: var(--color-accent);  /* 핑크색으로 구분 */
+}
+
+/* ====================================================
+   섹션 1-B: repeat() 데모
+   grid-template-columns: repeat(4, 1fr)
+   → 4열 균등 분배, 아이템 5개부터 다음 행으로 넘어감
+==================================================== */
+.repeat-demo {
+  display: grid;                       /* 그리드 컨테이너 선언 */
+  grid-template-columns: repeat(4, 1fr); /* 4개 열을 동일 크기로 반복 */
+  gap: 10px;                           /* 셀 간격 */
+}
+
+/* repeat 데모 아이템 */
+.repeat-item {
+  background-color: var(--color-success); /* 하늘색 배경 */
+  color: var(--text-dark);                /* 어두운 텍스트 */
+  padding: 18px 10px;                     /* 안쪽 여백 */
+  border-radius: var(--radius-sm);        /* 둥근 모서리 */
+  text-align: center;                     /* 가운데 정렬 */
+  font-size: 0.9rem;                      /* 폰트 크기 */
+}
+
+/* ====================================================
+   섹션 1-C: gap 데모
+   gap: 30px 60px → row-gap: 30px, column-gap: 60px
+   행 간격과 열 간격을 다르게 설정
+==================================================== */
+.gap-demo {
+  display: grid;                       /* 그리드 컨테이너 선언 */
+  grid-template-columns: repeat(3, 1fr); /* 3열 균등 분배 */
+  row-gap: 30px;                       /* 행 사이 간격: 30px */
+  column-gap: 60px;                    /* 열 사이 간격: 60px (더 넓음) */
+}
+
+/* gap 데모 아이템 */
+.gap-item {
+  background-color: #b5c1ff;          /* 연한 파란색 배경 */
+  color: var(--color-secondary);       /* 짙은 파란색 텍스트 */
+  padding: 20px;                       /* 안쪽 여백 */
+  border-radius: var(--radius-sm);     /* 둥근 모서리 */
+  text-align: center;                  /* 가운데 정렬 */
+  font-size: 1.5rem;                   /* 큰 아이콘 느낌 */
+  font-weight: bold;                   /* 굵게 */
+}
+
+/* ====================================================
+   섹션 1-D: minmax() 데모
+   grid-template-columns: repeat(3, minmax(150px, 1fr))
+   → 각 열 최소 150px, 최대 1fr
+==================================================== */
+.minmax-demo {
+  display: grid;                       /* 그리드 컨테이너 선언 */
+  grid-template-columns: repeat(3, minmax(150px, 1fr)); /* 최소150px~최대1fr */
+  gap: 12px;                           /* 셀 간격 */
+}
+
+/* minmax 데모 아이템 */
+.minmax-item {
+  background-color: #fff3cd;          /* 노란색 계열 배경 */
+  color: #856404;                      /* 어두운 노란색 텍스트 */
+  padding: 20px;                       /* 안쪽 여백 */
+  border-radius: var(--radius-sm);     /* 둥근 모서리 */
+  border: 2px solid #ffc107;          /* 노란색 테두리 */
+  font-size: 0.9rem;                   /* 폰트 크기 */
+  line-height: 1.6;                    /* 줄 간격 */
+}
+
+/* ====================================================
+   섹션 2: grid-template-areas 대시보드 레이아웃
+   
+   레이아웃 구조:
+   'header header header'  → 헤더가 3열 전체 차지
+   'nav    main   aside '  → 사이드바, 메인, 위젯 영역
+   'footer footer footer'  → 푸터가 3열 전체 차지
+   
+   열 크기: 200px(nav) / 1fr(main) / 250px(aside)
+==================================================== */
+.dashboard {
+  display: grid;                       /* 그리드 컨테이너 선언 */
+
+  /* 3열: 고정200px / 유동1fr / 고정250px */
+  grid-template-columns: 200px 1fr 250px;
+
+  /* 3행: 헤더60px / 콘텐츠400px / 푸터50px */
+  grid-template-rows: 60px 400px 50px;
+
+  /* 영역 이름으로 레이아웃 정의 — ASCII 아트처럼 배치됨 */
+  grid-template-areas:
+    "header header header"  /* 1행: 헤더가 3열 모두 차지 */
+    "nav    main   aside"   /* 2행: 네비 / 메인 / 사이드바 */
+    "footer footer footer"; /* 3행: 푸터가 3열 모두 차지 */
+
+  gap: 8px;                            /* 영역 사이 간격 */
+  border-radius: var(--radius-md);     /* 전체 대시보드 둥근 모서리 */
+  overflow: hidden;                    /* 둥근 모서리 적용을 위해 */
+  box-shadow: var(--shadow);           /* 그림자 효과 */
+}
+
+/* ── 공통: 영역 라벨 (어떤 grid-area인지 표시) ── */
+.area-label {
+  display: inline-block;              /* 인라인 블록으로 */
+  background: rgba(255,255,255,0.2);  /* 반투명 흰색 배경 */
+  color: rgba(255,255,255,0.9);       /* 거의 흰색 텍스트 */
+  font-size: 0.7rem;                  /* 작은 폰트 */
+  padding: 2px 8px;                   /* 안쪽 여백 */
+  border-radius: 4px;                 /* 둥근 모서리 */
+  margin-bottom: 6px;                 /* 아래 여백 */
+  font-family: 'Consolas', monospace; /* 고정폭 폰트 */
+}
+
+/* ── 헤더 영역: grid-area: header ── */
+.dash-header {
+  grid-area: header;                  /* grid-template-areas의 "header" 영역에 배치 */
+  background-color: var(--color-header); /* 파란색 배경으로 헤더 구분 */
+  color: #fff;                        /* 흰색 텍스트 */
+  display: flex;                      /* 내부는 flex로 정렬 */
+  align-items: center;                /* 수직 가운데 정렬 */
+  gap: 20px;                          /* 요소 사이 간격 */
+  padding: 0 20px;                    /* 좌우 안쪽 여백 */
+}
+
+.dash-header h3 {
+  font-size: 1rem;                    /* 헤더 제목 크기 */
+  margin: 0;                          /* 여백 초기화 */
+}
+
+.dash-header p {
+  font-size: 0.8rem;                  /* 설명 폰트 크기 */
+  opacity: 0.8;                       /* 살짝 투명하게 */
+}
+
+/* ── 네비게이션 영역: grid-area: nav ── */
+.dash-nav {
+  grid-area: nav;                     /* grid-template-areas의 "nav" 영역에 배치 */
+  background-color: var(--color-nav); /* 보라색 배경으로 구분 */
+  color: #fff;                        /* 흰색 텍스트 */
+  padding: 20px;                      /* 안쪽 여백 */
+  overflow-y: auto;                   /* 내용 많으면 스크롤 */
+}
+
+.dash-nav h3 {
+  font-size: 0.9rem;                  /* 소제목 크기 */
+  margin-bottom: 16px;                /* 아래 여백 */
+  opacity: 0.8;                       /* 약간 투명 */
+  text-transform: uppercase;          /* 대문자로 */
+  letter-spacing: 0.05em;             /* 자간 */
+}
+
+.dash-nav ul {
+  list-style: none;                   /* 불릿 제거 */
+}
+
+.dash-nav ul li {
+  padding: 10px 8px;                  /* 리스트 아이템 패딩 */
+  border-radius: var(--radius-sm);    /* 둥근 모서리 */
+  cursor: pointer;                    /* 클릭 커서 */
+  transition: background 0.2s;        /* 호버 시 부드러운 전환 */
+  font-size: 0.9rem;                  /* 폰트 크기 */
+}
+
+.dash-nav ul li:hover {
+  background: rgba(255,255,255,0.15); /* 호버 시 밝은 배경 */
+}
+
+/* ── 메인 콘텐츠 영역: grid-area: main ── */
+.dash-main {
+  grid-area: main;                    /* grid-template-areas의 "main" 영역에 배치 */
+  background-color: var(--color-main); /* 밝은 회색 배경 */
+  color: var(--text-dark);            /* 어두운 텍스트 */
+  padding: 20px;                      /* 안쪽 여백 */
+  overflow-y: auto;                   /* 내용 많으면 스크롤 */
+}
+
+.dash-main h3 {
+  font-size: 1.1rem;                  /* 소제목 크기 */
+  margin-bottom: 10px;                /* 아래 여백 */
+  color: var(--color-primary);        /* 파란색 제목 */
+}
+
+.dash-main p {
+  font-size: 0.85rem;                 /* 폰트 크기 */
+  color: var(--text-mid);             /* 중간 색 */
+  margin-bottom: 16px;                /* 아래 여백 */
+}
+
+/* 메인 내부 그리드: 통계 카드 3개 배치 */
+.inner-grid {
+  display: grid;                      /* 내부도 그리드 사용 */
+  grid-template-columns: repeat(3, 1fr); /* 3열 균등 분배 */
+  gap: 10px;                          /* 카드 사이 간격 */
+}
+
+/* 통계 카드 */
+.stat-card {
+  background: #fff;                   /* 흰색 배경 */
+  border-radius: var(--radius-sm);    /* 둥근 모서리 */
+  padding: 15px;                      /* 안쪽 여백 */
+  text-align: center;                 /* 가운데 정렬 */
+  font-size: 0.85rem;                 /* 폰트 크기 */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06); /* 가벼운 그림자 */
+  color: var(--text-mid);             /* 중간 색 텍스트 */
+}
+
+.stat-card strong {
+  display: block;                     /* 블록으로 다음 줄에 */
+  font-size: 1.5rem;                  /* 숫자 크게 */
+  color: var(--color-primary);        /* 파란색 */
+  margin-top: 4px;                    /* 위 여백 */
+}
+
+/* ── 사이드바(위젯) 영역: grid-area: aside ── */
+.dash-aside {
+  grid-area: aside;                   /* grid-template-areas의 "aside" 영역에 배치 */
+  background-color: var(--color-aside); /* 보라색 배경으로 구분 */
+  color: #fff;                        /* 흰색 텍스트 */
+  padding: 20px;                      /* 안쪽 여백 */
+  overflow-y: auto;                   /* 스크롤 가능 */
+}
+
+.dash-aside h3 {
+  font-size: 0.9rem;                  /* 소제목 크기 */
+  margin-bottom: 16px;                /* 아래 여백 */
+  text-transform: uppercase;          /* 대문자 */
+  letter-spacing: 0.05em;             /* 자간 */
+  opacity: 0.8;                       /* 약간 투명 */
+}
+
+/* 위젯 카드 */
+.widget {
+  background: rgba(255,255,255,0.15); /* 반투명 흰색 배경 */
+  border-radius: var(--radius-sm);    /* 둥근 모서리 */
+  padding: 12px;                      /* 안쪽 여백 */
+  margin-bottom: 10px;                /* 위젯 사이 여백 */
+  font-size: 0.9rem;                  /* 폰트 크기 */
+}
+
+/* ── 푸터 영역: grid-area: footer ── */
+.dash-footer {
+  grid-area: footer;                  /* grid-template-areas의 "footer" 영역에 배치 */
+  background-color: var(--color-footer); /* 짙은 보라색 배경 */
+  color: rgba(255,255,255,0.85);      /* 반투명 흰색 텍스트 */
+  display: flex;                      /* 내부 flex 정렬 */
+  align-items: center;                /* 수직 가운데 */
+  justify-content: center;            /* 수평 가운데 */
+  font-size: 0.85rem;                 /* 폰트 크기 */
+}
+
+/* ====================================================
+   섹션 3: auto-fit + minmax 반응형 카드 그리드
+   
+   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))
+   → 컨테이너 너비에 따라 자동으로 열 수 결정
+   → 각 카드: 최소 220px, 최대 1fr
+   → 창이 좁아지면 자동으로 줄 수 감소
+==================================================== */
+.auto-fit-grid {
+  display: grid;                       /* 그리드 컨테이너 선언 */
+
+  /* auto-fit: 빈 트랙 제거하여 아이템이 공간 채움 */
+  /* minmax(220px, 1fr): 최소 220px, 최대 남은 공간 */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  gap: 20px;                           /* 카드 사이 간격 */
+}
+
+/* 카드 스타일 */
+.card {
+  background: var(--bg-white);         /* 흰색 배경 */
+  border-radius: var(--radius-md);     /* 둥근 모서리 */
+  padding: 24px;                       /* 안쪽 여백 */
+  box-shadow: var(--shadow);           /* 그림자 */
+  transition: transform 0.2s, box-shadow 0.2s; /* 호버 애니메이션 */
+  text-align: center;                  /* 가운데 정렬 */
+}
+
+/* 카드 호버 효과 */
+.card:hover {
+  transform: translateY(-4px);         /* 위로 살짝 이동 */
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15); /* 그림자 강조 */
+}
+
+/* 카드 아이콘 */
+.card-icon {
+  font-size: 2.5rem;                   /* 큰 이모지 */
+  margin-bottom: 12px;                 /* 아래 여백 */
+}
+
+/* 카드 제목 */
+.card-title {
+  font-size: 1.1rem;                   /* 제목 크기 */
+  color: var(--color-primary);         /* 파란색 */
+  margin-bottom: 10px;                 /* 아래 여백 */
+}
+
+/* 카드 설명 */
+.card-desc {
+  font-size: 0.875rem;                 /* 작은 폰트 */
+  color: var(--text-mid);              /* 중간 색 */
+  line-height: 1.6;                    /* 줄 간격 */
+  margin-bottom: 14px;                 /* 아래 여백 */
+}
+
+/* 카드 태그 */
+.card-tag {
+  display: inline-block;              /* 인라인 블록 */
+  background-color: #e8ecff;          /* 연한 파란색 배경 */
+  color: var(--color-primary);        /* 파란색 텍스트 */
+  font-size: 0.75rem;                 /* 작은 폰트 */
+  padding: 3px 10px;                  /* 안쪽 여백 */
+  border-radius: 20px;                /* 완전 둥근 (pill 모양) */
+  font-weight: 600;                   /* 굵게 */
+}
+
+/* ====================================================
+   섹션 4: grid-column / grid-row span 레이아웃
+   
+   span-grid: 4열 3행 그리드
+   각 아이템이 grid-column/row span으로 여러 셀 차지
+==================================================== */
+.span-grid {
+  display: grid;                       /* 그리드 컨테이너 선언 */
+  grid-template-columns: repeat(4, 1fr); /* 4열 균등 분배 */
+  grid-template-rows: repeat(3, 120px);  /* 3행, 각 행 120px */
+  gap: 10px;                           /* 셀 간격 */
+}
+
+/* span 아이템 공통 스타일 */
+.span-item {
+  border-radius: var(--radius-sm);     /* 둥근 모서리 */
+  display: flex;                       /* 내부 flex 정렬 */
+  flex-direction: column;              /* 세로 방향 */
+  align-items: center;                 /* 수평 가운데 */
+  justify-content: center;             /* 수직 가운데 */
+  text-align: center;                  /* 텍스트 가운데 */
+  font-size: 0.85rem;                  /* 폰트 크기 */
+  padding: 10px;                       /* 안쪽 여백 */
+  color: #fff;                         /* 흰색 텍스트 */
+}
+
+.span-item strong {
+  font-size: 1.4rem;                   /* 굵은 레이블 크기 */
+  margin-bottom: 6px;                  /* 아래 여백 */
+}
+
+.span-item code {
+  background: rgba(255,255,255,0.2);   /* 반투명 배경 */
+  color: #fff;                         /* 흰색 */
+  font-size: 0.75rem;                  /* 작은 폰트 */
+}
+
+/* ── 아이템 A: grid-column: 1 / span 2 → 가로 2열 차지 ── */
+.span-a {
+  grid-column: 1 / span 2;            /* 1번 열선부터 2칸 차지 */
+  background-color: #e63946;           /* 빨간색 배경 */
+}
+
+/* ── 아이템 B: grid-row: 1 / span 2 → 세로 2행 차지 ── */
+.span-b {
+  grid-row: 1 / span 2;               /* 1번 행선부터 2행 차지 */
+  background-color: #2a9d8f;           /* 청록색 배경 */
+}
+
+/* ── 아이템 C: grid-row: 1 / span 3 → 세로 3행 전체 차지 ── */
+.span-c {
+  grid-row: 1 / span 3;               /* 1번 행선부터 3행 차지 (전체 높이) */
+  background-color: #e76f51;           /* 주황색 배경 */
+}
+
+/* ── 아이템 D: 기본 1×1 ── */
+.span-d {
+  background-color: #264653;           /* 짙은 청록색 배경 */
+}
+
+/* ── 아이템 E: grid-row: span 2 → 세로 2행 차지 ── */
+.span-e {
+  grid-row: span 2;                    /* 현재 위치부터 2행 차지 */
+  background-color: #6d6875;           /* 보라회색 배경 */
+}
+
+/* ── 아이템 F: 기본 1×1 ── */
+.span-f {
+  background-color: #457b9d;           /* 파란색 배경 */
+}
+
+/* 코드 설명 테이블 */
+.code-explain {
+  background: var(--bg-white);         /* 흰색 배경 */
+  border-radius: var(--radius-md);     /* 둥근 모서리 */
+  padding: 20px;                       /* 안쪽 여백 */
+  margin-top: 20px;                    /* 위 여백 */
+  box-shadow: var(--shadow);           /* 그림자 */
+}
+
+.code-explain h4 {
+  color: var(--color-primary);         /* 파란색 */
+  margin-bottom: 14px;                 /* 아래 여백 */
+}
+
+/* 속성 표 스타일 */
+.prop-table {
+  width: 100%;                         /* 전체 너비 */
+  border-collapse: collapse;           /* 테두리 합치기 */
+  font-size: 0.875rem;                 /* 폰트 크기 */
+}
+
+.prop-table th {
+  background-color: var(--color-primary); /* 파란색 헤더 */
+  color: #fff;                         /* 흰색 텍스트 */
+  padding: 10px 14px;                  /* 셀 패딩 */
+  text-align: left;                    /* 왼쪽 정렬 */
+}
+
+.prop-table td {
+  padding: 10px 14px;                  /* 셀 패딩 */
+  border-bottom: 1px solid #e9ecef;    /* 하단 구분선 */
+  color: var(--text-mid);              /* 중간 색 텍스트 */
+}
+
+.prop-table tr:last-child td {
+  border-bottom: none;                 /* 마지막 행 하단선 제거 */
+}
+
+.prop-table tr:hover td {
+  background-color: #f0f4ff;           /* 행 호버 시 배경 변경 */
+}
+
+/* ====================================================
+   섹션 5: 정렬 속성 데모
+   justify-items / align-items / place-items
+==================================================== */
+
+/* 정렬 데모 그리드 공통 */
+.align-demo {
+  display: grid;                       /* 그리드 컨테이너 선언 */
+  grid-template-columns: repeat(3, 1fr); /* 3열 균등 */
+  grid-template-rows: repeat(2, 120px);  /* 2행, 각 120px 고정 */
+  gap: 10px;                           /* 셀 간격 */
+  background-color: #e8ecff;           /* 셀 경계를 보기 위한 배경 */
+  border-radius: var(--radius-sm);     /* 둥근 모서리 */
+  padding: 10px;                       /* 안쪽 여백 */
+}
+
+/* place-items: center — 아이템 가운데 정렬 */
+.align-center {
+  place-items: center;                 /* align-items와 justify-items 동시에 center */
+}
+
+/* place-items: start — 아이템 좌상단 정렬 */
+.align-start {
+  place-items: start;                  /* align-items와 justify-items 동시에 start */
+}
+
+/* 정렬 데모 아이템 */
+.align-item {
+  background-color: var(--color-primary); /* 파란색 배경 */
+  color: #fff;                            /* 흰색 텍스트 */
+  padding: 10px 16px;                     /* 안쪽 여백 */
+  border-radius: var(--radius-sm);        /* 둥근 모서리 */
+  text-align: center;                     /* 텍스트 가운데 */
+  font-weight: bold;                      /* 굵게 */
+  font-size: 1.1rem;                      /* 폰트 크기 */
+}
+
+/* 높이가 다른 아이템 (정렬 효과를 명확히 보기 위함) */
+.align-tall {
+  background-color: var(--color-accent);  /* 핑크색으로 구분 */
+  line-height: 1.4;                       /* 줄 간격 */
+}
+
+/* ====================================================
+   페이지 하단 푸터
+==================================================== */
+.page-footer {
+  background: var(--color-secondary);     /* 짙은 파란색 배경 */
+  color: rgba(255,255,255,0.85);          /* 반투명 흰색 텍스트 */
+  text-align: center;                     /* 가운데 정렬 */
+  padding: 30px 20px;                     /* 안쪽 여백 */
+  margin-top: 40px;                       /* 위 여백 */
+}
+
+.page-footer p {
+  margin-bottom: 8px;                     /* 단락 사이 여백 */
+}
+
+.page-footer strong {
+  color: var(--color-success);            /* 하늘색으로 강조 */
+}
+
+/* ====================================================
+   반응형 미디어 쿼리
+   대시보드 레이아웃을 작은 화면에서 재배치
+==================================================== */
+
+/* 태블릿 이하 (768px 미만): 대시보드를 세로 스택으로 변경 */
+@media (max-width: 768px) {
+  /* 모바일에서 대시보드 레이아웃 변경 */
+  .dashboard {
+    grid-template-columns: 1fr;           /* 1열로 변경 */
+    grid-template-rows: auto;             /* 행 크기 자동 */
+
+    /* 모바일용 영역 재배치: 모두 세로로 쌓임 */
+    grid-template-areas:
+      "header"   /* 헤더 */
+      "nav"      /* 네비게이션 */
+      "main"     /* 메인 */
+      "aside"    /* 위젯 */
+      "footer";  /* 푸터 */
+  }
+
+  /* 모바일에서 각 영역 최소 높이 지정 */
+  .dash-nav   { min-height: 120px; }
+  .dash-main  { min-height: 200px; }
+  .dash-aside { min-height: 100px; }
+
+  /* 모바일에서 span 그리드 2열로 변경 */
+  .span-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
+  }
+
+  /* 모바일에서 span 속성 초기화 (자동 배치) */
+  .span-a,
+  .span-b,
+  .span-c,
+  .span-e {
+    grid-column: auto;   /* 열 span 해제 */
+    grid-row: auto;      /* 행 span 해제 */
+  }
+
+  /* 모바일에서 fr 데모는 세로 배치 */
+  .fr-demo {
+    grid-template-columns: 1fr; /* 1열로 변경 */
+  }
+}
