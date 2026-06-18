@@ -1,0 +1,292 @@
+/* ==========================================================================
+   실습: 박스 모델 & 텍스트/배경 디자인 스타일시트 (practice_04.css)
+   ========================================================================== */
+
+/* 
+  1. CSS 리셋 및 박스 사이징 전역 초기화 
+  - * { box-sizing: border-box } 선언을 통해 모든 HTML 요소의 너비가 
+    패딩과 보더를 통합하여 계산되도록 만들어 레이아웃 설계를 직관적으로 단축합니다.
+*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  line-height: 1.6;
+  background-color: #f1f2f6;
+  color: #2f3542;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 40px;
+  background-color: #2f3542;
+  color: white;
+  padding: 30px;
+  border-radius: 8px;
+}
+
+.app-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.app-header p {
+  font-size: 1rem;
+  font-weight: 300;
+  color: #ced6e0;
+}
+
+/* 섹션 스타일 */
+.demo-section {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+}
+
+.demo-section h2 {
+  font-size: 1.4rem;
+  color: #2f3542;
+  border-left: 5px solid #3742fa;
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
+.demo-section > p {
+  color: #747d8c;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   [섹션 1] 박스 모델 시각화 놀이터 스타일
+   ========================================================================== */
+.box-playground {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.test-box {
+  color: white;
+  padding: 20px;
+  border: 5px solid #2f3542; /* 테두리 두께 5px */
+  font-size: 0.85rem;
+}
+
+/* content-box 설정: 지정된 width와 height 바깥으로 패딩/보더가 추가 덧붙여집니다 */
+.content-box-test {
+  box-sizing: content-box;
+  width: 200px;
+  background-color: #ff4757;
+  padding: 20px; /* 안쪽 여백 20px */
+  /* 실제 차지 가로 폭: 200 + 20(패딩좌) + 20(패딩우) + 5(보더좌) + 5(보더우) = 250px */
+}
+
+/* border-box 설정: 지정된 width인 200px 내부로 패딩/보더가 격리 수용됩니다 */
+.border-box-test {
+  box-sizing: border-box;
+  width: 200px;
+  background-color: #2ed573;
+  padding: 20px; /* 안쪽 여백 20px */
+  /* 실제 차지 가로 폭: 무조건 200px 고정 (콘텐츠 텍스트 공간이 내부적으로 좁혀짐) */
+}
+
+/* ==========================================================================
+   [섹션 2] Display 속성 스타일
+   ========================================================================== */
+.display-playground {
+  background-color: #f5f6fa;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+/* block 요소: 가로 100% 점유, 자동 줄바꿈, 상하 마진(15px) 및 패딩 완벽 작동 */
+.display-block {
+  display: block;
+  background-color: #1e90ff;
+  color: white;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 4px;
+}
+
+/* inline 요소: 상하 패딩/마진이 레이아웃 상의 상하 공간을 밀어내지 못함 */
+.display-inline {
+  display: inline;
+  background-color: #ffa502;
+  color: white;
+  padding: 15px; /* 패딩이 좌우는 벌어지나 상하 요소 침범 현상 발생 */
+  margin: 20px;  /* 상하 마진 씹힘 */
+  border-radius: 4px;
+}
+
+/* inline-block 요소: 가로로 흐르지만 가로/세로 너비 및 상하 마진이 정상 작동 */
+.display-inline-block {
+  display: inline-block;
+  background-color: #747d8c;
+  color: white;
+  width: 150px;
+  height: 50px;
+  padding: 10px;
+  margin-top: 15px;
+  margin-right: 10px;
+  text-align: center;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+/* ==========================================================================
+   [섹션 3] 실습 미션: 프리미엄 프로필 카드 UI 스타일
+   ========================================================================== */
+.profile-card-grid {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+/* 카드 바디 */
+.profile-card {
+  flex: 1;
+  min-width: 280px;
+  max-width: 320px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); /* 부드러운 박스 그림자 효과 */
+  position: relative;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #e9ecef;
+}
+
+/* 호버 시 둥실 떠오르는 인터랙션 애니메이션 */
+.profile-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* 카드 상단 배경 데코레이션 */
+.card-bg-header {
+  height: 95px;
+}
+
+/* 카드 테마별 상단 그라디언트 배경색 설정 */
+.theme-blue .card-bg-header {
+  background: linear-gradient(135deg, #3742fa, #2ed573);
+}
+
+.theme-purple .card-bg-header {
+  background: linear-gradient(135deg, #7470f9, #ff4757);
+}
+
+.theme-dark .card-bg-header {
+  background: linear-gradient(135deg, #2f3542, #747d8c);
+}
+
+/* 아바타 아우트라인 및 중앙 배치 */
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  margin: -50px auto 15px; /* 마진 상단을 마이너스로 끌어올려 그라디언트 경계선에 걸치게 배치 */
+  border-radius: 50%; /* 완벽한 원형 형태 깎기 */
+  border: 4px solid #ffffff; /* 아바타 바깥 흰색 서클 테두리 */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+  background-color: #f1f2f6;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 찌그러지지 않고 원형 상자 비율에 맞춰 채워지도록 설정 */
+}
+
+/* 카드 본문 글자 스타일 */
+.profile-body {
+  padding: 0 20px 25px;
+}
+
+.profile-body .name {
+  font-size: 1.3rem; /* 반응형 폰트 상대단위 */
+  font-weight: 700;
+  color: #2f3542;
+  margin-bottom: 5px;
+}
+
+.profile-body .role {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #57606f;
+  text-transform: uppercase; /* 영문을 모두 대문자로 자동 변환 */
+  letter-spacing: 1px; /* 자간 조율 */
+  margin-bottom: 15px;
+}
+
+.profile-body .bio {
+  font-size: 0.9rem;
+  color: #747d8c;
+  line-height: 1.6; /* 텍스트 겹치지 않도록 가독성 있는 비율 행간 확보 */
+  margin-bottom: 25px;
+  height: 90px; /* 바이오 텍스트 영역 고정 높이 */
+  overflow: hidden; /* 영역 밖으로 튀어나가는 텍스트 감추기 */
+}
+
+/* 카드 내 이동 버튼 */
+.card-btn {
+  display: block;
+  text-decoration: none;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.theme-blue .card-btn {
+  background-color: #3742fa;
+}
+
+.theme-blue .card-btn:hover {
+  background-color: #1e2eb8;
+}
+
+.theme-purple .card-btn {
+  background-color: #7470f9;
+}
+
+.theme-purple .card-btn:hover {
+  background-color: #5551c9;
+}
+
+.theme-dark .card-btn {
+  background-color: #2f3542;
+}
+
+.theme-dark .card-btn:hover {
+  background-color: #1e222b;
+}
+
+.app-footer {
+  text-align: center;
+  padding: 30px;
+  color: #747d8c;
+  font-size: 0.85rem;
+  margin-top: 40px;
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실습 - 박스 모델 & 프로필 카드 UI</title>
+  <!-- 
+    [구글 폰트 Noto Sans KR 사전 로드]
+    세련되고 완성도 높은 타이포그래피 스타일 구현을 위해 웹 폰트를 불러옵니다.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- 외부 스타일시트 연결 -->
+  <link rel="stylesheet" href="practice_04.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>4차시 실습: 박스 모델 & 텍스트/배경 디자인</h1>
+    <p>박스의 입체 구조를 명확히 이해하고, 반응형 폰트 단위와 그림자 속성을 이용해 현대적인 프로필 카드 제작하기</p>
+  </header>
+
+  <main class="container">
+    
+    <!-- 1. 박스 모델 시각화 실험실 -->
+    <section class="demo-section">
+      <h2>1. 박스 모델 구성요소 데모 (Box Model Playground)</h2>
+      <p>패딩, 보더, 마진이 실제로 레이아웃에 어떻게 부피를 형성하고 영역을 차지하는지 눈으로 확인합니다.</p>
+      
+      <div class="box-playground">
+        <!-- 
+          이 박스들은 CSS에서 각각 패딩과 보더 값을 부여해 
+          부피감이 어떻게 다른지 가시적으로 확인할 수 있도록 색상을 다르게 칠합니다. 
+        -->
+        <div class="test-box content-box-test">
+          <h4>content-box 모델</h4>
+          <p>너비 200px + 패딩 20px + 테두리 5px = 총 250px 부피 차지</p>
+        </div>
+
+        <div class="test-box border-box-test">
+          <h4>border-box 모델</h4>
+          <p>너비 200px 설정 고정 (내부에 패딩, 테두리가 포함됨) = 총 200px 부피 유지</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. display 속성 비교 연구실 -->
+    <section class="demo-section">
+      <h2>2. Display 속성별 렌더링 거동 비교</h2>
+      <p>block, inline, inline-block 요소가 가로 너비 설정 및 상하 패딩/마진에 어떻게 반응하는지 관찰합니다.</p>
+      
+      <div class="display-playground">
+        <!-- block 요소: 자동 개행, 가로 너비/마진 자유 조절 -->
+        <div class="display-block">
+          <strong>[Block 요소]</strong> 가로 100%를 기본적으로 차지하고 아래로 줄바꿈됩니다.
+        </div>
+
+        <!-- inline 요소: 마진/패딩 상하 제약 테스트 -->
+        <span class="display-inline">
+          <strong>[Inline 요소]</strong> 텍스트가 차지하는 영역만큼만 픽스되며, 상하 margin 설정이 씹힙니다.
+        </span>
+
+        <!-- inline-block 요소: 가로 배열을 유지하면서 block의 기하 속성 유지 -->
+        <div class="display-inline-block">
+          <strong>[Inline-Block 1]</strong>
+        </div>
+        <div class="display-inline-block">
+          <strong>[Inline-Block 2]</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 실습 미션: 프로필 카드 UI 모음 -->
+    <section class="demo-section">
+      <h2>3. 실습 미션: 프리미엄 프로필 카드 UI 설계</h2>
+      <p>4차시에서 배운 텍스트 크기 단위(rem), 줄간격(line-height), 테두리 라운딩(border-radius), 요소 그림자(box-shadow)를 종합 적용한 카드 컴포넌트입니다.</p>
+
+      <div class="profile-card-grid">
+        
+        <!-- 프로필 카드 1 -->
+        <article class="profile-card theme-blue">
+          <div class="card-bg-header"></div>
+          <div class="profile-avatar">
+            <img src="https://picsum.photos/100/100?random=11" alt="김철수 백엔드 팀장">
+          </div>
+          <div class="profile-body">
+            <h3 class="name">김철수</h3>
+            <p class="role">Lead Backend Engineer</p>
+            <p class="bio">대규모 트래픽 분산 처리 및 데이터베이스 파티셔닝 설계를 담당하고 있으며, 고성능 분산 인프라 구축이 취미입니다.</p>
+            <a href="#" class="card-btn">포트폴리오 보기</a>
+          </div>
+        </article>
+
+        <!-- 프로필 카드 2 -->
+        <article class="profile-card theme-purple">
+          <div class="card-bg-header"></div>
+          <div class="profile-avatar">
+            <img src="https://picsum.photos/100/100?random=12" alt="이영희 풀스택 개발자">
+          </div>
+          <div class="profile-body">
+            <h3 class="name">이영희</h3>
+            <p class="role">Full Stack Developer</p>
+            <p class="bio">클라이언트 화면 디자인부터 서버 API 아키텍처까지 전체 풀스택 스케일을 폭넓게 구현하고, 최적화하는 데 열정을 쏟고 있습니다.</p>
+            <a href="#" class="card-btn">포트폴리오 보기</a>
+          </div>
+        </article>
+
+        <!-- 프로필 카드 3 -->
+        <article class="profile-card theme-dark">
+          <div class="card-bg-header"></div>
+          <div class="profile-avatar">
+            <img src="https://picsum.photos/100/100?random=13" alt="박민수 데브옵스 엔지니어">
+          </div>
+          <div class="profile-body">
+            <h3 class="name">박민수</h3>
+            <p class="role">DevOps Specialist</p>
+            <p class="bio">쿠버네티스를 이용한 컨테이너 오케스트레이션과 자동화 배포 파이프라인(CI/CD) 설계에 기여하고 있습니다.</p>
+            <a href="#" class="card-btn">포트폴리오 보기</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>&copy; 2026 Box Model & Profile UI Course Assets.</p>
+  </footer>
+
+</body>
+</html>
