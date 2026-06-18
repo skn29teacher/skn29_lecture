@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>  
+  
+  <!--  문자셋 선언 — UTF-8로 한글 깨짐 방지 -->
+  <meta charset="UTF-8" />
+  
+  <!-- 8: 뷰포트 메타 태그 — 반응형 디자인의 필수 선언
+       width=device-width: 뷰포트를 기기 실제 너비로 설정
+       initial-scale=1.0:  초기 확대 배율 100% -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- SEO: 검색엔진 최적화를 위한 메타 태그 -->
+  <meta name="description" content="HTML/CSS 8 반응형 웹 디자인 종합 프로젝트 - 랜딩 페이지" />
+  
+  <title>웹스튜디오 | 반응형 랜딩 페이지</title>
+  
+  <!-- Google Fonts 연결: Noto Sans KR (한국어) + Inter (영문) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- 외부 CSS 파일 연결 (8) -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       ① HEADER — 6: Flexbox로 로고와 메뉴 양 끝 배치
+                   5: sticky 포지션 (스크롤해도 상단 고정)
+                   8: 모바일에서 메뉴 숨김 처리
+  ============================================================ -->
+  <header class="site-header">
+    <div class="container">
+      <!-- 로고 영역: Flexbox 아이템 -->
+      <a href="#" class="logo">
+        <!-- 1: 의미 있는 텍스트 구조 -->
+        <span class="logo-icon">🌐</span>
+        <span class="logo-text">웹스튜디오</span>
+      </a>
+
+      <!-- 네비게이션: 6 Flexbox, 8 반응형 -->
+      <!-- 모바일: flex-direction column (숨김) → 데스크탑: flex-direction row (표시) -->
+      <nav class="site-nav" id="site-nav" aria-label="주 내비게이션">
+        <ul class="nav-list">
+          <!-- 1: 시맨틱 nav > ul > li > a 구조 -->
+          <li><a href="#hero"     class="nav-link">홈</a></li>
+          <li><a href="#features" class="nav-link">서비스</a></li>
+          <li><a href="#about"    class="nav-link">소개</a></li>
+          <li><a href="#gallery"  class="nav-link">갤러리</a></li>
+          <li><a href="#contact"  class="nav-link">문의</a></li>
+        </ul>
+      </nav>
+
+      <!-- 모바일 햄버거 버튼 (모바일에서만 표시) -->
+      <!--  작은 화면에서만 보이는 메뉴 토글 버튼 -->
+      <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </header>
+
+
+  <!-- ============================================================
+       ② HERO 섹션 — 5: position relative
+                      6: Flexbox 세로 가운데 정렬
+                      3: vh 단위 (100vh = 화면 전체 높이)
+                      4: 배경 그라디언트
+  ============================================================ -->
+  <section id="hero" class="hero">
+    <!-- 배경 장식 원 (position: absolute) -->
+    <div class="hero-blob hero-blob-1" aria-hidden="true"></div>
+    <div class="hero-blob hero-blob-2" aria-hidden="true"></div>
+
+    <div class="container hero-content">
+      <!-- 뱃지 -->
+      <span class="hero-badge">🚀 HTML/CSS 8 종합 프로젝트</span>
+      
+      <!-- 히어로 제목: clamp()로 반응형 폰트 크기 -->
+      <h1 class="hero-title">
+        아름다운 웹을<br>
+        <span class="hero-title-accent">함께 만들어요</span>
+      </h1>
+      
+      <!-- 부제목 -->
+      <p class="hero-desc">
+        HTML, CSS, 반응형 디자인으로<br>
+        어떤 기기에서도 완벽하게 보이는 웹사이트를 만드는 방법을 배웁니다.
+      </p>
+      
+      <!-- CTA 버튼 영역: Flexbox로 버튼 나열 -->
+      <div class="hero-actions">
+        <!-- 2: 버튼 요소 -->
+        <a href="#features" class="btn btn-primary">서비스 보기</a>
+        <a href="#contact"  class="btn btn-outline">무료 상담</a>
+      </div>
+      
+      <!-- 통계 지표 -->
+      <div class="hero-stats">
+        <div class="stat">
+          <strong>1,200+</strong>
+          <span>수강생</span>
+        </div>
+        <div class="stat">
+          <strong>98%</strong>
+          <span>만족도</span>
+        </div>
+        <div class="stat">
+          <strong>8</strong>
+          <span>완성 커리큘럼</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       ③ FEATURES 섹션 — 7: CSS Grid (auto-fit + minmax)
+                          8: 모바일 1열 → 태블릿 2열 → 데스크탑 3열
+  ============================================================ -->
+  <section id="features" class="features section-padding">
+    <div class="container">
+      <!-- 섹션 헤더 -->
+      <div class="section-header">
+        <span class="section-tag">서비스</span>
+        <h2 class="section-title">우리가 제공하는 것들</h2>
+        <p class="section-desc">최신 웹 기술을 활용하여 최고의 학습 경험을 제공합니다.</p>
+      </div>
+
+      <!-- 7: Grid 카드 레이아웃 (auto-fit + minmax)
+           8: 미디어 쿼리로 1→2→3열 반응형 변환 -->
+      <div class="features-grid">
+        
+        <!-- 특징 카드 1 -->
+        <div class="feature-card">
+          <div class="feature-icon">🏗️</div>
+          <h3 class="feature-title">시맨틱 HTML</h3>
+          <p class="feature-desc">
+            의미 있는 HTML 태그로 SEO와 접근성을 동시에 향상시키는 방법을 배웁니다.
+          </p>
+          <!-- 4: hover 효과가 있는 링크 -->
+          <a href="#" class="feature-link">자세히 보기 →</a>
+        </div>
+
+        <!-- 특징 카드 2 -->
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3 class="feature-title">CSS 스타일링</h3>
+          <p class="feature-desc">
+            색상, 타이포그래피, 박스 모델부터 CSS 변수까지 스타일링의 모든 것을 다룹니다.
+          </p>
+          <a href="#" class="feature-link">자세히 보기 →</a>
+        </div>
+
+        <!-- 특징 카드 3 -->
+        <div class="feature-card">
+          <div class="feature-icon">📐</div>
+          <h3 class="feature-title">Flexbox 레이아웃</h3>
+          <p class="feature-desc">
+            1차원 레이아웃의 강자 Flexbox로 정렬과 배치 문제를 우아하게 해결합니다.
+          </p>
+          <a href="#" class="feature-link">자세히 보기 →</a>
+        </div>
+
+        <!-- 특징 카드 4 -->
+        <div class="feature-card">
+          <div class="feature-icon">🗂️</div>
+          <h3 class="feature-title">CSS Grid</h3>
+          <p class="feature-desc">
+            2차원 그리드 시스템으로 복잡한 페이지 레이아웃을 직관적으로 설계합니다.
+          </p>
+          <a href="#" class="feature-link">자세히 보기 →</a>
+        </div>
+
+        <!-- 특징 카드 5 -->
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3 class="feature-title">반응형 디자인</h3>
+          <p class="feature-desc">
+            모바일 퍼스트 전략과 미디어 쿼리로 모든 기기에서 완벽한 UX를 구현합니다.
+          </p>
+          <a href="#" class="feature-link">자세히 보기 →</a>
+        </div>
+
+        <!-- 특징 카드 6 -->
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3 class="feature-title">성능 최적화</h3>
+          <p class="feature-desc">
+            웹 폰트, 이미지 최적화, CSS 효율화로 빠르고 가벼운 사이트를 만듭니다.
+          </p>
+          <a href="#" class="feature-link">자세히 보기 →</a>
+        </div>
+
+      </div><!-- /.features-grid -->
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       ④ ABOUT 섹션 — 7: CSS Grid 2열 레이아웃
+                        8: 모바일 1열 → 데스크탑 2열 반응형
+  ============================================================ -->
+  <section id="about" class="about section-padding">
+    <div class="container">
+
+      <!-- 7: Grid 2열 레이아웃 (텍스트 + 이미지)
+           8: 모바일에서는 1열로 전환 -->
+      <div class="about-grid">
+
+        <!-- 텍스트 영역 -->
+        <div class="about-text">
+          <span class="section-tag">우리 소개</span>
+          <h2 class="section-title">웹 개발의 기초를<br>탄탄하게 다지세요</h2>
+          <p class="about-desc">
+            저희 웹스튜디오는 HTML/CSS부터 시작하는 체계적인 커리큘럼으로
+            웹 개발의 기초를 확실하게 가르칩니다. 8에 걸쳐 이론과 실습을
+            균형 있게 진행하며, 실제 동작하는 프로젝트를 직접 만들어봅니다.
+          </p>
+          <p class="about-desc">
+            모든 예제 코드에는 한국어 주석이 포함되어 있어, 코드의 모든 줄이
+            어떤 역할을 하는지 명확하게 이해할 수 있습니다.
+          </p>
+
+          <!-- 특장점 목록: Flexbox로 정렬 -->
+          <ul class="about-list">
+            <li class="about-list-item">
+              <span class="check-icon">✅</span>
+              <span>모바일 퍼스트 반응형 설계</span>
+            </li>
+            <li class="about-list-item">
+              <span class="check-icon">✅</span>
+              <span>모든 코드에 상세 한국어 주석</span>
+            </li>
+            <li class="about-list-item">
+              <span class="check-icon">✅</span>
+              <span>이론 + 실습 균형 있는 커리큘럼</span>
+            </li>
+            <li class="about-list-item">
+              <span class="check-icon">✅</span>
+              <span>실제 동작하는 프로젝트 완성</span>
+            </li>
+          </ul>
+
+          <a href="#contact" class="btn btn-primary">무료 상담 신청</a>
+        </div>
+
+        <!-- 이미지 영역 -->
+        <div class="about-image">
+          <!-- picsum.photos: 무작위 사진 API -->
+          <img
+            src="https://picsum.photos/600/450?random=1"
+            alt="웹 개발 수업 현장 - 강의를 듣고 있는 수강생들"
+            class="about-img"
+            loading="lazy"
+          />
+          <!-- 이미지 위에 겹치는 뱃지 (position absolute) -->
+          <div class="about-badge">
+            <strong>8주</strong>
+            <span>완성 코스</span>
+          </div>
+        </div>
+
+      </div><!-- /.about-grid -->
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       ⑤ GALLERY 섹션 — 6: Flexbox flex-wrap으로 사진 배치
+                          8: 모바일 50% → 데스크탑 33.33%
+  ============================================================ -->
+  <section id="gallery" class="gallery section-padding">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">갤러리</span>
+        <h2 class="section-title">수강생 작품 갤러리</h2>
+        <p class="section-desc">8 커리큘럼을 마친 수강생들의 실제 결과물입니다.</p>
+      </div>
+
+      <!-- 6: flex-wrap으로 줄 바꿈 갤러리
+           8: 모바일 2열(50%) → 데스크탑 3열(33.33%) -->
+      <div class="gallery-grid">
+        
+        <!-- 갤러리 아이템 1 -->
+        <div class="gallery-item">
+          <img
+            src="https://picsum.photos/400/300?random=10"
+            alt="수강생 작품 1 - 반응형 쇼핑몰 메인 페이지"
+            class="gallery-img"
+            loading="lazy"
+          />
+          <div class="gallery-overlay">
+            <p class="gallery-caption">반응형 쇼핑몰</p>
+          </div>
+        </div>
+
+        <!-- 갤러리 아이템 2 -->
+        <div class="gallery-item">
+          <img
+            src="https://picsum.photos/400/300?random=20"
+            alt="수강생 작품 2 - 포트폴리오 랜딩 페이지"
+            class="gallery-img"
+            loading="lazy"
+          />
+          <div class="gallery-overlay">
+            <p class="gallery-caption">포트폴리오 페이지</p>
+          </div>
+        </div>
+
+        <!-- 갤러리 아이템 3 -->
+        <div class="gallery-item">
+          <img
+            src="https://picsum.photos/400/300?random=30"
+            alt="수강생 작품 3 - 블로그 레이아웃"
+            class="gallery-img"
+            loading="lazy"
+          />
+          <div class="gallery-overlay">
+            <p class="gallery-caption">블로그 레이아웃</p>
+          </div>
+        </div>
+
+        <!-- 갤러리 아이템 4 -->
+        <div class="gallery-item">
+          <img
+            src="https://picsum.photos/400/300?random=40"
+            alt="수강생 작품 4 - 레스토랑 웹사이트"
+            class="gallery-img"
+            loading="lazy"
+          />
+          <div class="gallery-overlay">
+            <p class="gallery-caption">레스토랑 사이트</p>
+          </div>
+        </div>
+
+        <!-- 갤러리 아이템 5 -->
+        <div class="gallery-item">
+          <img
+            src="https://picsum.photos/400/300?random=50"
+            alt="수강생 작품 5 - 여행 소개 페이지"
+            class="gallery-img"
+            loading="lazy"
+          />
+          <div class="gallery-overlay">
+            <p class="gallery-caption">여행 소개 페이지</p>
+          </div>
+        </div>
+
+        <!-- 갤러리 아이템 6 -->
+        <div class="gallery-item">
+          <img
+            src="https://picsum.photos/400/300?random=60"
+            alt="수강생 작품 6 - 대시보드 UI"
+            class="gallery-img"
+            loading="lazy"
+          />
+          <div class="gallery-overlay">
+            <p class="gallery-caption">대시보드 UI</p>
+          </div>
+        </div>
+
+      </div><!-- /.gallery-grid -->
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       ⑥ CONTACT 섹션 — 2: form, input, label, textarea
+                          5: CSS 폼 스타일링
+                          8: 반응형 폼 레이아웃
+  ============================================================ -->
+  <section id="contact" class="contact section-padding">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">문의하기</span>
+        <h2 class="section-title">무엇이든 물어보세요</h2>
+        <p class="section-desc">궁금하신 점은 언제든지 문의해 주세요. 빠르게 답변 드립니다.</p>
+      </div>
+
+      <!-- 문의 레이아웃: Grid로 폼 + 정보 2열 배치 -->
+      <div class="contact-layout">
+
+        <!-- 왼쪽: 연락처 정보 -->
+        <div class="contact-info">
+          <h3 class="contact-info-title">연락처 정보</h3>
+          
+          <div class="contact-item">
+            <span class="contact-icon">📍</span>
+            <div>
+              <strong>주소</strong>
+              <p>서울특별시 강남구 테헤란로 123</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <span class="contact-icon">📞</span>
+            <div>
+              <strong>전화</strong>
+              <!-- 2: 전화 링크 -->
+              <p><a href="tel:02-1234-5678">02-1234-5678</a></p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <span class="contact-icon">✉️</span>
+            <div>
+              <strong>이메일</strong>
+              <!-- 2: 이메일 링크 -->
+              <p><a href="mailto:hello@webstudio.kr">hello@webstudio.kr</a></p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <span class="contact-icon">🕐</span>
+            <div>
+              <strong>운영 시간</strong>
+              <p>평일 09:00 ~ 18:00</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 문의 폼 -->
+        <!-- 2: 폼 태그와 시맨틱 구조 -->
+        <form class="contact-form" action="#" method="POST" novalidate>
+          
+          <!-- 이름 입력 -->
+          <div class="form-row form-row-half">
+            <div class="form-group">
+              <!-- 2: label - input 연결 (for-id 짝) -->
+              <label for="contact-name" class="form-label">이름 <span class="required">*</span></label>
+              <input
+                type="text"
+                id="contact-name"
+                name="name"
+                class="form-input"
+                placeholder="홍길동"
+                required
+                autocomplete="name"
+              />
+            </div>
+
+            <!-- 이메일 입력 -->
+            <div class="form-group">
+              <label for="contact-email" class="form-label">이메일 <span class="required">*</span></label>
+              <input
+                type="email"
+                id="contact-email"
+                name="email"
+                class="form-input"
+                placeholder="example@email.com"
+                required
+                autocomplete="email"
+              />
+            </div>
+          </div>
+
+          <!-- 전화번호 -->
+          <div class="form-group">
+            <label for="contact-phone" class="form-label">전화번호</label>
+            <input
+              type="tel"
+              id="contact-phone"
+              name="phone"
+              class="form-input"
+              placeholder="010-1234-5678"
+              autocomplete="tel"
+            />
+          </div>
+
+          <!-- 문의 유형 선택 -->
+          <div class="form-group">
+            <label for="contact-subject" class="form-label">문의 유형 <span class="required">*</span></label>
+            <!-- 2: select 드롭다운 -->
+            <select id="contact-subject" name="subject" class="form-input form-select" required>
+              <option value="" disabled selected>선택해 주세요</option>
+              <option value="course">수강 신청 문의</option>
+              <option value="schedule">일정 관련 문의</option>
+              <option value="tech">기술 질문</option>
+              <option value="other">기타 문의</option>
+            </select>
+          </div>
+
+          <!-- 메시지 -->
+          <div class="form-group">
+            <label for="contact-message" class="form-label">메시지 <span class="required">*</span></label>
+            <!-- 2: textarea 다중 줄 입력 -->
+            <textarea
+              id="contact-message"
+              name="message"
+              class="form-input form-textarea"
+              rows="5"
+              placeholder="문의 내용을 자세히 적어주세요..."
+              required
+            ></textarea>
+          </div>
+
+          <!-- 개인정보 동의 -->
+          <div class="form-group form-checkbox">
+            <!-- 2: checkbox + label 연결 -->
+            <input type="checkbox" id="contact-agree" name="agree" required />
+            <label for="contact-agree" class="form-label-checkbox">
+              <a href="#" class="link-underline">개인정보 처리방침</a>에 동의합니다. <span class="required">*</span>
+            </label>
+          </div>
+
+          <!-- 제출 버튼 -->
+          <button type="submit" class="btn btn-primary btn-full">
+            📨 문의 보내기
+          </button>
+
+        </form>
+      </div><!-- /.contact-layout -->
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       ⑦ FOOTER — 6: Flexbox flex-wrap
+                   1: 시맨틱 footer 태그
+                   8: 모바일 column → 데스크탑 row
+  ============================================================ -->
+  <footer class="site-footer">
+    <div class="container">
+      
+      <!-- 푸터 상단: 3열 구성 (Flexbox) -->
+      <!-- 6: flex-wrap으로 3열 → 모바일에서 세로 배치 -->
+      <div class="footer-grid">
+
+        <!-- 푸터 열 1: 로고 + 설명 -->
+        <div class="footer-col footer-col-brand">
+          <a href="#" class="logo footer-logo">
+            <span class="logo-icon">🌐</span>
+            <span class="logo-text">웹스튜디오</span>
+          </a>
+          <p class="footer-desc">
+            HTML, CSS, JavaScript를 처음부터 차근차근 가르치는
+            웹 개발 입문 전문 학원입니다.
+          </p>
+          <!-- SNS 링크 -->
+          <div class="social-links">
+            <a href="#" class="social-link" aria-label="유튜브">📺</a>
+            <a href="#" class="social-link" aria-label="인스타그램">📷</a>
+            <a href="#" class="social-link" aria-label="깃허브">💻</a>
+            <a href="#" class="social-link" aria-label="트위터">🐦</a>
+          </div>
+        </div>
+
+        <!-- 푸터 열 2: 사이트 링크 -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">사이트 맵</h4>
+          <ul class="footer-links">
+            <!-- 1: 링크 목록 구조 -->
+            <li><a href="#hero"     class="footer-link">홈</a></li>
+            <li><a href="#features" class="footer-link">서비스</a></li>
+            <li><a href="#about"    class="footer-link">회사 소개</a></li>
+            <li><a href="#gallery"  class="footer-link">갤러리</a></li>
+            <li><a href="#contact"  class="footer-link">문의하기</a></li>
+          </ul>
+        </div>
+
+        <!-- 푸터 열 3: 강의 정보 -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">커리큘럼</h4>
+          <ul class="footer-links">
+            <li><a href="#" class="footer-link">1: HTML 기초</a></li>
+            <li><a href="#" class="footer-link">2: HTML 폼</a></li>
+            <li><a href="#" class="footer-link">3~5: CSS 기초</a></li>
+            <li><a href="#" class="footer-link">6: Flexbox</a></li>
+            <li><a href="#" class="footer-link">7: CSS Grid</a></li>
+            <li><a href="#" class="footer-link">8: 반응형 프로젝트</a></li>
+          </ul>
+        </div>
+
+      </div><!-- /.footer-grid -->
+
+      <!-- 푸터 하단: 저작권 -->
+      <div class="footer-bottom">
+        <p>
+          © 2026 웹스튜디오. All rights reserved. |
+          <a href="#" class="footer-link">개인정보처리방침</a> |
+          <a href="#" class="footer-link">이용약관</a>
+        </p>
+        <p class="footer-made">
+          Made with ❤️ HTML + CSS — 8 종합 프로젝트
+        </p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       스크롤 상단 버튼 (5: position fixed)
+  ============================================================ -->
+  <a href="#hero" class="scroll-top" aria-label="페이지 맨 위로 이동">↑</a>
+
+  <!-- ============================================================
+       인라인 JavaScript: 햄버거 메뉴 토글 (간단한 동작)
+       본격적인 JS는 다음 JavaScript 과정에서 배웁니다!
+  ============================================================ -->
+  <script>
+    // 햄버거 버튼 클릭 시 네비게이션 메뉴 토글
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const siteNav = document.getElementById('site-nav');
+
+    hamburgerBtn.addEventListener('click', function () {
+      // 'open' 클래스를 추가/제거하여 메뉴 표시/숨김
+      siteNav.classList.toggle('nav-open');
+      
+      // 접근성: aria-expanded 상태 변경
+      const isOpen = siteNav.classList.contains('nav-open');
+      hamburgerBtn.setAttribute('aria-expanded', isOpen);
+    });
+
+    // 메뉴 링크 클릭 시 메뉴 닫기 (모바일)
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(function (link) {
+      link.addEventListener('click', function () {
+        siteNav.classList.remove('nav-open');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  </script>
+
+</body>
+</html>
