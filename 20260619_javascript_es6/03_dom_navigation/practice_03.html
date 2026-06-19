@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> DOM 선택 및 트리 탐색 실증</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background-color: #f5f6fa;
+      color: #2f3542;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #ced6e0;
+      padding-bottom: 20px;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      color: #2f3542;
+      margin: 0 0 10px 0;
+    }
+    header p {
+      font-size: 1.1rem;
+      color: #747d8c;
+      margin: 0;
+    }
+    
+    /* 섹션 레이아웃 */
+    .section-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid #e2e8f0;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      color: #2f3542;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-left: 4px solid #4361ee;
+      padding-left: 10px;
+      font-weight: bold;
+    }
+    .section-desc {
+      font-size: 0.95rem;
+      color: #57606f;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    /* 버튼 그룹 스타일 */
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .btn-action {
+      background-color: #4361ee;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .btn-action:hover {
+      background-color: #3f37c9;
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+    .btn-danger {
+      background-color: #ff4757;
+    }
+    .btn-danger:hover {
+      background-color: #e84118;
+    }
+    .btn-success {
+      background-color: #2ed573;
+    }
+    .btn-success:hover {
+      background-color: #26de81;
+    }
+    
+    /* 결과 출력 영역 */
+    .terminal-box {
+      background-color: #2f3542;
+      color: #f1f2f6;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      min-height: 40px;
+      white-space: pre-wrap;
+      margin-top: 15px;
+      border: 1px solid #747d8c;
+    }
+    
+    /* 탐색 트리 데모 영역 */
+    .tree-demo-area {
+      border: 2px dashed #ced6e0;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      background-color: #f8f9fa;
+    }
+    .parent-box {
+      border: 2px solid #57606f;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #ffffff;
+      transition: background-color 0.3s;
+    }
+    .parent-box.active {
+      background-color: #e8f0fe;
+      border-color: #4361ee;
+    }
+    .children-list {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .child-node {
+      flex: 1;
+      border: 2px solid #747d8c;
+      padding: 15px;
+      border-radius: 6px;
+      background-color: #f1f2f6;
+      text-align: center;
+      transition: all 0.3s;
+      font-weight: bold;
+    }
+    .child-node.active {
+      background-color: #2ed573;
+      color: #ffffff;
+      border-color: #26de81;
+      transform: scale(1.03);
+    }
+    
+    /* 아코디언 및 테마 제어 카드 */
+    .toggle-card {
+      padding: 20px;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+      background-color: #ffffff;
+      transition: all 0.3s;
+    }
+    .toggle-card.dark-theme {
+      background-color: #2f3542;
+      color: #ffffff;
+      border-color: #747d8c;
+    }
+    .toggle-card.collapsed {
+      max-height: 50px;
+      overflow: hidden;
+      opacity: 0.6;
+    }
+    
+    /* 댓글 컴포넌트 스타일 */
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .comment-card {
+      background-color: #f8f9fa;
+      border: 1px solid #ced6e0;
+      border-radius: 8px;
+      padding: 15px;
+      transition: all 0.3s;
+    }
+    .comment-card.highlighted {
+      border-color: #ff4757;
+      background-color: #fff2f2;
+      transform: translateX(10px);
+    }
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 5px;
+    }
+    .comment-author {
+      font-weight: bold;
+      color: #2f3542;
+    }
+    .comment-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>3차시 실습: DOM 선택과 계층 탐색</h1>
+      <p>DOM 선택 결과의 차이를 파악하고, 부모, 자식, 형제 방향으로 유기적으로 이동하는 코드를 실험합니다.</p>
+    </header>
+
+    <!-- 섹션 1: querySelectorAll NodeList 변환 -->
+    <div class="section-card">
+      <h2 class="section-title">1. NodeList 유사 배열의 순수 배열 캐스팅 실증</h2>
+      <p class="section-desc">
+        `querySelectorAll`이 가져오는 유사 배열에 일반 배열 메서드(`map`)를 얹어 에러를 유발해보고, 전개 연산자(`[...]`)를 써서 정상적으로 배열 순환 처리를 완수하는 격차를 비교합니다.
+      </p>
+      <div class="btn-group">
+        <button id="btn-nodelist-error" class="btn-action btn-danger">유사 배열에 map 직접 실행 (에러 유도)</button>
+        <button id="btn-nodelist-success" class="btn-action btn-success">전개 연산자 배열 변환 후 map 실행</button>
+      </div>
+      <!-- 보이지 않지만 선택자 수집 대상이 될 숨겨진 돔 객체들 -->
+      <div style="display:none;" class="dummy-item">아이템 A</div>
+      <div style="display:none;" class="dummy-item">아이템 B</div>
+      <div style="display:none;" class="dummy-item">아이템 C</div>
+      <div class="terminal-box" id="term-nodelist">결과 출력을 대기하고 있습니다.</div>
+    </div>
+
+    <!-- 섹션 2: DOM 트리 상하좌우 네비게이션 -->
+    <div class="section-card">
+      <h2 class="section-title">2. DOM 계층 구조 상하좌우 탐색 실시간 추적</h2>
+      <p class="section-desc">
+        특정 요소를 기준으로 부모(`parentElement`), 직속 자식(`children`), 형제(`nextElementSibling`, `previousElementSibling`)를 추적하여 클래스를 부여하는 이동 과정을 확인합니다.
+      </p>
+      
+      <!-- 실습 트리 마크업 구역 -->
+      <div class="tree-demo-area">
+        <div class="parent-box" id="demo-parent">
+          부모 영역 (div#demo-parent)
+          <div class="children-list">
+            <div class="child-node" id="child-one">자식 1 (왼쪽)</div>
+            <div class="child-node" id="child-two">자식 2 (기준)</div>
+            <div class="child-node" id="child-three">자식 3 (오른쪽)</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="btn-group">
+        <button id="btn-find-parent" class="btn-action">기준(자식 2)에서 부모 찾기</button>
+        <button id="btn-find-left" class="btn-action">기준에서 왼쪽 형제 찾기</button>
+        <button id="btn-find-right" class="btn-action">기준에서 오른쪽 형제 찾기</button>
+        <button id="btn-find-children" class="btn-action">부모에서 모든 직속 자식 찾기</button>
+        <button id="btn-clear-tree" class="btn-action btn-danger">하이라이트 초기화</button>
+      </div>
+      <div class="terminal-box" id="term-tree">결과 출력을 대기하고 있습니다.</div>
+    </div>
+
+    <!-- 섹션 3: classList 제어 -->
+    <div class="section-card">
+      <h2 class="section-title">3. classList API를 이용한 컴포넌트 상태 제어</h2>
+      <p class="section-desc">
+        인라인 스타일을 지양하고 classList의 핵심 메서드(`add`, `remove`, `toggle`, `contains`)를 조합하여 카드의 다크 테마 전환 및 접기/펼치기 상태를 제어합니다.
+      </p>
+      
+      <!-- 테스트 제어 카드 -->
+      <div class="toggle-card" id="my-toggle-card">
+        <h3>제어 테스트 카드 박스</h3>
+        <p>classList 상태에 따라 동적으로 스타일과 속성이 변화합니다.</p>
+      </div>
+      
+      <div class="btn-group" style="margin-top: 15px;">
+        <button id="btn-class-add" class="btn-action">다크 테마 클래스 추가 (add)</button>
+        <button id="btn-class-remove" class="btn-action">다크 테마 클래스 제거 (remove)</button>
+        <button id="btn-class-toggle" class="btn-action btn-success">축소 및 노출 토글 (toggle)</button>
+        <button id="btn-class-contains" class="btn-action">현재 다크 테마 유무 판별 (contains)</button>
+      </div>
+      <div class="terminal-box" id="term-class">결과 출력을 대기하고 있습니다.</div>
+    </div>
+
+    <!-- 섹션 4: 종합 실습 - 댓글 리스트 컴포넌트 제어 -->
+    <div class="section-card">
+      <h2 class="section-title">4. 종합 실습: closest와 계층 탐색을 활용한 댓글 컴포넌트 제어</h2>
+      <p class="section-desc">
+        댓글 리스트 마크업에서 특정 댓글 안의 버튼을 클릭할 때, `closest`로 상위 부모 카드(`.comment-card`)를 획득한 후 하향 및 형제 탐색을 통해 강조 및 숨김 처리를 정밀 지휘합니다.
+      </p>
+      
+      <!-- 댓글 목록 -->
+      <div class="comment-list" id="comment-container">
+        <!-- 댓글 1 -->
+        <div class="comment-card" id="c-01">
+          <div class="comment-header">
+            <span class="comment-author">김민수</span>
+            <span>2026.06.19</span>
+          </div>
+          <p class="comment-text">화살표 함수의 this 바인딩 개념이 이제 확실히 잡히는 것 같습니다.</p>
+          <div class="btn-group">
+            <button class="btn-action btn-comment-highlight">이 댓글 강조/해제</button>
+            <button class="btn-action btn-comment-author">작성자 획득</button>
+          </div>
+        </div>
+        
+        <!-- 댓글 2 -->
+        <div class="comment-card" id="c-02">
+          <div class="comment-header">
+            <span class="comment-author">박영희</span>
+            <span>2026.06.19</span>
+          </div>
+          <p class="comment-text">DOM 탐색을 할 때 parentNode보다 parentElement가 엘리먼트 노드만 짚어줘서 더 안전하네요.</p>
+          <div class="btn-group">
+            <button class="btn-action btn-comment-highlight">이 댓글 강조/해제</button>
+            <button class="btn-action btn-comment-author">작성자 획득</button>
+          </div>
+        </div>
+      </div>
+      <div class="terminal-box" id="term-comment">댓글 영역 제어 상태가 여기에 출력됩니다.</div>
+    </div>
+
+    <!-- 하단 가이드 문구 -->
+    <div class="footer-note">
+      본 실습은 2일차 3차시 강의에 매핑되어 있으며, 이모티콘을 모두 배제한 깨끗한 텍스트 기반 코드로 안전하게 실증 검증을 수행합니다.
+    </div>
+  </div>
+
+  <!-- 외부 스크립트 연결 -->
+  <script src="main_03.js" defer></script>
+</body>
+</html>
