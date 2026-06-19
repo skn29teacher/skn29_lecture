@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded',()=>{
             console.log(tdzVariable);
             let tdzVariable = '나중에 선언된 let 변수'
         }catch(e){
-            errorMessage +=`[참조 에러] let/const는 호이스팅은 되지만 초기화 전에 참조불가영역 TDZ에 묶여 에러를 발생\n 오류메세지는 ${e.message}`
+            errorMessage +=`\n\n[참조 에러] let/const는 호이스팅은 되지만 초기화 전에 참조불가영역 TDZ에 묶여 에러를 발생\n 오류메세지는 ${e.message}`
         }
-        termConst.textContent = errorMessage;
+        termScope.textContent = errorMessage;
     });
     
 
