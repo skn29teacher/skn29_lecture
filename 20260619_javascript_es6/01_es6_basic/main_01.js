@@ -33,5 +33,16 @@ document.addEventListener('DOMContentLoaded',()=>{
         termScope.textContent = errorMessage;
     });
     
+    document.getElementById("btn-loop-var")?.addEventListener('click',()=>{
+        termScope.textContent = "var 루프 비동기 출력 작동중......\n";
+        // var로 선언한 인덱스는 루프 완료시점에 3으로 설정됩니다.
+        for( var i =0 ; i <3 ; i++){
+            // 100ms 뒤 작동하는 비동기 함수 실행
+            setTimeout(()=>{
+                termScope.textContent += `[var 출력] 비동기 콜백 시점의 인덱스 i 값: ${i}\n`;
+                console.log(`[var 오염 로그] 인덱스 i : ${i}`);
+            }, 100);
+        }
+    });
 
 });
