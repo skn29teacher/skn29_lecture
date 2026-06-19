@@ -163,5 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 3-B. 그리드 초기화
   document.getElementById("btn-clear-grid")?.addEventListener("click", () => {
     fragmentContainer.innerHTML = "";
+    const footer = document.querySelector(".footer-note");
+    footer.textContent = "그리드 청소 완료";
   });
 });
