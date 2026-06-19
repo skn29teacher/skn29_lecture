@@ -1,3 +1,6 @@
 document.addEventListener('DOMContentLoaded',()=>{
-    alert('화면로딩이 완료 되었습니다.')
+    const termScope = document.getElementById("term-scope");
+    const termConst = document.getElementById("term-const")
+    const termThis = document.getElementById("term-this")
+    const profileContainer = document.getElementById('profile-card-container')
 });
