@@ -55,4 +55,16 @@ document.addEventListener('DOMContentLoaded',()=>{
             }, 100);
         }
     });
-});
+
+    // 객체의 얕은 변경 제어 및 Objet.freeze() 동결
+    document.getElementById('btn-const-modify')?.addEventListener('click',()=>{
+        const mutableUser = {name:'홍길동', level:"초급"};
+        // 속성 수정 및 추가 시도
+        mutableUser.level = "중급";
+        mutableUser.name ="javaScript ES6";
+        termConst.textContent = `const 객체 속성 수정결과:\n${JSON.stringify(mutableUser,null,2)}`;
+        termConst.textContent += "\n\n(참조 주소 자체를 바꾸는 mutableUser= {} 형태의 불가능하지만 내부 프로퍼티 제어는 차단되지 않는다"
+    });
+
+
+}); // load
