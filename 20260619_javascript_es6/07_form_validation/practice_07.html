@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> 폼 이벤트와 입력 유효성 검사</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background-color: #f5f6fa;
+      color: #2f3542;
+      padding: 40px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .form-box {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+    }
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #4b5563;
+    }
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e9ecef;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus {
+      border-color: #4361ee;
+    }
+    
+    .error-msg {
+      font-size: 0.8rem;
+      color: #ff4757;
+      margin-top: 5px;
+      display: none;
+    }
+    .form-input.invalid {
+      border-color: #ff4757;
+      background-color: #fff2f2;
+    }
+    
+    .btn-submit {
+      background-color: #4361ee;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      width: 100%;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+    .btn-submit:hover {
+      background-color: #3f37c9;
+    }
+    
+    .success-alert {
+      background-color: #2ed573;
+      color: white;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>안전한 폼 데이터 검증 및 제어</h1>
+      <p>preventDefault, input 이벤트 실시간 디텍팅, 옵셔널 체이닝을 결합한 폼 벨리데이션 설계</p>
+    </header>
+
+    <!-- 성공 축하 메시지 팝업창 -->
+    <div class="success-alert" id="success-banner">
+      축하합니다! 양식이 성공적으로 유효성 검사를 통과하여 제출되었습니다.
+    </div>
+
+    <div class="form-box">
+      <form class="contact-form" id="contact-form" novalidate>
+        
+        <!-- 이름 입력 -->
+        <div class="form-group">
+          <label for="contact-name" class="form-label">이름 * <small style="color: #747d8c; font-weight: normal;">(이름은 input과 change 이벤트 대조 로그 작동)</small></label>
+          <input
+            type="text"
+            id="contact-name"
+            class="form-input"
+            placeholder="홍길동"
+            required
+          />
+          <span class="error-msg" id="name-error">이름을 2글자 이상 입력해 주세요.</span>
+        </div>
+
+        <!-- 이메일 입력 -->
+        <div class="form-group">
+          <label for="contact-email" class="form-label">이메일 *</label>
+          <input
+            type="email"
+            id="contact-email"
+            class="form-input"
+            placeholder="example@email.com"
+            required
+          />
+          <span class="error-msg" id="email-error">올바른 이메일 형식(@ 포함)이 아닙니다.</span>
+        </div>
+
+        <!-- 문의 유형 선택 -->
+        <div class="form-group">
+          <label for="contact-subject" class="form-label">문의 유형 *</label>
+          <select id="contact-subject" class="form-input">
+            <option value="" disabled selected>선택해 주세요</option>
+            <option value="course">수강 신청 문의</option>
+            <option value="tech">기술 질문</option>
+          </select>
+          <span class="error-msg" id="subject-error">문의 유형을 필히 선택해 주세요.</span>
+        </div>
+
+        <!-- 제출 버튼 -->
+        <button type="submit" class="btn-submit">문의 보내기 (새로고침 차단)</button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- 외부 스크립트 파일 연동 -->
+  <script src="main_07.js" defer></script>
+</body>
+</html>

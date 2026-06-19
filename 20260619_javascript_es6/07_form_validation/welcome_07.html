@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>가입 완료 및 환영 페이지</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background-color: #f5f6fa;
+      color: #2f3542;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+    .welcome-card {
+      background-color: #ffffff;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+    }
+    .welcome-title {
+      font-size: 1.8rem;
+      color: #4361ee;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .welcome-desc {
+      font-size: 1rem;
+      color: #57606f;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+    .user-info-box {
+      background-color: #f8f9ff;
+      border: 1px solid #e8f0fe;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    .info-row {
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+    .info-row:last-child {
+      margin-bottom: 0;
+    }
+    .info-label {
+      font-weight: bold;
+      color: #4b5563;
+      display: inline-block;
+      width: 100px;
+    }
+    .info-value {
+      color: #2f3542;
+    }
+    .btn-home {
+      display: inline-block;
+      background-color: #4361ee;
+      color: white;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    .btn-home:hover {
+      background-color: #3f37c9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="welcome-card">
+      <h1 class="welcome-title">가입 완료를 환영합니다!</h1>
+      <p class="welcome-desc">
+        유효성 검사를 안전하게 통과하여 회원가입 양식이 제출되었습니다.<br>
+        전달받은 가입자 정보는 다음과 같습니다.
+      </p>
+
+      <!-- URL 파라미터에서 추출한 데이터를 바인딩할 영역 -->
+      <div class="user-info-box">
+        <div class="info-row">
+          <span class="info-label">이름</span>
+          <span class="info-value" id="welcome-name">불러오는 중...</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">이메일</span>
+          <span class="info-value" id="welcome-email">불러오는 중...</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">문의 유형</span>
+          <span class="info-value" id="welcome-subject">불러오는 중...</span>
+        </div>
+      </div>
+
+      <a href="practice_07.html" class="btn-home">가입 폼으로 돌아가기</a>
+    </div>
+  </div>
+
+  <!-- 데이터 파싱 스크립트 연결 -->
+  <script src="welcome_07.js" defer></script>
+</body>
+</html>
