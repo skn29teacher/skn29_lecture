@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const regularContextObj = {
       courseName: "모던 프론트엔드 실무과정",
       
-      startCourse: function() {
+      startCourse: function() {        
         // 일반 함수는 메서드로 호출될 때 this가 regularContextObj를 가리킵니다.
         // 하지만 내부 비동기 콜백(일반 function)으로 감싸져 실행되면 호출 주체가 유실되어 전역 또는 undefined로 꼬입니다.
         setTimeout(function() {
