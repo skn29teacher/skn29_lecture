@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>구조분해 할당 및 복사 불변성 실증</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background-color: #f1f3f9;
+      color: #2c3e50;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: 20px;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      color: #1e272e;
+      margin: 0 0 10px 0;
+    }
+    header p {
+      font-size: 1.1rem;
+      color: #7f8c8d;
+      margin: 0;
+    }
+    
+    /* 섹션 레이아웃 */
+    .section-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      border: 1px solid #e9ecef;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      color: #2c3e50;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-left: 4px solid #4361ee;
+      padding-left: 10px;
+      font-weight: bold;
+    }
+    .section-desc {
+      font-size: 0.95rem;
+      color: #57606f;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    /* 버튼 그룹 스타일 */
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+    .btn-action {
+      background-color: #4361ee;
+      color: #ffffff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .btn-action:hover {
+      background-color: #3f37c9;
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+    .btn-danger {
+      background-color: #e74c3c;
+    }
+    .btn-danger:hover {
+      background-color: #c0392b;
+    }
+    .btn-success {
+      background-color: #2ecc71;
+    }
+    .btn-success:hover {
+      background-color: #27ae60;
+    }
+    
+    /* 입력 인풋 스타일 */
+    .input-control {
+      padding: 10px;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      width: 250px;
+    }
+    
+    /* 결과 출력 영역 */
+    .terminal-box {
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      min-height: 50px;
+      white-space: pre-wrap;
+      margin-top: 15px;
+      border: 1px solid #34495e;
+    }
+    
+    /* 카드 리스트 그리드 */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .product-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+    }
+    .product-title {
+      font-size: 1.2rem;
+      margin: 0 0 8px 0;
+      color: #2c3e50;
+      font-weight: bold;
+    }
+    .product-price {
+      font-size: 1.1rem;
+      color: #e74c3c;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+    .product-meta {
+      font-size: 0.8rem;
+      color: #7f8c8d;
+      background-color: #f8f9fa;
+      padding: 8px 12px;
+      border-radius: 6px;
+      line-height: 1.5;
+    }
+    
+    /* 하단 가이드 */
+    .footer-note {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #95a5a6;
+      background-color: #e2e8f0;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>2차시 실습: 구조분해 할당 및 복사 불변성 실증</h1>
+      <p>구조분해 할당의 실무 고급 패턴을 관측하고, 전개 연산자의 얕은 복사 오염 및 깊은 복사 해결책을 검증합니다.</p>
+    </header>
+
+    <!-- 섹션 1: 구조분해 할당 및 변수 교환 -->
+    <div class="section-card">
+      <h2 class="section-title">1. 구조분해 할당 및 스왑(Swap), 중첩 객체 추출 실증</h2>
+      <p class="section-desc">
+        배열 구조분해를 활용한 임시 변수 없는 변수 값 교환(스왑) 및 중첩 구조의 객체에서 한 번에 원하는 하위 데이터를 수거하는 실무 기술을 확인합니다.
+      </p>
+      <div class="btn-group">
+        <button id="btn-destruct-swap" class="btn-action">구조분해 변수 교환(Swap) 실행</button>
+        <button id="btn-destruct-nested" class="btn-action">중첩 객체 및 함수 매개변수 분해 실행</button>
+      </div>
+      <div class="terminal-box" id="term-destruct">결과 출력을 대기하고 있습니다.</div>
+    </div>
+
+    <!-- 섹션 2: 얕은 복사 오염 및 깊은 복사 해결 -->
+    <div class="section-card">
+      <h2 class="section-title">2. 전개 연산자 얕은 복사(Shallow Copy) 오염 및 깊은 복사(Deep Copy) 해결</h2>
+      <p class="section-desc">
+        객체 전개 연산자(`...`)로 복사한 사본 객체의 내부 중첩 객체를 수정하여 원본까지 오염되는 전형적인 버그를 유도하고, `structuredClone` 깊은 복사를 사용하여 오염 현상을 완벽 차단하는 실무 해결책을 실증합니다.
+      </p>
+      <div class="btn-group">
+        <button id="btn-shallow-dirty" class="btn-action btn-danger">얕은 복사 사본 변경 (원본 오염 유도)</button>
+        <button id="btn-deep-safe" class="btn-action btn-success">깊은 복사 사본 변경 (원본 안전 보호)</button>
+      </div>
+      <div class="terminal-box" id="term-copy">결과 출력을 대기하고 있습니다.</div>
+    </div>
+
+    <!-- 섹션 3: 나머지 매개변수 가변 인자 계산 -->
+    <div class="section-card">
+      <h2 class="section-title">3. 나머지 매개변수(...rest) 기반 가변 인자 결합 연산기</h2>
+      <p class="section-desc">
+        매개변수의 개수를 미리 정하지 않고 들어오는 대로 받아내어 배열 고차 함수인 `reduce` 연산과 즉각 융합해내는 가변 인자 처리 기법을 실습합니다.
+      </p>
+      <div style="margin-bottom: 15px;">
+        <input type="text" id="input-numbers" class="input-control" value="10, 20, 30, 40" placeholder="쉼표로 숫자를 입력하세요">
+        <button id="btn-rest-calc" class="btn-action btn-success">가변 인자 합산 계산 실행</button>
+      </div>
+      <div class="terminal-box" id="term-rest">결과 출력을 대기하고 있습니다.</div>
+    </div>
+
+    <!-- 섹션 4: 종합 상품 카드 리스트 렌더링 -->
+    <div class="section-card">
+      <h2 class="section-title">4. 종합 실습: 전개 연산자와 구조분해 할당을 활용한 상품 카드 렌더링</h2>
+      <p class="section-desc">
+        기본 상품 목록에 신규 상품 데이터를 결합하는 과정에서 얕은 복사 및 깊은 복사 개념을 연계하고, 객체 구조분해 할당 및 나머지 수거 구문(`...meta`)을 사용해 카드를 화면에 동적 렌더링합니다.
+      </p>
+      <div class="btn-group">
+        <button id="btn-render-products" class="btn-action btn-success">상품 카드 안전 병합 및 렌더링 시작</button>
+      </div>
+      <!-- 상품 카드 그리드 컨테이너 -->
+      <div class="product-grid" id="product-card-container">
+        <div style="color: #95a5a6; text-align: center; grid-column: 1 / -1; padding: 20px;">
+          렌더링 버튼을 누르면 실습 카드가 생성됩니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- 하단 가이드 문구 -->
+    <div class="footer-note">
+      본 실습은 2일차 2차시 강의에 매핑되어 있으며, 이모티콘을 모두 배제한 깨끗한 텍스트 기반 코드로 안전하게 실증 검증을 수행합니다.
+    </div>
+  </div>
+
+  <!-- 외부 스크립트 연결 -->
+  <script src="main_02.js" defer></script>
+</body>
+</html>
