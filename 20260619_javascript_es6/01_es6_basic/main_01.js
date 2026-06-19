@@ -66,12 +66,16 @@ document.addEventListener('DOMContentLoaded',()=>{
         termConst.textContent += "\n\n(참조 주소 자체를 바꾸는 mutableUser= {} 형태의 불가능하지만 내부 프로퍼티 제어는 차단되지 않는다"
     });
     document.getElementById('btn-const-freeze')?.addEventListener('click',()=>{
+        // strict mode 활성화 해서 동결된 객체 수정시 에러를 유도
+        // "use strict"
+
         const frozeUser = {name:'홍길동', level:"초급"};
         // 객체를 물리적 동결
         Object.freeze(frozeUser);
         let freezeLog = `객체 동결 성공 여부 : ${Object.isFrozen(frozeUser)? "동결 완료" : "동결 실패"}\n `
         try{
             frozeUser.level="중급";
+            freezeLog += `에러없이 통과되었으나 수정사항이 반영안됨 현재 level = ${frozeUser.level}`;
         }catch(e){
             freezeLog += `수정 에러 발생 : ${e.message}`
         }
