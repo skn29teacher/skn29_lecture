@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM 조작 및 성능 최적화</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background-color: #f8f9fa;
+      color: #333333;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: 20px;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      color: #212529;
+      margin: 0 0 10px 0;
+    }
+    header p {
+      font-size: 1.1rem;
+      color: #6c757d;
+      margin: 0;
+    }
+    
+    /* 섹션 레이아웃 */
+    .section-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      border: 1px solid #e9ecef;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      color: #212529;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-left: 4px solid #4361ee;
+      padding-left: 10px;
+      font-weight: bold;
+    }
+    .section-desc {
+      font-size: 0.95rem;
+      color: #495057;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    /* 버튼 그룹 스타일 */
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .btn-action {
+      background-color: #4361ee;
+      color: #ffffff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .btn-action:hover {
+      background-color: #3f37c9;
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+    .btn-danger {
+      background-color: #e63946;
+    }
+    .btn-danger:hover {
+      background-color: #c92a3a;
+    }
+    .btn-success {
+      background-color: #2a9d8f;
+    }
+    .btn-success:hover {
+      background-color: #207a6e;
+    }
+    
+    /* 입력 인풋 스타일 */
+    .input-control {
+      padding: 10px;
+      border: 2px solid #ced4da;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+    }
+    
+    /* 결과 출력 영역 */
+    .terminal-box {
+      background-color: #212529;
+      color: #f8f9fa;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      min-height: 40px;
+      white-space: pre-wrap;
+      margin-top: 15px;
+      border: 1px solid #343a40;
+    }
+    
+    /* 실시간 렌더링 결과 확인 */
+    .render-target-box {
+      border: 2px dashed #ced4da;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+      margin-top: 12px;
+      min-height: 40px;
+      word-break: break-all;
+    }
+    
+    /* 알림 센터 리스트 */
+    .notice-center {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 15px;
+      min-height: 100px;
+      border: 1px solid #e9ecef;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+    }
+    .notice-item {
+      background-color: #ffffff;
+      border-left: 4px solid #4361ee;
+      padding: 12px 15px;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: opacity 0.3s;
+    }
+    .notice-content {
+      flex: 1;
+    }
+    .notice-title {
+      font-weight: bold;
+      margin: 0 0 4px 0;
+      font-size: 0.95rem;
+    }
+    .notice-text {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #6c757d;
+    }
+    .btn-delete-item {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    .btn-delete-item:hover {
+      background-color: #f5c6cb;
+    }
+    
+    /* 최적화 그리드 리스트 */
+    .fragment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .fragment-card {
+      background: #ffffff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+      text-align: center;
+    }
+    
+    /* 하단 가이드 */
+    .footer-note {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #6c757d;
+      background-color: #e9ecef;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>DOM 조작 및 XSS 보안 실증</h1>
+      <p>동적 DOM 생성 및 삭제 API를 습득하고, XSS 보안 위협 실증 및 DocumentFragment 최적화를 테스트합니다.</p>
+    </header>
+
+    <!-- 섹션 1: textContent vs innerHTML 보안 실증 -->
+    <div class="section-card">
+      <h2 class="section-title">1. textContent vs innerHTML XSS 보안성 비교 실증</h2>
+      <p class="section-desc">
+        사용자가 임의로 작성한 스크립트가 섞인 데이터를 화면에 출력할 때 발생하는 스크립트 강제 주입 해킹(XSS) 취약점을 재현해 봅니다.
+      </p>
+      
+      <div>
+        <label style="font-weight: bold; font-size: 0.9rem;" for="input-xss">사용자 입력값 (시뮬레이션 스크립트):</label>
+        <input type="text" id="input-xss" class="input-control" value="&lt;img src='invalid_url' onerror='console.warn(&quot;XSS 공격 성공: 외부 스크립트 작동 완료&quot;); alert(&quot;XSS 해킹 시나리오 작동: 위험&quot;);'&gt; 일반 텍스트">
+      </div>
+      
+      <div class="btn-group">
+        <button id="btn-inject-text" class="btn-action btn-success">textContent 주입 (안전 이스케이프)</button>
+        <button id="btn-inject-html" class="btn-action btn-danger">innerHTML 주입 (XSS 위험 노출)</button>
+      </div>
+      
+      <!-- 주입 결과 노출 컨테이너 -->
+      <div class="render-target-box" id="xss-render-box">주입 결과를 이곳에 렌더링합니다.</div>
+      <div class="terminal-box" id="term-xss">콘솔 디버깅 상태를 인계 대기 중입니다.</div>
+    </div>
+
+    <!-- 섹션 2: 알림 센터 노드 제어 (생성, prepend, append, remove) -->
+    <div class="section-card">
+      <h2 class="section-title">2. 실시간 알림 센터 노드 라이프사이클 제어</h2>
+      <p class="section-desc">
+        `createElement`를 통해 메모리 노드를 동적으로 빌드하고, `prepend`를 이용해 최신 메시지를 상단에, `append`를 이용해 맨 하단에 덧붙이고, `remove`로 개별 요소를 소멸시킵니다.
+      </p>
+      
+      <div class="btn-group">
+        <button id="btn-prepend-notice" class="btn-action btn-success">상단 최신 알림 추가 (prepend)</button>
+        <button id="btn-append-notice" class="btn-action">하단 이전 알림 추가 (append)</button>
+        <button id="btn-clear-notice" class="btn-action btn-danger">모든 알림 일괄 소멸</button>
+      </div>
+      
+      <!-- 알림 보드 컨테이너 -->
+      <div class="notice-center" id="notice-board-container">
+        <!-- 동적 노드가 쌓일 구역 -->
+      </div>
+    </div>
+
+    <!-- 섹션 3: DocumentFragment 성능 최적화 -->
+    <div class="section-card">
+      <h2 class="section-title">3. DocumentFragment 기반 리플로우(Reflow) 최적화 렌더링</h2>
+      <p class="section-desc">
+        다량의 엘리먼트를 하나씩 브라우저 돔에 삽입하여 리플로우 연산 부하를 매번 일으키는 구식 방식과, 가상 버퍼 공간에 취합해 단 1회만 마운트하는 최적화 성능 격차를 이해합니다.
+      </p>
+      
+      <div class="btn-group">
+        <button id="btn-render-fragment" class="btn-action btn-success">최적화 버퍼(DocumentFragment) 렌더러 작동</button>
+        <button id="btn-clear-grid" class="btn-action btn-danger">그리드 청소</button>
+      </div>
+      
+      <!-- 카드 렌더링 구역 -->
+      <div class="fragment-grid" id="fragment-grid-container">
+        <!-- 카드가 그려질 영역 -->
+      </div>
+    </div>
+
+    <!-- 하단 가이드 문구 -->
+    <div class="footer-note">
+      하단 푸터영억
+    </div>
+  </div>
+
+  <!-- 외부 스크립트 연결 -->
+  <script src="main_04.js" defer></script>
+</body>
+</html>
