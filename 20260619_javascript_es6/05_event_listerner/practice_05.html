@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이벤트 리스너 기초 및 타깃 대조</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background-color: #f1f5f9;
+      color: #334155;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 20px;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      color: #0f172a;
+      margin: 0 0 10px 0;
+    }
+    header p {
+      font-size: 1.1rem;
+      color: #64748b;
+      margin: 0;
+    }
+    
+    /* 섹션 레이아웃 */
+    .section-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      border: 1px solid #e2e8f0;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      color: #0f172a;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-left: 4px solid #4361ee;
+      padding-left: 10px;
+      font-weight: bold;
+    }
+    .section-desc {
+      font-size: 0.95rem;
+      color: #475569;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    /* 버튼 그룹 스타일 */
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .btn-action {
+      background-color: #4361ee;
+      color: #ffffff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .btn-action:hover {
+      background-color: #3f37c9;
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+    
+    /* 결과 출력 영역 */
+    .terminal-box {
+      background-color: #0f172a;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      min-height: 40px;
+      white-space: pre-wrap;
+      margin-top: 15px;
+      border: 1px solid #334155;
+    }
+    
+    /* 중첩 영역 스타일 (target vs currentTarget 실습) */
+    .outer-btn-container {
+      background-color: #f8fafc;
+      border: 2px solid #cbd5e1;
+      padding: 25px;
+      border-radius: 8px;
+      margin-top: 15px;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+    .custom-nested-button {
+      background-color: #475569;
+      color: #ffffff;
+      padding: 15px 30px;
+      border-radius: 6px;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .custom-nested-button span {
+      background-color: #e2e8f0;
+      color: #0f172a;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      margin-left: 5px;
+    }
+    
+    /* 키보드 디코더 대시보드 */
+    .keyboard-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .keyboard-key-card {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 15px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .key-card-label {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .key-card-value {
+      font-size: 1.3rem;
+      color: #0f172a;
+      font-weight: bold;
+      font-family: monospace;
+    }
+    
+    /* 입력 컨트롤 */
+    .input-control {
+      padding: 10px;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* 로드 타이밍 박스 */
+    .load-time-info {
+      background-color: #f8fafc;
+      padding: 15px;
+      border-radius: 6px;
+      border-left: 4px solid #0ea5e9;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>이벤트 리스너 기초 및 정보 디코딩</h1>
+      <p>안전한 DOM 로딩 제어, 다중 리스너 결합, 마우스 및 키보드 이벤트 메타데이터를 분석합니다.</p>
+    </header>
+
+    <!-- 로드 이벤트 대조 정보 구역 -->
+    <div class="load-time-info" id="load-timing-box">
+      로딩 시점 확인 대기 중...
+    </div>
+
+    <!-- 섹션 1: addEventListener 복수 바인딩 -->
+    <div class="section-card">
+      <h2 class="section-title">1. addEventListener 다중 리스너 바인딩 실증</h2>
+      <p class="section-desc">
+        하나의 버튼에 서로 다른 기능을 담당하는 3개의 핸들러 함수를 동시에 걸어두었을 때, 기존 이벤트를 덮어쓰지 않고 연쇄 구동되는 모습을 실습합니다.
+      </p>
+      
+      <div class="btn-group">
+        <button id="btn-multiple-listeners" class="btn-action">연쇄 리스너 구동 버튼</button>
+      </div>
+      <div class="terminal-box" id="term-multiple">결과 출력을 대기하고 있습니다.</div>
+    </div>
+
+    <!-- 섹션 2: event.target vs event.currentTarget 대조 -->
+    <div class="section-card">
+      <h2 class="section-title">2. event.target vs event.currentTarget 시각 대조</h2>
+      <p class="section-desc">
+        버튼 내부에 배치된 span 영역을 직접 마우스로 조준하여 누를 때, 실제 하위 충돌 지점(`event.target`)과 이벤트가 걸린 실제 주체(`event.currentTarget`)의 차이를 추적합니다.
+      </p>
+      
+      <div class="outer-btn-container" id="event-parent-container">
+        감시자 영역 (div#event-parent-container)
+        <div style="margin-top: 15px;">
+          <button class="custom-nested-button" id="btn-nested-trigger">
+            버튼 영역 (button#btn-nested-trigger)
+            <span id="span-nested-text">내부 텍스트 (span#span-nested-text)</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="terminal-box" id="term-target-compare">위의 영역 내에서 마우스를 클릭하면 실시간 비교 정보가 출력됩니다.</div>
+    </div>
+
+    <!-- 섹션 3: 키보드 이벤트 메타데이터 수집 -->
+    <div class="section-card">
+      <h2 class="section-title">3. 실시간 키보드 이벤트 메타데이터 디코더</h2>
+      <p class="section-desc">
+        인풋 필드에 키보드 입력을 가할 때 발생하는 이벤트 객체(`keydown`)를 가로채어 입력된 키 명칭, 키 코드, 조합키 눌림 여부를 실시간 출력 대시보드로 보여줍니다.
+      </p>
+      
+      <input type="text" id="input-keyboard-monitor" class="input-control" placeholder="이곳에 타이핑하여 키보드 정보를 확인하세요.">
+      
+      <div class="keyboard-dashboard">
+        <div class="keyboard-key-card">
+          <div class="key-card-label">event.key</div>
+          <div class="key-card-value" id="kb-key">-</div>
+        </div>
+        <div class="keyboard-key-card">
+          <div class="key-card-label">event.code</div>
+          <div class="key-card-value" id="kb-code">-</div>
+        </div>
+        <div class="keyboard-key-card">
+          <div class="key-card-label">Shift / Control</div>
+          <div class="key-card-value" id="kb-mods">-</div>
+        </div>
+      </div>
+      <div class="terminal-box" id="term-keyboard">키보드 실시간 로그...</div>
+    </div>
+
+    <!-- 하단 가이드 문구 -->
+    <div class="footer-note">
+      가이드 문구
+    </div>
+  </div>
+
+  <!-- 외부 스크립트 연결 -->
+  <script src="main_05.js" defer></script>
+</body>
+</html>
