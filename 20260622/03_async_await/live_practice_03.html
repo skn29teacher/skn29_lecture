@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Async/Await 고도화</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --primary: #3b82f6;
+      --accent: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: #334155;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      background: linear-gradient(to right, #3b82f6, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* 가이드 안내 카드 */
+    .guide-card {
+      background-color: #1e1b4b;
+      border: 1px solid #4338ca;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .guide-card h3 {
+      margin-top: 0;
+      color: #818cf8;
+      font-size: 1.05rem;
+    }
+    .guide-card ol {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .guide-card li {
+      margin-bottom: 0.4rem;
+    }
+    .section-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background-color: #2563eb;
+      transform: translateY(-1px);
+    }
+    button.accent {
+      background-color: var(--accent);
+    }
+    button.danger {
+      background-color: var(--danger);
+    }
+    .test-area {
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px dashed var(--border);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+    }
+    .log-panel {
+      background-color: #020617;
+      color: #38bdf8;
+      font-family: monospace;
+      padding: 1rem;
+      border-radius: 8px;
+      height: 180px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      margin-top: 0.5rem;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Async/Await 고도화 점진적 라이브 코딩</h1>
+
+    <!-- 가이드 안내 카드 -->
+    <div class="guide-card">
+      <h3>단계별 실습 흐름</h3>
+      <ol>
+        <li><strong>Step 1 [Async/Await 기본 전환]</strong>: 복잡하고 읽기 어려운 Promise 체이닝 코드 구조를 <code>async</code> 함수와 <code>await</code> 키워드를 활용해 위에서 아래로 물 흐르듯 읽히는 코드로 전환합니다.</li>
+        <li><strong>Step 2 [try-catch-finally 통합 에러]</strong>: 비동기 통신 중 한도 초과 등의 오류 발생 시, <code>try/catch</code>를 사용하여 동기식 언어처럼 우아하게 잡아내는 통합 예외 제어법을 익힙니다.</li>
+        <li><strong>Step 3 [await 직렬 vs 병렬]</strong>: 순차적으로 기다리는 직렬 실행과 <code>Promise.all</code>을 await로 기다리는 병렬 호출의 구체적 성능 격차를 비교 검증합니다.</li>
+      </ol>
+    </div>
+
+    <!-- Step 1: Async/Await 전환 -->
+    <div class="section-card">
+      <div class="section-title">Step 1: Promise 체이닝에서 Async/Await 문법 리팩토링</div>
+      <div class="btn-group">
+        <button id="btn-basic-await">Async/Await 결제 연동 구동</button>
+      </div>
+    </div>
+
+    <!-- Step 2: try-catch-finally 예외 처리 -->
+    <div class="section-card">
+      <div class="section-title">Step 2: try-catch-finally를 활용한 비동기 예외 통합 관리</div>
+      <div class="btn-group">
+        <button id="btn-pay-ok" class="accent">가상 승인 시나리오 (정상)</button>
+        <button id="btn-pay-fail" class="danger">가상 반려 시나리오 (한도초과)</button>
+      </div>
+      <div id="pay-status" class="test-area">결제 결과가 여기에 표시됩니다.</div>
+    </div>
+
+    <!-- Step 3: await 직렬 vs 병렬 -->
+    <div class="section-card">
+      <div class="section-title">Step 3: await 직렬(순차) 실행 vs 병렬(동시) 실행 비교</div>
+      <div class="btn-group">
+        <button id="btn-speed-serial">A. 직렬 await 구동 (비효율)</button>
+        <button id="btn-speed-parallel" class="accent">B. 병렬 await 구동 (최적화)</button>
+      </div>
+    </div>
+
+    <!-- 콘솔 로그 패널 -->
+    <div class="section-card">
+      <div class="section-title" style="color: #38bdf8;">콘솔 로그 모니터 (비동기 흐름 추적용)</div>
+      <div id="log-panel" class="log-panel"></div>
+      <button onclick="clearLog()" style="margin-top: 0.5rem; background-color: var(--danger);">로그 리셋</button>
+    </div>
+  </div>
+  </body>
+  </html>
