@@ -181,7 +181,7 @@
     }
 
     function processPayment(orderOd, limitExceeded=false){
-      return new Promise( ()=>{
+      return new Promise( (resolve, reject)=>{
 
         setTimeout( ()=>{
           if(limitExceeded){
