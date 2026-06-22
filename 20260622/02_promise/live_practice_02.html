@@ -327,7 +327,7 @@
       return new Promise( (resolve)=> {
         log(`[step3] 알림톡 : 결제정보 ${paymentID} 발송 전송....`);
         setTimeout(() => {
-          resolve('알리전송 완료');
+          resolve('알림전송 완료');
         }, 1000);
       } );
     }
@@ -350,6 +350,15 @@
         log(` --> 에러 감지 : ${err.message}`);
        })
     });
+
+// step4  Promise.all 병렬 최적화
+// 패턴 A : (순차)  3개의 요청을 차례로 하나씩 대기하여 소요시간이 모두 합산
+// 패턴 B : (병렬) 3개의 요청을 한꺼번에 출발시켜, 가장 길게 걸리는 1개의 작업시간으로 대기시간측정
+
+function fetchUserProfile(){return new Promise( r => setTimeout(() => r({ name:'홍길동'}), 800)); }
+function fetchSalesState(){return new Promise( r => setTimeout(() => r({ sales:700000}), 1200)); }
+function fetchNotice(){return new Promise( r => setTimeout(() => r(['긴급공지','정기정검']), 600)); }
+
 
 </script>
 
