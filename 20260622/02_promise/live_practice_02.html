@@ -332,6 +332,25 @@
       } );
     }
 
+    document.querySelector('#btn-chain').addEventListener('click', ()=>{
+      log('쇼핑몰 주문-결제-알림 파이프라인 구동.....');
+      createOrder('갤럭시 s6')
+      .then( (orderID)=>{
+        log(` --> 1단계 주문 성공(주문번호 : ${orderID})`);
+        return processPayment(orderID);
+       })
+       .then( (paymentID)=>{
+          log(` --> 2단계 결제 성공(결제승인id : ${paymentID})`);
+          return sendNotification(paymentID);
+       })
+       .then( (resultMSG)=>{
+        log(` --> 3알림톡 최종 수신 : ${resultMSG}`);
+       })
+       .catch( (err)=>{
+        log(` --> 에러 감지 : ${err.message}`);
+       })
+    });
+
 </script>
 
 </body>
