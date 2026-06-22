@@ -262,7 +262,14 @@
     // step2 .then() .catch() .finally()
     function fakeUpload(fileSize){
       return new Promise( (resolve, reject) =>{
-        
+        log('프로필 이미지 전송시작...');
+        setTimeout(() => {
+          if(fileSize >5){  // 용량이 5Mb 초과하면
+            reject( new Error('파일 크기가 5MB 용량을 초과했습니다.'))
+          }else{
+            resolve('test.png');
+          }
+        }, 1500);
       });      
     }
 
