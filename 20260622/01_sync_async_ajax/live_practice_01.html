@@ -224,6 +224,7 @@
                 if (xhr.status === 200){
                     const users = JSON.parse(xhr.responseText)
                     xhrResult.textContent = `조회 완료 첫 번째 사용자 : ${users[0].name} (${users[0].email})`;
+                    log(xhr.responseText);
                     log('xhr 통신 성공 및 데이터 렌더링 완료');
                 }else{
                     xhrResult.textContent = '데이터 요청 실패';
@@ -246,6 +247,31 @@
             return names[state] || 'UNKNOWN';
         }
     });
+
+    // ==========================================
+    // 3단계: 비동기 콜백 중첩(콜백 지옥)
+    // ==========================================
+    // 가상의 비동기 함수
+    function fackeLogin(email, callback){
+        setTimeout(() => {
+            log(`[1] 로그인 성공: ${email}`);
+            callback(email);
+        }, 1000);
+    }
+    function fakeGetProfile(email, callback){
+        setTimeout(() => {
+            log(`[2] 포르필 로드 완료:${email}의 프로필`);
+            callback({name:'홍길동', role:'admin'});
+        }, 1000);
+    }
+    function fakeNotifications(profile, callback){
+        setTimeout(() => {
+            log(`[3] 알림메시지 로드완료 :${profile.name}님의 알림 5건`);
+            callback(['알림1','알림2']);
+        }, 1000);
+    }
+
+
 
   </script>
 </body>
