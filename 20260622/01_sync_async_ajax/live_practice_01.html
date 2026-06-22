@@ -171,7 +171,26 @@
     // ==========================================
     
     // 클릭 횟수 증가 및 버블링 실습
-    
+    let count = 0;
+    const btnClickCount = document.querySelector('#btn-click-count');
+    const chkBubble = document.querySelector('#chk-bubble');
+        
+    btnClickCount.addEventListener('click', (e)=>{
+        count++;
+        btnClickCount.textContent = `클릭 횟수: ${count}`;
+        log(`[클릭] 카운터 버튼 클릭됨 (${count})`);
+
+        if(chkBubble.checked){
+            e.stopPropagation();
+            log('--> 버블링 전파가 차단되었습니다. (e.stopPropagation())');
+        }
+    });
+
+
+    const btnSync = document.querySelector('.section-card');
+    btnSync.addEventListener('click', ()=>{
+        alert('click 이벤트 발생');
+    });
   </script>
 </body>
 </html>
