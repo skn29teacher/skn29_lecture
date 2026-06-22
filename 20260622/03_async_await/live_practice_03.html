@@ -169,6 +169,39 @@
       <div id="log-panel" class="log-panel"></div>
       <button onclick="clearLog()" style="margin-top: 0.5rem; background-color: var(--danger);">로그 리셋</button>
     </div>
-  </div>
+  </div>  
+
+  <script>
+    //  가상의 비동기 api 정의
+    function createOrder(item){
+      return new Promise( resolve =>{
+        setTimeout(() => resolve({orderId:'ORD_001'}), 800);
+      } );
+    }
+
+    function processPayment(orderOd, limitExceeded=false){
+      return new Promise( ()=>{
+
+        setTimeout( ()=>{
+          if(limitExceeded){
+            reject(new Error('PG사 한도초과: 잔액부족'));
+          }else{
+            resolve({paymentId:'PAY_OK_001', status:'SUCCESS'});
+          }
+        }, 800);        
+      });
+    }
+
+    function sendReceip(paymentId){
+      return new Promise( resolve=>{
+        setTimeout(() => resolve('카카오 알림 전송 성공'), 500);
+      })
+    }
+
+    // step1 promise 체이닝에서 -> Async/Await 문법 전환
+    
+
+  </script>
+  <script scr="../js/common.js" ></script>
   </body>
   </html>
