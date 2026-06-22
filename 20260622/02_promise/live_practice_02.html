@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Promise 기초와 실무 제어</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --primary: #3b82f6;
+      --accent: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: #334155;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      background: linear-gradient(to right, #3b82f6, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* 가이드 안내 카드 */
+    .guide-card {
+      background-color: #1e1b4b;
+      border: 1px solid #4338ca;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .guide-card h3 {
+      margin-top: 0;
+      color: #818cf8;
+      font-size: 1.05rem;
+    }
+    .guide-card ol {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .guide-card li {
+      margin-bottom: 0.4rem;
+    }
+    .section-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background-color: #2563eb;
+      transform: translateY(-1px);
+    }
+    button.accent {
+      background-color: var(--accent);
+    }
+    button.warning {
+      background-color: var(--warning);
+      color: #0f172a;
+      font-weight: bold;
+    }
+    .state-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+    .state-pending { background-color: var(--warning); color: #0f172a; }
+    .state-fulfilled { background-color: var(--accent); color: white; }
+    .state-rejected { background-color: var(--danger); color: white; }
+    
+    .test-area {
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px dashed var(--border);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+    }
+    .log-panel {
+      background-color: #020617;
+      color: #38bdf8;
+      font-family: monospace;
+      padding: 1rem;
+      border-radius: 8px;
+      height: 180px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      margin-top: 0.5rem;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Promise 기초와 실무 제어 점진적 라이브 코딩</h1>
+
+    <!-- 점진적 학습 가이드 카드 -->
+    <div class="guide-card">
+      <h3>단계별 실습 흐름</h3>
+      <ol>
+        <li><strong>Step 1 [Promise 상태 전이]</strong>: Geolocation API를 활용해 위치 권한 동의에 따라 <code>Pending -> Fulfilled / Rejected</code> 상태가 어떻게 바뀌는지 추적합니다.</li>
+        <li><strong>Step 2 [then/catch/finally]</strong>: 파일 업로드 실무 모사를 통해 리소스 성공/실패 여부와 관계없이 로딩 상태를 최종 해제하는 <code>.finally()</code>의 역할을 배웁니다.</li>
+        <li><strong>Step 3 [Promise 체이닝과 return의 원리]</strong>: 주문서 작성 -> 결제 요청 -> 알림 발송을 단계별로 이으며, 체인 중간에서 <strong>반드시 새로운 Promise를 return 해야 하는 원리</strong>를 배웁니다.</li>
+        <li><strong>Step 4 [Promise.all 병렬 최적화]</strong>: 세 개의 독립 데이터를 연달아 기다리는 비효율을 <code>Promise.all</code>을 통해 동시에 호출하여 대기 속도를 3배 개선합니다.</li>
+      </ol>
+    </div>
+
+    <!-- Step 1: Geolocation Promise -->
+    <div class="section-card">
+      <div class="section-title">
+        Step 1: Geolocation API로 Promise 3가지 상태 감지
+        <span id="promise-state" class="state-badge state-pending">Pending (대기 중)</span>
+      </div>
+      <div class="btn-group">
+        <button id="btn-geo">위치 권한 요청 시작</button>
+      </div>
+      <div id="geo-result" class="test-area">사용자 동의 대기 중...</div>
+    </div>
+
+    <!-- Step 2: then / catch / finally -->
+    <div class="section-card">
+      <div class="section-title">Step 2: .then(), .catch(), .finally() 예외 및 로딩 제어</div>
+      <div class="btn-group">
+        <button id="btn-upload-success">프로필 업로드 성공 케이스 (3MB)</button>
+        <button id="btn-upload-fail" style="background-color: var(--danger);">프로필 업로드 실패 케이스 (10MB)</button>
+      </div>
+      <div id="upload-result" class="test-area">대기 중...</div>
+    </div>
+
+    <!-- Step 3: Promise Chaining -->
+    <div class="section-card">
+      <div class="section-title">Step 3: Promise 체이닝 연쇄 제어 (주문 결제 파이프라인)</div>
+      <div class="btn-group">
+        <button id="btn-chain" class="warning">쇼핑몰 순차 결제 가동</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Promise.all 병렬 최적화 -->
+    <div class="section-card">
+      <div class="section-title">Step 4: Promise.all 병렬 최적화 (대시보드 로딩 성능 비교)</div>
+      <div class="btn-group">
+        <button id="btn-all-seq">A. 순차 로딩 실행 (대기 시간 누적)</button>
+        <button id="btn-all-para" class="accent">B. 병렬 로딩 실행 (가장 긴 대기 시간으로 통제)</button>
+      </div>
+    </div>
+
+    <!-- 콘솔 로그 패널 -->
+    <div class="section-card">
+      <div class="section-title" style="color: #38bdf8;">콘솔 로그 모니터 (비동기 흐름 추적용)</div>
+      <div id="log-panel" class="log-panel"></div>
+      <button onclick="clearLog()" style="margin-top: 0.5rem; background-color: var(--danger);">로그 리셋</button>
+    </div>
+  </div>
+</body>
+</html>
+  
