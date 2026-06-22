@@ -199,7 +199,14 @@
     }
 
     // step1 promise 체이닝에서 -> Async/Await 문법 전환
-    
+    document.querySelector('#btn-basic-await').addEventListener('click', async ()=>{
+      const order = await createOrder('모니터');
+      log(`1단계 주문생성 성공 : ${order.orderId}`)
+      const payment = await processPayment(order.orderId,false);
+      log(`2단계 결제완료 : ${payment.paymentId}`)
+      const notifyResult =  await sendReceip(payment.paymentId);
+      log(`3단계 알림전송 완료 : ${notifyResult}`)
+    });
 
   </script>
   <script scr="../js/common.js" ></script>
