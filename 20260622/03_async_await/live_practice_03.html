@@ -209,6 +209,22 @@
       log(`3단계 알림전송 완료 : ${notifyResult}`)
     });
 
+    // try-catch-finally
+    async function executePaymentFlow(limitExceeded){
+      const payStatus = document.querySelector('#pay-status');
+      payStatus.textContent = '처리 진행중.....';
+      try{
+        const order = await createOrder('아이폰');
+        const payment = await processPayment(order.orderId,limitExceeded)
+        payStatus.textContent = `결제성공 결제번호:${payment.paymentId}`
+        log('결제 성공');
+      }catch(err){
+        payStatus.textContent =`결제 실피 결제번호 : ${payment.paymentId}`;
+      }finally{
+        log('finally 블럭 작동--> 화면로딩 중지 및 안보이게 display=none');
+      }
+
+    }
   </script>  
   </body>
   </html>
