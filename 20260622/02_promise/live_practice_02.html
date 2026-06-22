@@ -246,8 +246,8 @@
       // 위에서 promise로 감싼(제작한) Geolocation Promise 를 호출 해서 상태에 따라 분기
       getPosition()
       .then( (position)=>{
-        const lat = position.corrds.latitude;
-        const lon = position.corrds.longitude;
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
         geoResult.textContent = `위치 권한 승인완료! 위도:${lat.toFixed(4)}, 경도 : ${lon.toFixed(4)}`;
         updateBadge('fulfilled','Fulfilled(이행 성공)')
         log('[Step 1 성공] 위치 자표가 정상 수집되었습니다.')
