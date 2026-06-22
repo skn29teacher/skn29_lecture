@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Fetch API 기초와 REST API 개념</title>
+  <!-- 2일차 스타일을 완벽히 계승한 공통 CSS 연결 -->
+  <link rel="stylesheet" href="../css/common.css">
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background-color: #f8f9fa;
+      color: #212529;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 750px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 20px;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      color: #1a252f;
+      margin: 0 0 10px 0;
+    }
+    header p {
+      font-size: 1.1rem;
+      color: #6c757d;
+      margin: 0;
+    }
+    .section-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid #e9ecef;
+      position: relative; /* 로딩 오버레이 배치용 */
+    }
+    .section-title {
+      font-size: 1.3rem;
+      color: #343a40;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-left: 4px solid #4361ee;
+      padding-left: 10px;
+      font-weight: bold;
+    }
+    .section-desc {
+      font-size: 0.95rem;
+      color: #495057;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+    .btn-action {
+      background-color: #4361ee;
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .btn-action:hover {
+      background-color: #3f37c9;
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+    
+    /* 단일 프로필 카드 디자인 */
+    .profile-card {
+      max-width: 380px;
+      margin: 0 auto 25px auto;
+      background-color: #ffffff;
+      border: 1px solid #dee2e6;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+    }
+    .profile-card-header {
+      background: linear-gradient(135deg, #4361ee, #3f37c9);
+      padding: 20px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .avatar-circle {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: rgba(255,255,255,0.2);
+      margin: 0 auto 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+    }
+    .profile-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0;
+    }
+    .profile-username {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.8);
+      margin: 4px 0 0 0;
+    }
+    .profile-card-body {
+      padding: 20px;
+    }
+    .info-item {
+      display: flex;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .info-item:last-child {
+      margin-bottom: 0;
+    }
+    .info-label {
+      width: 80px;
+      font-weight: bold;
+      color: #868e96;
+      flex-shrink: 0;
+    }
+    .info-val {
+      color: #343a40;
+      word-break: break-all;
+    }
+
+    /* 로딩 오버레이 */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255,255,255,0.85);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .loading-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(67, 97, 238, 0.2);
+      border-radius: 50%;
+      border-top-color: #4361ee;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-text {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #4361ee;
+    }
+
+    .terminal-box {
+      background-color: #212529;
+      color: #f8f9fa;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      min-height: 100px;
+      white-space: pre-wrap;
+      margin-top: 20px;
+      border: 1px solid #343a40;
+      line-height: 1.5;
+    }
+    .footer-note {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #868e96;
+      background-color: #e9ecef;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Fetch API 기초 및 REST GET 요청</h1>
+      <p>가장 대중적이고 쉬운 비동기 API인 Fetch를 사용하여 서버에서 단일 사용자의 리소스를 요청하고 매핑합니다.</p>
+      <div style="margin-top: 15px;" id="theme-control-wrapper"></div>
+    </header>
+
+    <!-- 실습 카드 영역 -->
+    <div class="section-card">
+      <h2 class="section-title">JSONPlaceholder 단일 사용자 데이터 조회 (GET /users/1)</h2>
+      <p class="section-desc">
+        아래 버튼을 누르면 배달 대행 앱 배달원(Fetch)이 API 주소로 날아가 데이터 상자(JSON)를 받아오고, 상자를 개봉하여(response.json()) 화면의 프로필 카드에 정보를 매핑합니다.
+      </p>
+
+      <!-- 로딩 오버레이 -->
+      <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">배달원이 주방에서 데이터를 배달해 오는 중...</div>
+      </div>
+
+      <!-- 2일차 연계: 부모 컨테이너에 리스너를 하나만 달아 처리하는 이벤트 위임 테스트 타겟 -->
+      <div id="user-list-container" style="display: flex; gap: 12px; margin-bottom: 25px; justify-content: center; flex-wrap: wrap;">
+        <div class="user-item-btn" data-id="1" style="padding: 12px 18px; background-color: #e8ecff; border: 1px solid #4361ee; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: bold; color: #4361ee; transition: all 0.2s;">1번 사용자 로드</div>
+        <div class="user-item-btn" data-id="2" style="padding: 12px 18px; background-color: #e8ecff; border: 1px solid #4361ee; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: bold; color: #4361ee; transition: all 0.2s;">2번 사용자 로드</div>
+        <div class="user-item-btn" data-id="3" style="padding: 12px 18px; background-color: #e8ecff; border: 1px solid #4361ee; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: bold; color: #4361ee; transition: all 0.2s;">3번 사용자 로드</div>
+      </div>
+
+      <!-- 프로필 카드 (초기값 빈 상태) -->
+      <div class="profile-card">
+        <div class="profile-card-header">
+          <div class="avatar-circle" id="user-avatar">?</div>
+          <div class="profile-name" id="user-name">조회 전</div>
+          <div class="profile-username" id="user-username">username: N/A</div>
+        </div>
+        <div class="profile-card-body">
+          <div class="info-item">
+            <span class="info-label">이메일</span>
+            <span class="info-val" id="user-email">조회되지 않음</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">연락처</span>
+            <span class="info-val" id="user-phone">조회되지 않음</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">소속회사</span>
+            <span class="info-val" id="user-company">조회되지 않음</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">웹사이트</span>
+            <span class="info-val" id="user-website">조회되지 않음</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 호출 버튼 -->
+      <div class="btn-group">
+        <button id="btn-reset-card" class="btn-action btn-secondary" style="width: 100%; max-width: 250px;">프로필 카드 초기화</button>
+      </div>
+
+      <!-- 수신 로우 JSON 텍스트 뷰 -->
+      <div class="terminal-box" id="term-raw-json">서버가 응답한 배달 상자(Raw JSON)의 원시 텍스트가 여기에 개봉 정렬되어 표시됩니다.</div>
+    </div>
+
+    <!-- 하단 가이드 문구 -->
+    <div class="footer-note">
+      하단 가이드 문구
+    </div>
+  </div>
+
+  <!-- 외부 스크립트 연결 -->
+  <script src="main_04.js" defer></script>
+</body>
+</html>
