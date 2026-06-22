@@ -277,7 +277,7 @@
         fackeLogin('user@test.com',(email)=>{
             fakeGetProfile(email, (profile)=>{
                 fakeNotifications(profile, (notification)=>{
-                    log(`최종 알림 처리 완료: [${notification.join(', ')}]`)
+                    log(`최종 알림 처리 완료: [${notification.join(', ')}]`);
                 });
             });
         });
