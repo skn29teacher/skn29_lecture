@@ -186,11 +186,30 @@
         }
     });
 
-
     const btnSync = document.querySelector('.section-card');
     btnSync.addEventListener('click', ()=>{
-        alert('click 이벤트 발생');
+        log('버블링 감지');
     });
+
+    // 동기식 블로킹 연산
+    document.querySelector('#btn-sync').addEventListener('click', ()=>{
+        log('동기식 연산 (3초간 브라우저 락...)');
+        const start = Date.now();
+        while(Date.now() - start < 3000){
+            // 아무것도 안하고 대기(cpu 점유)
+        }
+        log('동기식 연산 종료... (이제 인터렉션이 다시 동작함)');
+    });
+
+    // 비동기식 settimer호출
+    document.querySelector('#btn-async').addEventListener('click',()=>{
+        setTimeout(() => {
+            log('비동기 타이머 완료(3초대기)');
+        }, 3000);
+        log('비동기식 타이머 등록완료');
+    });
+
+
   </script>
 </body>
 </html>
