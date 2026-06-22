@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실습 - Promise: 실무 중심의 비동기 흐름 제어</title>
+  <!-- 2일차 스타일을 완벽히 계승한 공통 CSS 연결 -->
+  <link rel="stylesheet" href="../css/common.css">
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      background-color: #f8f9fa;
+      color: #212529;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 950px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 20px;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      color: #1a252f;
+      margin: 0 0 10px 0;
+    }
+    header p {
+      font-size: 1.1rem;
+      color: #6c757d;
+      margin: 0;
+    }
+    .section-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid #e9ecef;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      color: #343a40;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-left: 4px solid #4361ee;
+      padding-left: 10px;
+      font-weight: bold;
+    }
+    .section-desc {
+      font-size: 0.95rem;
+      color: #495057;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+    .btn-action {
+      background-color: #4361ee;
+      color: #ffffff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .btn-action:hover {
+      background-color: #3f37c9;
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+    .btn-danger {
+      background-color: #e63946;
+    }
+    .btn-danger:hover {
+      background-color: #c92a3a;
+    }
+    .btn-success {
+      background-color: #2a9d8f;
+    }
+    .btn-success:hover {
+      background-color: #207a6e;
+    }
+    .btn-secondary {
+      background-color: #6c757d;
+    }
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+    .terminal-box {
+      background-color: #212529;
+      color: #f8f9fa;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      min-height: 60px;
+      white-space: pre-wrap;
+      margin-top: 15px;
+      border: 1px solid #343a40;
+      line-height: 1.5;
+    }
+    
+    /* 1번 실습: Geolocation LED 스타일 */
+    .indicator-wrapper {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .promise-state-indicator {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      background-color: #f8f9fa;
+      color: #6c757d;
+      transition: all 0.3s ease;
+    }
+    .promise-state-indicator.pending-active {
+      background-color: #ffb703;
+      color: #212529;
+      border-color: #ffb703;
+      box-shadow: 0 0 8px rgba(255, 183, 3, 0.4);
+    }
+    .promise-state-indicator.fulfilled-active {
+      background-color: #2a9d8f;
+      color: #ffffff;
+      border-color: #2a9d8f;
+      box-shadow: 0 0 8px rgba(42, 157, 143, 0.4);
+    }
+    .promise-state-indicator.rejected-active {
+      background-color: #e63946;
+      color: #ffffff;
+      border-color: #e63946;
+      box-shadow: 0 0 8px rgba(230, 57, 70, 0.4);
+    }
+
+    /* 2번 실습: 파일 업로드 컴포넌트 */
+    .upload-container {
+      border: 2px dashed #ced4da;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      background-color: #fafbfc;
+      margin-bottom: 15px;
+    }
+    .upload-input-label {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: bold;
+      border: 1px solid #ced4da;
+    }
+    .upload-input-label:hover {
+      background-color: #dee2e6;
+    }
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(67, 97, 238, 0.3);
+      border-radius: 50%;
+      border-top-color: #4361ee;
+      animation: spin 1s ease-in-out infinite;
+      vertical-align: middle;
+      margin-left: 10px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .upload-preview {
+      margin-top: 15px;
+      max-width: 150px;
+      border-radius: 6px;
+      border: 1px solid #dee2e6;
+      display: none;
+    }
+    .alert-banner {
+      padding: 12px;
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      border-radius: 6px;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    
+    /* 3번 실습: 결제 타임라인 체이닝 스타일 */
+    .timeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .chain-step-card {
+      padding: 16px;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background-color: #ffffff;
+      color: #495057;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    .chain-step-card.waiting {
+      border-left: 4px solid #ced4da;
+      opacity: 0.6;
+    }
+    .chain-step-card.processing {
+      border-left: 4px solid #ffb703;
+      background-color: #fffbeb;
+      color: #b45309;
+      box-shadow: 0 2px 6px rgba(255, 183, 3, 0.1);
+    }
+    .chain-step-card.completed {
+      border-left: 4px solid #2a9d8f;
+      background-color: #f0fdf4;
+      color: #166534;
+    }
+    .chain-step-card.failed {
+      border-left: 4px solid #e63946;
+      background-color: #fdf2f2;
+      color: #9b1c1c;
+    }
+    .badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .badge-waiting { background-color: #e9ecef; color: #495057; }
+    .badge-processing { background-color: #feebc8; color: #c05621; }
+    .badge-completed { background-color: #c6f6d5; color: #22543d; }
+    .badge-failed { background-color: #fed7d7; color: #9b1c1c; }
+    
+    /* 4번 실습: 대시보드 위젯 및 게이지바 스타일 */
+    .dashboard-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    .widget {
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s;
+    }
+    .widget.loading {
+      border-color: #ffb703;
+      background-color: #fffbeb;
+    }
+    .widget.loaded {
+      border-color: #2a9d8f;
+      background-color: #f0fdf4;
+    }
+    .widget-title {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #868e96;
+      text-transform: uppercase;
+    }
+    .widget-value {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #212529;
+      margin: 10px 0;
+    }
+    .widget-status {
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .all-progress-wrapper {
+      padding: 16px;
+      background-color: #f1f3f5;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #dee2e6;
+    }
+    .all-progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #495057;
+    }
+    .all-progress-track {
+      background-color: #ced4da;
+      border-radius: 6px;
+      overflow: hidden;
+      height: 24px;
+    }
+    .all-progress-bar {
+      background-color: #4361ee;
+      width: 0%;
+      height: 100%;
+      transition: width 0.05s linear;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .all-progress-bar.sync-color {
+      background-color: #e63946;
+    }
+    .all-progress-bar.async-color {
+      background-color: #2a9d8f;
+    }
+    .footer-note {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #868e96;
+      background-color: #e9ecef;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>실습: Promise 실무 중심 비동기 처리</h1>
+      <p>단순한 문법 확인을 넘어 실제 웹 개발 프로젝트 현업에서 사용되는 4가지 시나리오로 Promise의 위력을 체험합니다.</p>
+      <div style="margin-top: 15px;" id="theme-control-wrapper"></div>
+    </header>
+
+    <!-- 섹션 1: Promise의 개념과 3가지 상태 (Geolocation API) -->
+    <div class="section-card">
+      <h2 class="section-title">1. 사용자 위치 권한 요청을 통한 Promise 3가지 상태 확인</h2>
+      <p class="section-desc">
+        Geolocation API를 호출하여 브라우저 권한 동의 대기(Pending), 동의 승인(Fulfilled), 동의 거부(Rejected) 상황을 추적하고 위치 좌표 수집 상태를 점검합니다.
+      </p>
+      
+      <!-- LED 패널 -->
+      <div class="indicator-wrapper">
+        <div id="led-pending" class="promise-state-indicator">Pending (권한 승인 대기 중)</div>
+        <div id="led-fulfilled" class="promise-state-indicator">Fulfilled (승인 및 정보 수신)</div>
+        <div id="led-rejected" class="promise-state-indicator">Rejected (권한 거절 또는 장애)</div>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-geolocation-trigger" class="btn-action btn-success">사용자 위치 정보 요청 시작</button>
+      </div>
+      <div class="terminal-box" id="term-promise-state">위치 정보 조회 요청을 시작하려면 위의 버튼을 클릭하십시오. 브라우저 주소창 하단에 권한 승인 팝업이 표시됩니다.</div>
+    </div>
+
+    <!-- 섹션 2: then/catch/finally (프로필 이미지 업로드 제어) -->
+    <div class="section-card">
+      <h2 class="section-title">2. 프로필 이미지 업로드 폼 리소스 정리 제어 (then/catch/finally)</h2>
+      <p class="section-desc">
+        프로필 업로드 완료 시 화면을 변경(.then), 용량 초과 오류 시 에러 출력(.catch)을 제어하고, 성공과 실패 유무와 무관하게 로딩 장치 해제(.finally) 공통 처리를 검증합니다.
+      </p>
+      
+      <div class="upload-container">
+        <!-- 이벤트 연계: 실시간 ID 비동기 검증 -->
+        <div style="margin-bottom: 20px; text-align: left; padding: 15px; background-color: #f1f3f5; border-radius: 6px;">
+          <label style="display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 6px; color: #495057;">2일차 복습: 아이디 실시간 중복 검증 (input 이벤트 + Promise)</label>
+          <input type="text" id="input-check-id" class="input-interactive" placeholder="영문 아이디 입력 (중복 검사)" style="width: calc(100% - 22px); max-width: 300px;">
+          <span id="check-id-status" style="margin-left: 10px; font-size: 0.85rem; font-weight: bold;">아이디를 입력해 주세요.</span>
+        </div>
+
+        <label class="upload-input-label" for="profile-file-input">가상 이미지 파일 선택</label>
+        <input type="file" id="profile-file-input" style="display: none;" accept="image/*">
+        <span id="selected-file-info" style="margin-left: 10px; font-size: 0.9rem; color: #495057;">선택된 파일 없음 (샘플 파일로 업로드 가능)</span>
+        
+        <div style="margin-top: 15px;">
+          <button id="btn-upload-submit" class="btn-action">프로필 업로드 전송 시작</button>
+          <button id="btn-upload-fail-submit" class="btn-action btn-danger">대용량 강제 초과 전송 시작</button>
+          <span id="upload-loading-spinner" class="spinner" style="display: none;"></span>
+        </div>
+
+        <img id="upload-preview-img" class="upload-preview" src="" alt="업로드 완료 이미지">
+        <div id="upload-alert-banner" class="alert-banner"></div>
+      </div>
+      <div class="terminal-box" id="term-then-catch">이미지 업로드 요청 대기 중입니다.</div>
+    </div>
+
+    <!-- 섹션 3: Promise 체이닝 (쇼핑몰 결제 주문 파이프라인) -->
+    <div class="section-card">
+      <h2 class="section-title">3. 쇼핑몰 결제 주문 3단계 연쇄 처리 검증 (Promise Chaining)</h2>
+      <p class="section-desc">
+        [주문 생성] -> [결제 처리] -> [알림 발송] 순의 주문 파이프라인 비동기 체이닝을 구동하여, 중간 실패 시 버블링되는 예외들이 단 하나의 catch 문에서 일괄 정돈되는지 확인합니다.
+      </p>
+      
+      <!-- 결제 단계별 카드 -->
+      <div class="timeline-container">
+        <div id="payment-step-1" class="chain-step-card waiting">
+          <div>
+            <strong>1단계: 가상 주문서 작성 및 서버 등록</strong>
+            <div style="font-size: 0.8rem; color: #6c757d; margin-top: 4px;" id="payment-step-1-details">주문 등록 요청 전</div>
+          </div>
+          <span class="badge badge-waiting">대기 중</span>
+        </div>
+        <div id="payment-step-2" class="chain-step-card waiting">
+          <div>
+            <strong>2단계: PG 카드사 대행 결제 승인 요청</strong>
+            <div style="font-size: 0.8rem; color: #6c757d; margin-top: 4px;" id="payment-step-2-details">한도 잔액 조회 대기 중</div>
+          </div>
+          <span class="badge badge-waiting">대기 중</span>
+        </div>
+        <div id="payment-step-3" class="chain-step-card waiting">
+          <div>
+            <strong>3단계: 고객 주문 영수증 발송 (알림톡/이메일)</strong>
+            <div style="font-size: 0.8rem; color: #6c757d; margin-top: 4px;" id="payment-step-3-details">메시징 API 서버 대기 중</div>
+          </div>
+          <span class="badge badge-waiting">대기 중</span>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-payment-success" class="btn-action btn-success">정상 결제 승인 파이프라인 작동</button>
+        <button id="btn-payment-limit-fail" class="btn-action btn-danger">결제 한도 초과 오류 파이프라인 작동</button>
+      </div>
+      <div class="terminal-box" id="term-promise-chain">결제 파이프라인 신호 대기 중입니다. F12 개발자 도구 콘솔을 통해 계층 로그 추적을 함께 감상하십시오.</div>
+    </div>
+
+    <!-- 섹션 4: Promise.all 병렬 처리 (대시보드 화면 로딩 최적화) -->
+    <div class="section-card">
+      <h2 class="section-title">4. 대시보드 위젯 로딩을 통한 Promise.all 병렬 성능 확인</h2>
+      <p class="section-desc">
+        사용자 정보(0.8초), 매출 통계(1.2초), 공지 배너(0.6초)의 독립된 API를 각각 순차 로딩(총 2.6초 대기)하는 방식과 Promise.all 동시 병렬 요청(최장 1.2초 대기) 방식의 속도차를 확인합니다.
+      </p>
+      
+      <!-- 가상 대시보드 위젯 뷰 -->
+      <div class="dashboard-preview">
+        <div id="widget-profile" class="widget">
+          <div class="widget-title">프로필 위젯</div>
+          <div class="widget-value" id="widget-profile-val">--</div>
+          <div class="widget-status" id="widget-profile-status" style="color: #6c757d;">대기 중</div>
+        </div>
+        <div id="widget-sales" class="widget">
+          <div class="widget-title">매출 통계 그래프</div>
+          <div class="widget-value" id="widget-sales-val">--</div>
+          <div class="widget-status" id="widget-sales-status" style="color: #6c757d;">대기 중</div>
+        </div>
+        <div id="widget-notice" class="widget">
+          <div class="widget-title">최신 공지사항</div>
+          <div class="widget-value" id="widget-notice-val">--</div>
+          <div class="widget-status" id="widget-notice-status" style="color: #6c757d;">대기 중</div>
+        </div>
+      </div>
+
+      <!-- 순차 진행 상황 게이지 -->
+      <div class="all-progress-wrapper">
+        <div class="all-progress-header">
+          <span>방식 A: API 개별 순차 요청 (프로필 -> 매출 -> 공지)</span>
+          <span id="time-all-sync">소요 시간: 0.0초</span>
+        </div>
+        <div class="all-progress-track">
+          <div id="progress-all-sync" class="all-progress-bar sync-color">0%</div>
+        </div>
+      </div>
+
+      <!-- 병렬 진행 상황 게이지 -->
+      <div class="all-progress-wrapper">
+        <div class="all-progress-header">
+          <span>방식 B: Promise.all 활용 동시 병렬 요청 (3개 동시 출발)</span>
+          <span id="time-all-async">소요 시간: 0.0초</span>
+        </div>
+        <div class="all-progress-track">
+          <div id="progress-all-async" class="all-progress-bar async-color">0%</div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-all-sequence" class="btn-action btn-danger">방식 A: 순차 비동기 실행 (2.6초 예상)</button>
+        <button id="btn-all-parallel" class="btn-action btn-success">방식 B: Promise.all 병렬 실행 (1.2초 예상)</button>
+      </div>
+      <div class="terminal-box" id="term-promise-all">대시보드 API 통신 대기 중입니다.</div>
+    </div>
+
+    <!-- 하단 가이드 문구 -->
+    <div class="footer-note">
+      하단 가이드 문구
+    </div>
+  </div>
+
+  <!-- 외부 스크립트 연결 -->
+  <script src="main_02.js" defer></script>
+</body>
+</html>
