@@ -197,6 +197,70 @@
       <button onclick="clearLog()" style="margin-top: 0.5rem; background-color: var(--danger);">로그 리셋</button>
     </div>
   </div>
+
+<script>
+    // 로그 출력용 유틸리티 함수
+    const logPanel = document.getElementById('log-panel');
+    function log(message) {
+      const time = new Date().toLocaleTimeString();
+      logPanel.innerText += `[${time}] ${message}\n`;
+      logPanel.scrollTop = logPanel.scrollHeight;
+    }
+    function clearLog() {
+      logPanel.innerText = '';
+    }
+
+    const badge = document.querySelector('#promise-state')
+    function updateBadge(state, text){
+      badge.className = `state-badge state-${state}`
+      badge.textContent = text;
+    }
+
+    // Promise 와 3 가지 상태
+    // Pending, Fulfilled, Rejected
+    document.querySelector('#btn-geo').addEventListener('click', ()=>{
+      const geoResult = document.querySelector('#geo-result');
+      updateBadge('pending','Pending(대기중)');
+      log('Geolocation api 비동기 권한 요청 시작.....');
+
+      // 브라우져 기본 Geolocation api를 Promise 객체로 래핑하여 제어
+      const getPosition = ()=>{
+          return new Promise( (resolve, reject) =>{
+            if (!navigator.geolocation){
+              // 브라우져에 기능이 없으면 실패 처리
+              reject(new Error('이 브라우져는 위치 정보를 제공하지 않습니다.'));
+              return;
+            }
+
+            // 권한을 허용하는 비동기 함수 실행
+            navigator.geolocation.getCurrentPosition(
+              (position)=>{
+                resolve(position);
+              },
+              (error)=>{
+                reject(error);
+              }
+            )
+          });
+      };
+      // 위에서 promise로 감싼(제작한) Geolocation Promise 를 호출 해서 상태에 따라 분기
+      getPosition()
+      .then( (position)=>{
+        const lat = position.corrds.latitude;
+        const lon = position.corrds.longitude;
+        geoResult.textContent = `위치 권한 승인완료! 위도:${lat.toFixed(4)}, 경도 : ${lon.toFixed(4)}`;
+        updateBadge('fulfilled','Fulfilled(이행 성공)')
+        log('[Step 1 성공] 위치 자표가 정상 수집되었습니다.')
+      })
+      .catch( (error) =>{
+        geoResult.textContent = `위치 수집 거절 또는 실패! (에러 사유 : ${error.message})`;
+        updateBadge('rejected','Rejected(거부 실패)')
+        log(`[Step 1 실패] 에러 핸들링 완료 : ${error}`)
+      });
+    });
+
+</script>
+
 </body>
 </html>
   
