@@ -209,6 +209,43 @@
         log('비동기식 타이머 등록완료');
     });
 
+    // ==========================================
+    // 2단계: XMLHttpRequest (XHR) & readytState
+    // ==========================================
+    document.querySelector('#btn-xhr').addEventListener('click', ()=>{
+        const xhrResult = document.querySelector('#xhr-result');
+        // 1 객체생성 및 통신 구현
+        const xhr =  new XMLHttpRequest();
+        // 2 readyState 라이프싸이클을 위한 리스너 등록
+        xhr.onreadystatechange = ()=>{
+            log(`XHR readyState : ${xhr.readyState}  (${getReadyStateName(xhr.readyState)}) `);
+            // 통신완료 및 http 상태 코드 ok(200) 검증
+            if(xhr.readyState === 4){
+                if (xhr.readyState === 200){
+                    const users = JSON.parse(xhr.responseText)
+                    xhrResult.textContent = `조회 완료 첫 번째 사용자 : ${users[0].name} (${users[0].email})`;
+                    log('xhr 통신 성공 및 데이터 렌더링 완료');
+                }else{
+                    xhrResult.textContent = '데이터 요청 실패';
+                    log(`xhr 통신 에러 발생 상태코드 : ${xhr.status}`);
+                }
+            }
+        };
+        // 연결설정 및 전송
+        xhr.open('GET', 'https://jsonplaceholder.typicode.com/users', true);
+        xhr.send();
+        
+        function getReadyStateName(state){
+            const name = {
+                0:'UNSENT - 객체 생성',
+                1:'OPENED - 연결 설정 완료',
+                2:'HEADERS_RECEIVED - 응답 헤더 수신',
+                3:'LOADING - 데이터 다운로드중',
+                4:'DONE - 작업완료',
+            };
+            return names[state] || 'UNKNOWN';
+        }
+    });
 
   </script>
 </body>
