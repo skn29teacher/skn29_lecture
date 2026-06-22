@@ -223,8 +223,9 @@
       }finally{
         log('finally 블럭 작동--> 화면로딩 중지 및 안보이게 display=none');
       }
-
     }
+    document.querySelector('#btn-pay-ok').addEventListener('click',()=>executePaymentFlow(false));
+    document.querySelector('#btn-pay-fail').addEventListener('click',()=>executePaymentFlow(true));
   </script>  
   </body>
   </html>
