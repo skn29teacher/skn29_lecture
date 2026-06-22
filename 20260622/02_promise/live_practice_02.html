@@ -274,7 +274,7 @@
     }
 
     function runUploadPractice(fileSize){
-      const uploadResult = document.querySelector('upload-result');
+      const uploadResult = document.querySelector('#upload-result');
       // 통신시작하면 화면에 로딩 미이지 표시
       uploadResult.textContent = '업로드 통신중...(로딩 스페터 실행)';
       fakeUpload(fileSize)
