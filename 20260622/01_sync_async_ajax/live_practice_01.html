@@ -221,7 +221,7 @@
             log(`XHR readyState : ${xhr.readyState}  (${getReadyStateName(xhr.readyState)}) `);
             // 통신완료 및 http 상태 코드 ok(200) 검증
             if(xhr.readyState === 4){
-                if (xhr.readyState === 200){
+                if (xhr.status === 200){
                     const users = JSON.parse(xhr.responseText)
                     xhrResult.textContent = `조회 완료 첫 번째 사용자 : ${users[0].name} (${users[0].email})`;
                     log('xhr 통신 성공 및 데이터 렌더링 완료');
@@ -236,7 +236,7 @@
         xhr.send();
         
         function getReadyStateName(state){
-            const name = {
+            const names = {
                 0:'UNSENT - 객체 생성',
                 1:'OPENED - 연결 설정 완료',
                 2:'HEADERS_RECEIVED - 응답 헤더 수신',
