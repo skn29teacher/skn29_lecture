@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>동기 vs 비동기 및 AJAX 기초</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --border: #334155;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      background: linear-gradient(to right, #3b82f6, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .section-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+    button.accent {
+      background-color: var(--accent);
+    }
+    button.accent:hover {
+      filter: brightness(0.9);
+    }
+    .test-area {
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px dashed var(--border);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+    }
+    .log-panel {
+      background-color: #020617;
+      color: #38bdf8;
+      font-family: monospace;
+      padding: 1rem;
+      border-radius: 8px;
+      height: 150px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      margin-top: 0.5rem;
+      white-space: pre-wrap;
+    }
+    input[type="text"] {
+      background-color: #0f172a;
+      border: 1px solid var(--border);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 6px;
+      width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>동기 vs 비동기 및 AJAX 기초</h1>
+
+    <!-- 1단계: 동기식 블로킹 vs 비동기식 넌블로킹 -->
+    <div class="section-card">
+      <div class="section-title">1단계: 동기 블로킹 vs 비동기 넌블로킹 & 이벤트 버블링</div>
+      <div class="btn-group">
+        <button id="btn-sync">동기식 블로킹 연산 (3초)</button>
+        <button id="btn-async" class="accent">비동기식 넌블로킹 타이머 (3초)</button>
+      </div>
+      <div class="test-area">
+        <strong>반응성 테스트 영역:</strong>
+        <input type="text" placeholder="여기에 타이핑해 보세요...">
+        <button id="btn-click-count">클릭 횟수: 0</button>
+        <label style="margin-left: 10px;">
+          <input type="checkbox" id="chk-bubble"> 버블링 방지(stopPropagation)
+        </label>
+      </div>
+    </div>
+
+    <!-- 2단계: XHR을 이용한 AJAX 통신 (readyState 추적) -->
+    <div class="section-card">
+      <div class="section-title">2단계: XMLHttpRequest (XHR) & readyState 라이프사이클</div>
+      <div class="btn-group">
+        <button id="btn-xhr">XHR로 사용자 데이터 요청</button>
+      </div>
+      <div id="xhr-result" class="test-area">결과가 여기에 표시됩니다.</div>
+    </div>
+
+    <!-- 3단계: 콜백 지옥 맛보기 -->
+    <div class="section-card">
+      <div class="section-title">3단계: 비동기 콜백 중첩 (콜백 지옥)</div>
+      <div class="btn-group">
+        <button id="btn-callback-hell">콜백 지옥 실행</button>
+      </div>
+    </div>
+
+    <!-- 공통 로그 패널 -->
+    <div class="section-card">
+      <div class="section-title" style="color: #38bdf8;">콘솔 로그 모니터</div>
+      <div id="log-panel" class="log-panel"></div>
+      <button onclick="clearLog()" style="margin-top: 0.5rem; background-color: var(--danger);">로그 지우기</button>
+    </div>
+  </div>
+
+  <script>
+    // 로그 출력용 유틸리티 함수
+    const logPanel = document.getElementById('log-panel');
+    function log(message) {
+      const time = new Date().toLocaleTimeString();
+      logPanel.innerText += `[${time}] ${message}\n`;
+      logPanel.scrollTop = logPanel.scrollHeight;
+    }
+    function clearLog() {
+      logPanel.innerText = '';
+    }
+
+    // ==========================================
+    // 1단계: 동기 블로킹 vs 비동기 넌블로킹 & 버블링
+    // ==========================================
+    
+    // 클릭 횟수 증가 및 버블링 실습
+    
+  </script>
+</body>
+</html>
