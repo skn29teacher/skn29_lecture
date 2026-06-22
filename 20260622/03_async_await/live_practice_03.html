@@ -208,8 +208,9 @@
       const notifyResult =  await sendReceip(payment.paymentId);
       log(`3단계 알림전송 완료 : ${notifyResult}`)
     });
-
-    // try-catch-finally
+    
+    
+    // step2 try-catch-finally
     async function executePaymentFlow(limitExceeded){
       const payStatus = document.querySelector('#pay-status');
       payStatus.textContent = '처리 진행중.....';
@@ -219,13 +220,41 @@
         payStatus.textContent = `결제성공 결제번호:${payment.paymentId}`
         log('결제 성공');
       }catch(err){
-        payStatus.textContent =`결제 실패 결제번호 : ${payment.paymentId}`;
+        payStatus.textContent =`결제 실패  : ${err.message}`;
+        log('결제 실패');
       }finally{
         log('finally 블럭 작동--> 화면로딩 중지 및 안보이게 display=none');
       }
     }
     document.querySelector('#btn-pay-ok').addEventListener('click',()=>executePaymentFlow(false));
     document.querySelector('#btn-pay-fail').addEventListener('click',()=>executePaymentFlow(true));
+
+    // step3 await 직렬(순차) 실행 /  병렬(동시) 실행
+    function fetchWidgetA() {return new Promise(resolve =>setTimeout(() => resolve('차트데이터'), 1000))};
+    function fetchWidgetB() {return new Promise(resolve =>setTimeout(() => resolve('최근데이터'), 2000))};
+     
+    // await 직렬(순차) 실행
+    document.querySelector('#btn-speed-serial').addEventListener('click', async ()=>{
+      const start = Date.now()
+      const dataA = await fetchWidgetA();
+      log(`위젯A 수신 : ${dataA}`)
+      const dataB = await fetchWidgetB();
+      log(`위젯B 수신 : ${dataB}`)
+      const colapsed = (Date.now() - start) / 1000
+      log(`소요시간 : ${colapsed}`)
+    });
+    // 병렬(동시) 실행 
+    document.querySelector('#btn-speed-parallel').addEventListener('click', async ()=>{
+      const start = Date.now()
+      const [dataA, dataB] =  await Promise.all([
+        fetchWidgetA(),
+        fetchWidgetB()
+      ])
+      log(`위젯A 수신 : ${dataA}`)
+      log(`위젯B 수신 : ${dataB}`)
+      const colapsed = (Date.now() - start) / 1000
+      log(`소요시간 : ${colapsed}`)
+    });
   </script>  
   </body>
   </html>
