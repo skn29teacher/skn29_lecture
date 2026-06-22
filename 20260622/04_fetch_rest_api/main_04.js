@@ -105,6 +105,7 @@ function initFetchGetModule() {
         
         // 날것의 JSON 문자열 정렬하여 터미널에 출력
         term.textContent += JSON.stringify(user, null, 2);
+        
 
         // 5. 단일 유저 데이터를 프로필 카드의 각 영역에 정직하게 일대일 대입
         avatar.textContent = user.name[0]; // 이름의 첫 글자
