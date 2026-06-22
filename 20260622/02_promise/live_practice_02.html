@@ -262,13 +262,32 @@
     // step2 .then() .catch() .finally()
     function fakeUpload(fileSize){
       return new Promise( (resolve, reject) =>{
-
+        
       });      
     }
 
     function runUploadPractice(fileSize){
-      
+      const uploadResult = document.querySelector('upload-result');
+      // 통신시작하면 화면에 로딩 미이지 표시
+      uploadResult.textContent = '업로드 통신중...(로딩 스페터 실행)';
+      fakeUpload(fileSize)
+      .then(  (filename)=>{
+        // 성공했을때 실행
+        uploadResult.textContent = `업로드 완료! 서버파일 : ${filename}`;
+        log(`[step2 성공] .then() 콜백실행 -> 서버 저장 경로 : ${filename}`)
+      })
+      .catch( (err) =>{
+        uploadResult.textContent = `업로드 실패: ${err.message}`;
+        log(`[step2 실패] .catch() 콜백실행 -> 에러 : ${err.message}`)
+      })
+      .finally( ()=>{
+        // 성공 or 실패 무조건 실행
+        log(`[step2 마감] .finally() 실행 --> 로딩 스페너 종료`)
+      })
     }
+
+    document.querySelector('#btn-upload-success').addEventListener('click', ()=>runUploadPractice(3));
+    document.querySelector('#btn-upload-fail').addEventListener('click', ()=>runUploadPractice(10));
 
 
 </script>
