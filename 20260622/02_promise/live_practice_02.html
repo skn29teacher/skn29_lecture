@@ -359,7 +359,42 @@ function fetchUserProfile(){return new Promise( r => setTimeout(() => r({ name:'
 function fetchSalesState(){return new Promise( r => setTimeout(() => r({ sales:700000}), 1200)); }
 function fetchNotice(){return new Promise( r => setTimeout(() => r(['긴급공지','정기정검']), 600)); }
 
+document.querySelector('#btn-all-seq').addEventListener('click',()=>{
+  const start = Date.now();
+  fetchUserProfile()
+  .then( (profile)=>{
+    log(' 프로필로드 완료 (0.8초)');
+    return fetchSalesState();
+  })
+  .then( (stats) =>{
+    log(' 매출통계 로드 완료 (1.2초)');
+    return fetchNotice();
+  } )
+  .then( (notices)=>{
+    log(' 공지사항 로드 완료 (0.6초)');
+    const elapsed = (Date.now() - start) / 1000
+    log(`순차로딩 완료  총 소요시간 : ${elapsed.toFixed(2)}초 `);
+  } )
+})
 
+document.querySelector('#btn-all-para').addEventListener('click',()=>{
+  const start = Date.now()
+  Promise.all([
+  fetchUserProfile(),
+  fetchSalesState(),
+  fetchNotice()
+  ])
+  .then( ([profile, stats,notices]) =>{
+    log(` ->병렬 프로필 완료 : 회원명 : ${profile.name}`)
+    log(` ->병렬 통계 완료 : 회원명 : ${stats.sales}`)
+    log(` ->병렬 공지 완료 : 회원명 : ${notices.length}`)
+
+    const elapsed = (Date.now() - start) / 1000;
+    log(`병렬 로딩 완료 총 소요시간 : ${elapsed.toFixed(2)}초`)
+  })
+  .catch( (err)=>{ log(`오류 : ${err.message}`) } );
+
+});
 </script>
 
 </body>
