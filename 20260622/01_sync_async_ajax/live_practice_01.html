@@ -271,6 +271,18 @@
         }, 1000);
     }
 
+    document.querySelector('#btn-callback-hell').addEventListener('click',(email)=>{
+        log('콜백지옥 시작');
+        // 3개의 비동기 함수를 순차적으로 호출(로그인->프로필->알림)
+        fackeLogin('user@test.com',(email)=>{
+            fakeGetProfile(email, (profile)=>{
+                fakeNotifications(profile, (notification)=>{
+                    log(`최종 알림 처리 완료: [${notification.join(', ')}]`)
+                });
+            });
+        });
+    });
+
 
 
   </script>
