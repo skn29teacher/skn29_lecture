@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const usersTbody = document.querySelector('#users-tbody');
 
     function fetchUsers(){
+        usersTbody.textContent='';
         const query = searchInput.value.trim();
         const urlObj = new URL('http://127.0.0.1:8000/api/users');
         // http://127.0.0.1:8000/api/users?search='홍길동'
@@ -19,8 +20,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
             return response.json();
         })
         .then( users=>{
-            if(users.length === 0){
-                // 
+            if(users.length === 0){                
+                usersTbody.innerHTML ='<td colspan="5" style="text-align: center; color: var(--text-secondary);">검색결과가 없습니다.</td>';                
                 return;
             }
             // 사용자정보들
