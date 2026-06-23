@@ -301,6 +301,7 @@
                 if(!response.ok){
                     throw new Error('삭제 불가');
                 }
+                await loadPosts();
             }catch(e){
                 log(`삭제 오류 : ${e.message}`)
             }
