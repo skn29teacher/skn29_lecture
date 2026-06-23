@@ -42,5 +42,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
 
     btnSearch.addEventListener('click', fetchUsers);
-    
+    searchInput.addEventListener('keydown', (e)=>{
+        if (e.key == 'Enter'){
+            fetchUsers();
+        }
+    })
 });
