@@ -234,7 +234,7 @@
                 postListContainer.innerHTML = '<div style="text-align: center; color: #64748b; padding: 1rem;">방명록의 데이터가 없습니다.</div>'
             }
             posts.forEach(element => {
-                const item = document.createAttribute('div');
+                const item = document.createElement('div');
                 item.className = 'post-item';
                 item.innerHTML = `
                 <div class="post-content">
