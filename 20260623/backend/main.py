@@ -121,10 +121,17 @@ def get_db_connection():
 # ==========================================================================
 
 @app.get("/api/users")
-def read_users():
+def read_users(search: Optional[str] = Query(None)):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users")
+
+    if search :        
+        cursor.execute("SELECT * FROM users WHERE name LIKE ? OR username LIKE ?",
+            (f"%{search}%", f"%{search}%")
+            );    
+    else:
+        cursor.execute("SELECT * FROM users ");    
+    
     rows = cursor.fetchall()
     conn.close()
     
