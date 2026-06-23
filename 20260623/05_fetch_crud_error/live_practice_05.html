@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Fetch CRUD 및 에러 핸들링</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --primary: #3b82f6;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --border: #334155;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      background: linear-gradient(to right, #3b82f6, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* 가이드 안내 카드 */
+    .guide-card {
+      background-color: #1e1b4b;
+      border: 1px solid #4338ca;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .guide-card h3 {
+      margin-top: 0;
+      color: #818cf8;
+      font-size: 1.05rem;
+    }
+    .guide-card ol {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .guide-card li {
+      margin-bottom: 0.4rem;
+    }
+    .section-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .form-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    input[type="text"], textarea {
+      background-color: #0f172a;
+      border: 1px solid var(--border);
+      color: white;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+    input[type="text"] { flex: 1; }
+    textarea { flex: 2; height: 38px; resize: none; }
+    
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background-color: #2563eb;
+      transform: translateY(-1px);
+    }
+    button.accent { background-color: var(--accent); }
+    button.danger { background-color: var(--danger); }
+    
+    .post-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    .post-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .post-item:hover {
+      border-color: var(--primary);
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+    .post-content {
+      display: flex;
+      flex-direction: column;
+    }
+    .post-author {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+    .post-text {
+      margin-top: 0.25rem;
+      font-size: 0.95rem;
+    }
+    .log-panel {
+      background-color: #020617;
+      color: #38bdf8;
+      font-family: monospace;
+      padding: 1rem;
+      border-radius: 8px;
+      height: 180px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      margin-top: 0.5rem;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>5차시: Fetch CRUD & 에러 제어 점진적 라이브 코딩</h1>
+    <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-top: -1rem;">
+      ※ 실습 시작 전 백엔드 서버(<code>python backend/main.py</code>)가 구동 중이어야 합니다.
+    </p>
+
+    <!-- 가이드 안내 카드 -->
+    <div class="guide-card">
+      <h3>5차시 단계별 실습 흐름</h3>
+      <ol>
+        <li><strong>Step 1 [READ - 방명록 목록]</strong>: 로컬 백엔드 서버의 방명록 데이터 API를 fetch해 와서 리스트를 채웁니다.</li>
+        <li><strong>Step 2 [CREATE - 방명록 작성]</strong>: POST 메서드 옵션을 실습합니다. 작성자 글자가 2자 미만일 시 FastAPI 백엔드가 던지는 <code>400 Bad Request</code> 에러 정보를 화면에 파싱합니다.</li>
+        <li><strong>Step 3 [DELETE - 방명록 삭제]</strong>: DELETE 요청을 수행하고, 자식 삭제 버튼을 클릭할 때 카드 행 전체 클릭이 오작동하는 현상을 막기 위한 <code>e.stopPropagation()</code>의 필연성을 공부합니다.</li>
+        <li><strong>Step 4 [HTTP 에러 처리]</strong>: 일반 fetch는 HTTP 오류(404, 500)가 발생해도 네트워크 전송 자체는 성공했으므로 catch 블록으로 안 갑니다. <code>response.ok</code>를 이용해 수동 throw하는 예외 설계를 실습합니다.</li>
+      </ol>
+    </div>
+
+    <!-- Step 1 ~ 3: CRUD 실습 영역 -->
+    <div class="section-card">
+      <div class="section-title">Step 1 ~ 3: 방명록 CRUD 구현 (FastAPI 연동)</div>
+      
+      <!-- 방명록 등록 폼 -->
+      <div class="form-group">
+        <div class="form-row">
+          <input type="text" id="post-author" placeholder="작성자 이름">
+          <textarea id="post-body" placeholder="방명록을 작성해 주세요..."></textarea>
+          <button id="btn-create" class="accent">등록</button>
+        </div>
+      </div>
+
+      <button id="btn-load-posts">Step 1: 방명록 목록 불러오기</button>
+      
+      <!-- 방명록 리스트 -->
+      <div id="post-list-container" class="post-list">
+        <div style="text-align: center; color: #64748b; padding: 1rem;">방명록 불러오기 버튼을 클릭하세요.</div>
+      </div>
+    </div>
+
+    <!-- Step 4: 에러 분기 제어 -->
+    <div class="section-card">
+      <div class="section-title">Step 4: Fetch API의 404, 500 에러 분기 처리 (response.ok)</div>
+      <div class="btn-group">
+        <button id="btn-error-404" class="danger">없는 999번 글 강제 삭제 (404 Error)</button>
+        <button id="btn-error-500" class="danger">서버 강제 장애 호출 (500 Error)</button>
+      </div>
+    </div>
+
+    <!-- 콘솔 로그 패널 -->
+    <div class="section-card">
+      <div class="section-title" style="color: #38bdf8;">콘솔 로그 모니터 (비동기 흐름 추적용)</div>
+      <div id="log-panel" class="log-panel"></div>
+      <button onclick="clearLog()" style="margin-top: 0.5rem; background-color: var(--danger);">로그 리셋</button>
+    </div>
+  </div>
+  </body>
+  </html>
