@@ -1,0 +1,1338 @@
+/* ====================================================
+   8차시 — 반응형 웹 디자인 종합 프로젝트
+   파일명: style.css
+   전략: 모바일 퍼스트 (min-width 미디어 쿼리)
+   
+   사용된 기술 목록:
+   ✅ CSS Custom Properties (색상, 폰트, 브레이크포인트)
+   ✅ CSS Reset
+   ✅ Flexbox (헤더, 갤러리, 푸터, 내부 정렬)
+   ✅ CSS Grid (features, about, contact)
+   ✅ sticky position (헤더 상단 고정)
+   ✅ absolute/relative position (히어로 장식, 배지)
+   ✅ 미디어 쿼리 min-width: 576/768/1024/1200px
+   ✅ CSS transition (hover 효과)
+   ✅ clamp() (반응형 폰트)
+   ✅ CSS 그라디언트 (히어로, 버튼)
+   ✅ Google Fonts (Noto Sans KR, Inter)
+==================================================== */
+
+
+/* ====================================================
+   CSS Custom Properties — 디자인 토큰
+   한 곳에서 색상/폰트/크기를 관리합니다.
+==================================================== */
+:root {
+  /* ── 색상 팔레트 ── */
+  --color-primary:    #4361ee;  /* 메인 파란색 */
+  --color-secondary:  #3f37c9;  /* 짙은 파란색 */
+  --color-accent:     #f72585;  /* 강조 핑크색 */
+  --color-success:    #4caf50;  /* 초록색 */
+  --color-warning:    #ff9800;  /* 노란색 */
+
+  /* ── 텍스트 색상 ── */
+  --text-primary:   #1a1a2e;    /* 주요 텍스트 (거의 검정) */
+  --text-secondary: #495057;    /* 보조 텍스트 (회색) */
+  --text-light:     #868e96;    /* 밝은 텍스트 */
+  --text-white:     #ffffff;    /* 흰색 */
+
+  /* ── 배경 색상 ── */
+  --bg-primary:   #ffffff;      /* 흰색 배경 */
+  --bg-secondary: #f8f9ff;      /* 약간 파란 배경 */
+  --bg-dark:      #0d1b2a;      /* 어두운 배경 (푸터) */
+  --bg-dark-mid:  #1a2d42;      /* 중간 어두운 배경 */
+
+  /* ── 폰트 ── */
+  --font-primary: 'Noto Sans KR', 'Malgun Gothic', sans-serif;  /* 한국어 기본 폰트 */
+  --font-display: 'Inter', 'Noto Sans KR', sans-serif;           /* 제목용 폰트 */
+  --font-mono:    'Consolas', 'Courier New', monospace;           /* 코드용 */
+
+  /* ── 간격 (스페이싱) ── */
+  --space-xs:  8px;
+  --space-sm:  16px;
+  --space-md:  24px;
+  --space-lg:  40px;
+  --space-xl:  64px;
+  --space-xxl: 100px;
+
+  /* ── 둥글기 ── */
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-full: 9999px;  /* 완전한 원형/pill */
+
+  /* ── 그림자 ── */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+
+  /* ── 전환 (Transition) ── */
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow:   0.4s ease;
+
+  /* ── 컨테이너 최대 너비 ── */
+  --container-max: 1200px;
+
+  /* ── 브레이크포인트 참고 (CSS 변수로 미디어 쿼리에 직접 사용 불가, 참고용) ──
+     모바일: < 576px
+     폰(중형): 576px
+     태블릿: 768px
+     노트북: 1024px
+     데스크탑: 1200px
+  */
+}
+
+
+/* ====================================================
+   CSS Reset — 브라우저 기본 스타일 초기화
+==================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box; /* 패딩/보더가 너비에 포함 */
+  margin: 0;              /* 기본 여백 제거 */
+  padding: 0;             /* 기본 패딩 제거 */
+}
+
+html {
+  scroll-behavior: smooth;      /* 앵커 클릭 시 부드러운 스크롤 */
+  font-size: 16px;              /* 기본 폰트 사이즈 (rem 기준) */
+}
+
+body {
+  font-family: var(--font-primary);  /* 기본 폰트 적용 */
+  color: var(--text-primary);        /* 기본 텍스트 색 */
+  background-color: var(--bg-primary); /* 흰색 배경 */
+  line-height: 1.6;                  /* 줄 높이 */
+  overflow-x: hidden;               /* 가로 스크롤 방지 */
+}
+
+/* 이미지 반응형 기본 설정 */
+img {
+  max-width: 100%;      /* 부모를 초과하지 않도록 제한 */
+  height: auto;         /* 비율 유지 */
+  display: block;       /* 인라인 공백 제거 */
+}
+
+/* 링크 기본 스타일 */
+a {
+  color: inherit;           /* 부모 색상 상속 */
+  text-decoration: none;    /* 밑줄 제거 */
+}
+
+/* 리스트 스타일 제거 */
+ul, ol {
+  list-style: none;
+}
+
+/* 버튼 기본 스타일 초기화 */
+button {
+  cursor: pointer;      /* 클릭 가능 커서 */
+  border: none;         /* 테두리 제거 */
+  background: none;     /* 배경 제거 */
+  font-family: inherit; /* 폰트 상속 */
+}
+
+/* 폼 요소 폰트 상속 */
+input,
+textarea,
+select {
+  font-family: inherit;  /* 폰트 상속 (브라우저 기본값 덮어쓰기) */
+  font-size: inherit;    /* 폰트 크기 상속 */
+}
+
+
+/* ====================================================
+   레이아웃 유틸리티
+==================================================== */
+
+/* 컨테이너: max-width + 가운데 정렬 + 좌우 패딩 */
+.container {
+  width: 100%;                   /* 전체 너비 */
+  max-width: var(--container-max); /* 최대 1200px */
+  margin-left: auto;             /* 가운데 정렬 */
+  margin-right: auto;            /* 가운데 정렬 */
+  padding-left: var(--space-sm); /* 좌우 패딩 (모바일) */
+  padding-right: var(--space-sm);
+}
+
+/* 섹션 공통 패딩 */
+.section-padding {
+  padding-top: var(--space-xl);     /* 위 패딩: 64px */
+  padding-bottom: var(--space-xl);  /* 아래 패딩: 64px */
+}
+
+
+/* ====================================================
+   공통 컴포넌트 스타일
+==================================================== */
+
+/* ── 섹션 헤더 (공통) ── */
+.section-header {
+  text-align: center;           /* 가운데 정렬 */
+  margin-bottom: var(--space-lg); /* 아래 여백: 40px */
+}
+
+/* 섹션 태그 뱃지 */
+.section-tag {
+  display: inline-block;        /* 인라인 블록 */
+  background-color: #e8ecff;    /* 연한 파란색 배경 */
+  color: var(--color-primary);  /* 파란색 텍스트 */
+  font-size: 0.8rem;            /* 작은 폰트 */
+  font-weight: 600;             /* 굵게 */
+  padding: 4px 14px;            /* 안쪽 여백 */
+  border-radius: var(--radius-full); /* 완전 둥근 모서리 */
+  margin-bottom: var(--space-sm);    /* 아래 여백 */
+  letter-spacing: 0.05em;       /* 자간 약간 넓게 */
+  text-transform: uppercase;    /* 대문자 */
+}
+
+/* 섹션 제목 */
+.section-title {
+  font-family: var(--font-display);  /* 제목용 폰트 */
+  font-size: clamp(1.6rem, 3vw, 2.4rem); /* 반응형 폰트 크기 */
+  font-weight: 700;             /* 굵게 */
+  color: var(--text-primary);   /* 기본 텍스트 색 */
+  line-height: 1.3;             /* 줄 높이 */
+  margin-bottom: var(--space-sm); /* 아래 여백 */
+}
+
+/* 섹션 설명 */
+.section-desc {
+  font-size: 1rem;              /* 폰트 크기 */
+  color: var(--text-secondary); /* 보조 색상 */
+  line-height: 1.7;             /* 넓은 줄 간격 */
+  max-width: 600px;             /* 가독성을 위한 최대 너비 */
+  margin-left: auto;            /* 가운데 정렬 */
+  margin-right: auto;
+}
+
+/* ── 버튼 컴포넌트 ── */
+.btn {
+  display: inline-flex;          /* 내부 flex 정렬 */
+  align-items: center;           /* 수직 가운데 */
+  justify-content: center;       /* 수평 가운데 */
+  gap: var(--space-xs);          /* 아이콘-텍스트 간격 */
+  padding: 13px 28px;            /* 안쪽 여백 */
+  border-radius: var(--radius-md); /* 둥근 모서리 */
+  font-size: 1rem;               /* 폰트 크기 */
+  font-weight: 600;              /* 굵게 */
+  cursor: pointer;               /* 클릭 가능 커서 */
+  transition: all var(--transition-normal); /* 부드러운 전환 */
+  text-decoration: none;         /* 밑줄 제거 */
+  border: 2px solid transparent; /* 테두리 (outline 버튼용) */
+  white-space: nowrap;           /* 텍스트 줄 바꿈 방지 */
+}
+
+/* 메인 버튼 (파란색 배경) */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: var(--text-white);      /* 흰색 텍스트 */
+  box-shadow: 0 4px 15px rgba(67, 97, 238, 0.35); /* 파란 그림자 */
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);   /* 위로 살짝 이동 */
+  box-shadow: 0 8px 25px rgba(67, 97, 238, 0.5); /* 그림자 강조 */
+}
+
+/* 외곽선 버튼 (투명 배경) */
+.btn-outline {
+  background: transparent;       /* 투명 배경 */
+  color: var(--text-white);      /* 흰색 텍스트 (히어로 배경에서) */
+  border-color: rgba(255,255,255,0.6); /* 반투명 흰색 테두리 */
+}
+
+.btn-outline:hover {
+  background: rgba(255,255,255,0.1); /* 호버 시 약간 밝아짐 */
+  border-color: var(--text-white);   /* 테두리 완전 흰색 */
+}
+
+/* 전체 너비 버튼 */
+.btn-full {
+  width: 100%;                   /* 부모 너비 가득 */
+}
+
+
+/* ====================================================
+   ① HEADER — 모바일 퍼스트 스타일
+   6차시: Flexbox로 로고와 메뉴 배치
+   5차시: sticky 포지션 (스크롤 고정)
+==================================================== */
+.site-header {
+  position: sticky;              /* 스크롤 시 상단 고정 */
+  top: 0;                        /* 화면 맨 위에 붙음 */
+  z-index: 1000;                 /* 다른 요소 위에 표시 */
+  background-color: rgba(255, 255, 255, 0.95); /* 반투명 흰색 배경 */
+  backdrop-filter: blur(12px);   /* 배경 블러 효과 */
+  border-bottom: 1px solid rgba(0,0,0,0.08); /* 하단 구분선 */
+  box-shadow: var(--shadow-sm);  /* 가벼운 그림자 */
+}
+
+/* 헤더 내부: Flexbox로 로고 + 메뉴 + 햄버거 배치 */
+.site-header .container {
+  display: flex;                 /* Flexbox 컨테이너 선언 */
+  align-items: center;           /* 수직 가운데 정렬 */
+  justify-content: space-between; /* 로고 - 메뉴 - 햄버거 양 끝 배치 */
+  height: 64px;                  /* 헤더 고정 높이 */
+}
+
+/* ── 로고 ── */
+.logo {
+  display: flex;                 /* 아이콘 + 텍스트 flex */
+  align-items: center;           /* 수직 가운데 */
+  gap: 8px;                      /* 아이콘-텍스트 간격 */
+  text-decoration: none;         /* 밑줄 제거 */
+}
+
+.logo-icon {
+  font-size: 1.6rem;             /* 아이콘 크기 */
+}
+
+.logo-text {
+  font-size: 1.2rem;             /* 로고 텍스트 크기 */
+  font-weight: 700;              /* 굵게 */
+  color: var(--color-primary);   /* 파란색 */
+  font-family: var(--font-display);
+}
+
+
+/* ====================================================
+   ② 네비게이션 — 모바일 기본 스타일 (숨김 상태)
+   모바일: flex-direction column, 숨겨진 상태
+   데스크탑: flex-direction row, 표시 상태
+==================================================== */
+.site-nav {
+  /* 모바일: 기본적으로 숨김 처리 */
+  display: none;                 /* 기본: 숨김 */
+  position: absolute;            /* 헤더 아래에 절대 위치 */
+  top: 64px;                     /* 헤더 높이만큼 아래 */
+  left: 0;                       /* 왼쪽 끝 */
+  right: 0;                      /* 오른쪽 끝 */
+  background-color: var(--bg-primary); /* 흰색 배경 */
+  padding: var(--space-sm);      /* 안쪽 여백 */
+  border-bottom: 1px solid rgba(0,0,0,0.1); /* 하단 구분선 */
+  box-shadow: var(--shadow-md);  /* 그림자 */
+}
+
+/* 네비게이션 열린 상태 (JavaScript로 'nav-open' 클래스 추가) */
+.site-nav.nav-open {
+  display: block;                /* nav-open 클래스가 있으면 표시 */
+}
+
+/* 네비게이션 리스트: 모바일에서 세로 배치 */
+.nav-list {
+  display: flex;                 /* Flexbox */
+  flex-direction: column;        /* 모바일: 세로 방향 */
+  gap: 4px;                      /* 아이템 사이 간격 */
+}
+
+/* 네비게이션 링크 */
+.nav-link {
+  display: block;                /* 블록으로 클릭 영역 확장 */
+  padding: 10px 16px;            /* 안쪽 여백 (터치 영역 확보) */
+  color: var(--text-secondary);  /* 회색 텍스트 */
+  font-weight: 500;              /* 약간 굵게 */
+  border-radius: var(--radius-sm); /* 둥근 모서리 */
+  transition: all var(--transition-fast); /* 부드러운 전환 */
+}
+
+.nav-link:hover {
+  color: var(--color-primary);          /* 파란색으로 변경 */
+  background-color: #e8ecff;            /* 연한 파란색 배경 */
+}
+
+/* 햄버거 버튼 (모바일에서 표시) */
+.hamburger {
+  display: flex;                 /* 기본: 표시 (모바일) */
+  flex-direction: column;        /* 선을 세로로 쌓기 */
+  justify-content: center;       /* 수직 가운데 */
+  gap: 5px;                      /* 선 사이 간격 */
+  width: 40px;                   /* 버튼 너비 */
+  height: 40px;                  /* 버튼 높이 */
+  padding: 8px;                  /* 안쪽 여백 */
+  border-radius: var(--radius-sm); /* 둥근 모서리 */
+  transition: background var(--transition-fast);
+}
+
+.hamburger:hover {
+  background-color: #f0f2f5;    /* 호버 시 배경 */
+}
+
+/* 햄버거 버튼의 각 선 */
+.hamburger-line {
+  display: block;               /* 블록 요소 */
+  width: 100%;                  /* 전체 너비 */
+  height: 2px;                  /* 선 두께 */
+  background-color: var(--text-primary); /* 어두운 색 */
+  border-radius: 2px;           /* 살짝 둥근 */
+  transition: all var(--transition-fast);
+}
+
+
+/* ====================================================
+   ③ HERO 섹션 — 모바일 기본 스타일
+   6차시: Flexbox 세로 가운데 정렬
+   3차시: vh 단위 (전체 화면 높이)
+   4차시: 그라디언트 배경
+==================================================== */
+.hero {
+  position: relative;           /* 자식 요소의 absolute 기준점 */
+  min-height: 100vh;            /* 최소 높이: 화면 전체 높이 */
+  background: linear-gradient(
+    135deg,
+    #0d1b2a 0%,
+    #1a2d42 40%,
+    #243b55 100%
+  );                            /* 어두운 그라디언트 배경 */
+  display: flex;                /* Flexbox 컨테이너 */
+  align-items: center;          /* 수직 가운데 정렬 */
+  overflow: hidden;             /* 장식 원이 넘어가지 않도록 */
+}
+
+/* 히어로 배경 장식 원 (position: absolute) */
+.hero-blob {
+  position: absolute;           /* 절대 위치 (히어로 섹션 기준) */
+  border-radius: 50%;           /* 완전 원형 */
+  opacity: 0.15;                /* 반투명 */
+  pointer-events: none;         /* 클릭 이벤트 무시 */
+}
+
+.hero-blob-1 {
+  width: 400px;                 /* 첫 번째 원 크기 */
+  height: 400px;
+  background: var(--color-primary);  /* 파란색 */
+  top: -100px;                  /* 상단에 위치 */
+  right: -100px;                /* 오른쪽에 위치 */
+}
+
+.hero-blob-2 {
+  width: 300px;                 /* 두 번째 원 크기 */
+  height: 300px;
+  background: var(--color-accent); /* 핑크색 */
+  bottom: -80px;                /* 하단에 위치 */
+  left: -80px;                  /* 왼쪽에 위치 */
+}
+
+/* 히어로 내용 */
+.hero-content {
+  position: relative;           /* 장식 원보다 위에 표시 */
+  z-index: 1;                   /* 장식 원(z-index:0)보다 위 */
+  text-align: center;           /* 텍스트 가운데 정렬 (모바일) */
+  padding-top: var(--space-xxl);   /* 헤더 공간 확보 */
+  padding-bottom: var(--space-xl);
+}
+
+/* 히어로 뱃지 */
+.hero-badge {
+  display: inline-block;        /* 인라인 블록 */
+  background: rgba(255,255,255,0.1); /* 반투명 흰색 배경 */
+  color: rgba(255,255,255,0.9); /* 거의 흰색 텍스트 */
+  border: 1px solid rgba(255,255,255,0.2); /* 반투명 테두리 */
+  padding: 6px 18px;            /* 안쪽 여백 */
+  border-radius: var(--radius-full); /* pill 모양 */
+  font-size: 0.85rem;           /* 작은 폰트 */
+  margin-bottom: var(--space-md); /* 아래 여백 */
+}
+
+/* 히어로 제목 */
+.hero-title {
+  font-family: var(--font-display);  /* 제목 폰트 */
+  font-size: clamp(2rem, 6vw, 4rem); /* 반응형 폰트: 최소2rem~최대4rem */
+  font-weight: 900;             /* 매우 굵게 */
+  color: var(--text-white);     /* 흰색 */
+  line-height: 1.2;             /* 줄 높이 */
+  margin-bottom: var(--space-md); /* 아래 여백 */
+}
+
+/* 히어로 제목 강조 텍스트 */
+.hero-title-accent {
+  background: linear-gradient(90deg, var(--color-accent), #f5a623);
+  -webkit-background-clip: text; /* WebKit: 텍스트에 배경 적용 */
+  -webkit-text-fill-color: transparent; /* 텍스트를 투명하게 하여 배경 보이도록 */
+  background-clip: text;
+}
+
+/* 히어로 설명 */
+.hero-desc {
+  font-size: clamp(1rem, 2vw, 1.15rem); /* 반응형 폰트 */
+  color: rgba(255,255,255,0.75);   /* 반투명 흰색 */
+  line-height: 1.8;                /* 넓은 줄 간격 */
+  margin-bottom: var(--space-lg);  /* 아래 여백: 40px */
+  max-width: 560px;                /* 가독성 최대 너비 */
+  margin-left: auto;               /* 가운데 정렬 */
+  margin-right: auto;
+}
+
+/* 히어로 CTA 버튼 영역: Flexbox로 버튼 나열 */
+.hero-actions {
+  display: flex;                /* Flexbox */
+  flex-direction: column;       /* 모바일: 버튼 세로 쌓기 */
+  gap: var(--space-sm);         /* 버튼 사이 간격 */
+  align-items: center;          /* 가운데 정렬 */
+  margin-bottom: var(--space-xl); /* 아래 여백 */
+}
+
+/* 히어로 통계 지표 */
+.hero-stats {
+  display: flex;                /* Flexbox */
+  justify-content: center;      /* 가운데 정렬 */
+  gap: var(--space-lg);         /* 지표 사이 간격 */
+  flex-wrap: wrap;              /* 모바일에서 줄 바꿈 */
+}
+
+.stat {
+  text-align: center;           /* 가운데 정렬 */
+  color: var(--text-white);     /* 흰색 텍스트 */
+}
+
+.stat strong {
+  display: block;               /* 블록으로 줄 구분 */
+  font-size: 1.8rem;            /* 숫자 크게 */
+  font-weight: 700;             /* 굵게 */
+  color: var(--color-accent);   /* 핑크색 강조 */
+}
+
+.stat span {
+  font-size: 0.85rem;           /* 레이블 작게 */
+  opacity: 0.7;                 /* 살짝 투명 */
+}
+
+
+/* ====================================================
+   ④ FEATURES 섹션 — 모바일 기본 스타일
+   7차시: CSS Grid (auto-fit + minmax)
+   8차시: 미디어 쿼리로 열 수 변경
+==================================================== */
+.features {
+  background-color: var(--bg-secondary); /* 약간 파란 배경 */
+}
+
+/* 피처 카드 그리드: 모바일 1열 */
+.features-grid {
+  display: grid;                /* Grid 컨테이너 선언 */
+  grid-template-columns: 1fr;   /* 모바일: 1열 */
+  gap: var(--space-md);         /* 카드 사이 간격: 24px */
+}
+
+/* 피처 카드 */
+.feature-card {
+  background-color: var(--bg-primary); /* 흰색 배경 */
+  border-radius: var(--radius-lg);     /* 둥근 모서리 */
+  padding: var(--space-lg) var(--space-md); /* 안쪽 여백 */
+  box-shadow: var(--shadow-sm);        /* 가벼운 그림자 */
+  border: 1px solid rgba(0,0,0,0.05); /* 미세한 테두리 */
+  transition: all var(--transition-normal); /* 부드러운 전환 */
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);         /* 위로 이동 */
+  box-shadow: var(--shadow-lg);        /* 그림자 강조 */
+  border-color: rgba(67, 97, 238, 0.2); /* 파란색 테두리 */
+}
+
+/* 피처 아이콘 */
+.feature-icon {
+  font-size: 2.5rem;           /* 큰 이모지 */
+  margin-bottom: var(--space-sm); /* 아래 여백 */
+  display: inline-block;
+}
+
+/* 피처 제목 */
+.feature-title {
+  font-size: 1.2rem;            /* 제목 크기 */
+  font-weight: 700;             /* 굵게 */
+  color: var(--text-primary);   /* 어두운 색 */
+  margin-bottom: var(--space-xs); /* 아래 여백 */
+}
+
+/* 피처 설명 */
+.feature-desc {
+  font-size: 0.9rem;            /* 작은 폰트 */
+  color: var(--text-secondary); /* 회색 텍스트 */
+  line-height: 1.7;             /* 넓은 줄 간격 */
+  margin-bottom: var(--space-sm); /* 아래 여백 */
+}
+
+/* 피처 링크 */
+.feature-link {
+  font-size: 0.875rem;          /* 작은 폰트 */
+  color: var(--color-primary);  /* 파란색 */
+  font-weight: 600;             /* 굵게 */
+  transition: gap var(--transition-fast);
+}
+
+.feature-link:hover {
+  opacity: 0.7;                 /* 호버 시 약간 투명 */
+}
+
+
+/* ====================================================
+   ⑤ ABOUT 섹션 — 모바일 기본 스타일
+   7차시: CSS Grid 2열 레이아웃
+   8차시: 모바일 1열 → 데스크탑 2열
+==================================================== */
+
+/* About 그리드: 모바일 1열 */
+.about-grid {
+  display: grid;                /* Grid 컨테이너 선언 */
+  grid-template-columns: 1fr;   /* 모바일: 1열 */
+  gap: var(--space-xl);         /* 섹션 사이 간격 */
+  align-items: center;          /* 수직 가운데 정렬 */
+}
+
+/* About 텍스트 영역 */
+.about-text .section-title {
+  text-align: left;             /* 왼쪽 정렬 */
+}
+
+/* About 설명 단락 */
+.about-desc {
+  font-size: 0.95rem;           /* 폰트 크기 */
+  color: var(--text-secondary); /* 회색 텍스트 */
+  line-height: 1.8;             /* 넓은 줄 간격 */
+  margin-bottom: var(--space-md); /* 아래 여백 */
+}
+
+/* About 특장점 목록 */
+.about-list {
+  margin-bottom: var(--space-lg); /* 아래 여백 */
+}
+
+.about-list-item {
+  display: flex;                /* Flexbox: 체크아이콘 + 텍스트 */
+  align-items: center;          /* 수직 가운데 */
+  gap: var(--space-xs);         /* 간격 */
+  margin-bottom: 12px;          /* 아래 여백 */
+  font-size: 0.95rem;           /* 폰트 크기 */
+  color: var(--text-secondary); /* 회색 텍스트 */
+}
+
+.check-icon {
+  font-size: 1rem;              /* 체크 아이콘 크기 */
+  flex-shrink: 0;               /* 아이콘이 줄어들지 않도록 */
+}
+
+/* About 이미지 영역 */
+.about-image {
+  position: relative;           /* 뱃지의 absolute 기준점 */
+}
+
+/* About 이미지 */
+.about-img {
+  width: 100%;                  /* 전체 너비 */
+  border-radius: var(--radius-lg); /* 둥근 모서리 */
+  box-shadow: var(--shadow-lg); /* 강한 그림자 */
+}
+
+/* About 배지 (이미지 위에 겹침) */
+.about-badge {
+  position: absolute;           /* 이미지 위에 절대 위치 */
+  bottom: -20px;                /* 이미지 하단에서 올라옴 */
+  left: -20px;                  /* 이미지 왼쪽에서 나옴 */
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: var(--text-white);     /* 흰색 텍스트 */
+  padding: 16px 24px;           /* 안쪽 여백 */
+  border-radius: var(--radius-md); /* 둥근 모서리 */
+  text-align: center;           /* 가운데 정렬 */
+  box-shadow: var(--shadow-md); /* 그림자 */
+}
+
+.about-badge strong {
+  display: block;               /* 숫자를 별도 줄에 */
+  font-size: 2rem;              /* 큰 숫자 */
+  font-weight: 900;             /* 매우 굵게 */
+  line-height: 1;
+}
+
+.about-badge span {
+  font-size: 0.75rem;           /* 작은 레이블 */
+  opacity: 0.85;                /* 약간 투명 */
+}
+
+
+/* ====================================================
+   ⑥ GALLERY 섹션 — 모바일 기본 스타일
+   6차시: Flexbox flex-wrap
+   8차시: 모바일 50% → 데스크탑 33.33%
+==================================================== */
+.gallery {
+  background-color: var(--bg-secondary); /* 약간 파란 배경 */
+}
+
+/* 갤러리 그리드: Flexbox flex-wrap */
+.gallery-grid {
+  display: flex;                /* Flexbox 컨테이너 */
+  flex-wrap: wrap;              /* 넘치면 줄 바꿈 */
+  gap: 12px;                    /* 아이템 사이 간격 */
+}
+
+/* 갤러리 아이템: 모바일에서 2열 (50%) */
+.gallery-item {
+  position: relative;           /* 오버레이의 absolute 기준 */
+  width: calc(50% - 6px);       /* 2열: 50% - 절반 gap */
+  overflow: hidden;             /* 이미지 호버 효과용 */
+  border-radius: var(--radius-md); /* 둥근 모서리 */
+  cursor: pointer;              /* 클릭 가능 커서 */
+}
+
+/* 갤러리 이미지 */
+.gallery-img {
+  width: 100%;                  /* 전체 너비 */
+  height: 180px;                /* 모바일 이미지 높이 */
+  object-fit: cover;            /* 비율 유지하며 잘라서 채움 */
+  transition: transform var(--transition-slow); /* 호버 전환 효과 */
+}
+
+/* 갤러리 호버 시 이미지 확대 */
+.gallery-item:hover .gallery-img {
+  transform: scale(1.08);       /* 8% 확대 */
+}
+
+/* 갤러리 오버레이 (호버 시 나타나는 캡션) */
+.gallery-overlay {
+  position: absolute;           /* 이미지 위에 절대 위치 */
+  bottom: 0;                    /* 하단에 위치 */
+  left: 0;                      /* 왼쪽 끝 */
+  right: 0;                     /* 오른쪽 끝 */
+  background: linear-gradient(transparent, rgba(0,0,0,0.7)); /* 그라디언트 오버레이 */
+  padding: 20px 12px 12px;      /* 안쪽 여백 */
+  transform: translateY(100%);  /* 기본: 아래로 숨김 */
+  transition: transform var(--transition-normal); /* 부드러운 전환 */
+}
+
+/* 호버 시 오버레이 표시 */
+.gallery-item:hover .gallery-overlay {
+  transform: translateY(0);     /* 위로 올라옴 */
+}
+
+/* 갤러리 캡션 텍스트 */
+.gallery-caption {
+  color: var(--text-white);     /* 흰색 텍스트 */
+  font-size: 0.875rem;          /* 작은 폰트 */
+  font-weight: 500;             /* 약간 굵게 */
+}
+
+
+/* ====================================================
+   ⑦ CONTACT 섹션 — 모바일 기본 스타일
+   2차시: 폼 시맨틱 요소
+   5차시: CSS 폼 스타일링
+==================================================== */
+/* Contact 레이아웃: 모바일 1열 */
+.contact-layout {
+  display: grid;                /* Grid 컨테이너 */
+  grid-template-columns: 1fr;   /* 모바일: 1열 */
+  gap: var(--space-xl);         /* 섹션 사이 간격 */
+}
+
+/* 연락처 정보 */
+.contact-info {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: var(--text-white);     /* 흰색 텍스트 */
+  padding: var(--space-lg);     /* 안쪽 여백 */
+  border-radius: var(--radius-lg); /* 둥근 모서리 */
+}
+
+.contact-info-title {
+  font-size: 1.3rem;            /* 제목 크기 */
+  font-weight: 700;             /* 굵게 */
+  margin-bottom: var(--space-lg); /* 아래 여백 */
+}
+
+/* 연락처 아이템 */
+.contact-item {
+  display: flex;                /* Flexbox: 아이콘 + 텍스트 */
+  gap: var(--space-sm);         /* 간격 */
+  margin-bottom: var(--space-md); /* 아래 여백 */
+}
+
+.contact-icon {
+  font-size: 1.4rem;            /* 아이콘 크기 */
+  flex-shrink: 0;               /* 아이콘이 줄어들지 않도록 */
+  margin-top: 2px;              /* 미세 조정 */
+}
+
+.contact-item strong {
+  display: block;               /* 별도 줄에 */
+  font-size: 0.8rem;            /* 작은 레이블 */
+  text-transform: uppercase;    /* 대문자 */
+  opacity: 0.7;                 /* 약간 투명 */
+  margin-bottom: 4px;           /* 아래 여백 */
+}
+
+.contact-item p {
+  font-size: 0.95rem;           /* 폰트 크기 */
+}
+
+.contact-item a {
+  color: var(--text-white);     /* 흰색 링크 */
+  text-decoration: underline;   /* 밑줄로 링크 표시 */
+  opacity: 0.9;
+}
+
+/* 폼 컨테이너 */
+.contact-form {
+  background: var(--bg-primary); /* 흰색 배경 */
+  padding: var(--space-lg);      /* 안쪽 여백 */
+  border-radius: var(--radius-lg); /* 둥근 모서리 */
+  box-shadow: var(--shadow-md);  /* 그림자 */
+}
+
+/* 폼 그룹 */
+.form-group {
+  margin-bottom: var(--space-md); /* 그룹 아래 여백 */
+}
+
+/* 2열 행 (이름 + 이메일) */
+.form-row-half {
+  display: grid;                /* Grid로 2열 배치 */
+  grid-template-columns: 1fr;  /* 모바일: 1열 */
+  gap: var(--space-md);        /* 간격 */
+}
+
+/* 폼 레이블 */
+.form-label {
+  display: block;               /* 블록으로 전체 줄 차지 */
+  font-size: 0.875rem;          /* 작은 폰트 */
+  font-weight: 600;             /* 굵게 */
+  color: var(--text-secondary); /* 회색 텍스트 */
+  margin-bottom: 6px;           /* 인풋과의 간격 */
+}
+
+/* 필수 항목 표시 */
+.required {
+  color: var(--color-accent);   /* 핑크색 별표 */
+  margin-left: 2px;             /* 살짝 간격 */
+}
+
+/* 인풋 공통 스타일 */
+.form-input {
+  width: 100%;                  /* 전체 너비 */
+  padding: 12px 16px;           /* 안쪽 여백 */
+  border: 2px solid #e9ecef;    /* 연한 테두리 */
+  border-radius: var(--radius-md); /* 둥근 모서리 */
+  font-size: 0.95rem;           /* 폰트 크기 */
+  color: var(--text-primary);   /* 텍스트 색 */
+  background-color: #f8f9ff;    /* 약간 파란 배경 */
+  transition: border-color var(--transition-fast); /* 포커스 전환 */
+  outline: none;                /* 기본 포커스 아웃라인 제거 */
+}
+
+/* 포커스 시 테두리 색 변경 */
+.form-input:focus {
+  border-color: var(--color-primary); /* 파란색 테두리 */
+  background-color: var(--bg-primary); /* 흰색 배경 */
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.12); /* 파란 글로우 */
+}
+
+/* 셀렉트 박스 */
+.form-select {
+  cursor: pointer;              /* 클릭 커서 */
+  -webkit-appearance: none;     /* 기본 셀렉트 화살표 제거 */
+  appearance: none;
+  /* 커스텀 화살표 */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23868e96' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 40px;          /* 화살표 공간 확보 */
+}
+
+/* 텍스트에어리어 */
+.form-textarea {
+  resize: vertical;             /* 세로 방향만 크기 조절 가능 */
+  min-height: 120px;            /* 최소 높이 */
+}
+
+/* 체크박스 행 */
+.form-checkbox {
+  display: flex;                /* Flexbox: 체크박스 + 레이블 */
+  align-items: flex-start;      /* 상단 정렬 */
+  gap: var(--space-xs);         /* 간격 */
+}
+
+.form-checkbox input[type="checkbox"] {
+  width: 18px;                  /* 체크박스 크기 */
+  height: 18px;
+  flex-shrink: 0;               /* 줄어들지 않도록 */
+  margin-top: 2px;              /* 미세 조정 */
+  accent-color: var(--color-primary); /* 체크 시 파란색 */
+  cursor: pointer;
+}
+
+.form-label-checkbox {
+  font-size: 0.875rem;          /* 작은 폰트 */
+  color: var(--text-secondary); /* 회색 텍스트 */
+  cursor: pointer;              /* 클릭 가능 커서 */
+}
+
+/* 밑줄 링크 */
+.link-underline {
+  color: var(--color-primary);  /* 파란색 */
+  text-decoration: underline;   /* 밑줄 */
+}
+
+
+/* ====================================================
+   ⑧ FOOTER — 모바일 기본 스타일
+   6차시: Flexbox flex-wrap
+   1차시: 시맨틱 footer 태그
+==================================================== */
+.site-footer {
+  background-color: var(--bg-dark);  /* 어두운 배경 */
+  color: rgba(255,255,255,0.7);      /* 반투명 흰색 텍스트 */
+  padding: var(--space-xl) 0 0;      /* 위 패딩 */
+}
+
+/* 푸터 그리드: 모바일에서 세로 쌓기 */
+.footer-grid {
+  display: flex;                /* Flexbox */
+  flex-direction: column;       /* 모바일: 세로 방향 */
+  gap: var(--space-xl);         /* 열 사이 간격 */
+  margin-bottom: var(--space-xl); /* 아래 여백 */
+}
+
+/* 푸터 로고 */
+.footer-logo .logo-text {
+  color: var(--text-white);     /* 흰색 로고 텍스트 */
+}
+
+/* 푸터 설명 */
+.footer-desc {
+  font-size: 0.875rem;          /* 작은 폰트 */
+  line-height: 1.7;             /* 넓은 줄 간격 */
+  margin-top: var(--space-sm);  /* 위 여백 */
+  margin-bottom: var(--space-md); /* 아래 여백 */
+  max-width: 280px;             /* 설명 최대 너비 */
+}
+
+/* SNS 링크들 */
+.social-links {
+  display: flex;                /* Flexbox: 아이콘 나열 */
+  gap: var(--space-xs);         /* 간격 */
+}
+
+.social-link {
+  display: flex;                /* 아이콘 가운데 정렬 */
+  align-items: center;
+  justify-content: center;
+  width: 40px;                  /* 정사각형 */
+  height: 40px;
+  background: rgba(255,255,255,0.1); /* 반투명 배경 */
+  border-radius: var(--radius-sm); /* 둥근 모서리 */
+  font-size: 1.1rem;            /* 아이콘 크기 */
+  transition: background var(--transition-fast);
+  text-decoration: none;
+}
+
+.social-link:hover {
+  background: rgba(255,255,255,0.2); /* 호버 시 밝아짐 */
+}
+
+/* 푸터 열 제목 */
+.footer-col-title {
+  font-size: 0.875rem;          /* 제목 크기 */
+  font-weight: 700;             /* 굵게 */
+  color: var(--text-white);     /* 흰색 */
+  text-transform: uppercase;    /* 대문자 */
+  letter-spacing: 0.08em;       /* 자간 */
+  margin-bottom: var(--space-sm); /* 아래 여백 */
+}
+
+/* 푸터 링크 목록 */
+.footer-links {
+  display: flex;                /* Flexbox: 세로 목록 */
+  flex-direction: column;
+  gap: 8px;                     /* 링크 간격 */
+}
+
+/* 푸터 링크 */
+.footer-link {
+  font-size: 0.875rem;          /* 작은 폰트 */
+  color: rgba(255,255,255,0.6); /* 반투명 흰색 */
+  transition: color var(--transition-fast);
+}
+
+.footer-link:hover {
+  color: var(--text-white);     /* 호버 시 완전 흰색 */
+}
+
+/* 푸터 하단 구분선 + 저작권 */
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1); /* 위 구분선 */
+  padding: var(--space-md) 0;   /* 위아래 패딩 */
+  text-align: center;           /* 가운데 정렬 */
+}
+
+.footer-bottom p {
+  font-size: 0.8rem;            /* 작은 폰트 */
+  color: rgba(255,255,255,0.45); /* 연한 흰색 */
+  margin-bottom: 4px;           /* 아래 여백 */
+}
+
+.footer-made {
+  color: rgba(255,255,255,0.3); /* 매우 연한 흰색 */
+}
+
+
+/* ====================================================
+   스크롤 상단 버튼 (고정 위치)
+   5차시: position: fixed
+==================================================== */
+.scroll-top {
+  position: fixed;              /* 화면에 고정 */
+  bottom: 24px;                 /* 하단에서 24px */
+  right: 24px;                  /* 오른쪽에서 24px */
+  width: 48px;                  /* 버튼 크기 */
+  height: 48px;
+  background: var(--color-primary); /* 파란색 배경 */
+  color: var(--text-white);     /* 흰색 화살표 */
+  border-radius: 50%;           /* 원형 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;            /* 화살표 크기 */
+  box-shadow: var(--shadow-md); /* 그림자 */
+  text-decoration: none;
+  z-index: 999;                 /* 항상 위에 표시 */
+  transition: all var(--transition-normal);
+}
+
+.scroll-top:hover {
+  transform: translateY(-3px);  /* 위로 이동 */
+  background: var(--color-secondary); /* 더 진한 파란색 */
+}
+
+
+/* ============================================================
+   📱 미디어 쿼리 1: min-width 576px (중형 폰 이상)
+   대상 기기: 갤럭시, 아이폰 (중형 ~ 대형 스마트폰)
+   변경 사항: 히어로 버튼 가로 배치
+============================================================ */
+@media (min-width: 576px) {
+  
+  /* 컨테이너 좌우 패딩 약간 증가 */
+  .container {
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+  }
+
+  /* 히어로 버튼: 가로 배치로 변경 */
+  .hero-actions {
+    flex-direction: row;         /* 가로 방향으로 전환 */
+    justify-content: center;     /* 가운데 정렬 */
+  }
+
+  /* 폼 2열 행: 2열 그리드 */
+  .form-row-half {
+    grid-template-columns: 1fr 1fr; /* 2열로 변경 */
+  }
+
+}
+/* ── end 576px ── */
+
+
+/* ============================================================
+   📱 미디어 쿼리 2: min-width 768px (태블릿 이상)
+   대상 기기: iPad mini, 소형 태블릿
+   변경 사항: 네비게이션 표시, 갤러리 2열→3열 기준 준비,
+              About 텍스트 정렬
+============================================================ */
+@media (min-width: 768px) {
+
+  /* 헤더 네비게이션: 데스크탑 스타일로 전환 */
+  .site-nav {
+    display: block;              /* 항상 표시 */
+    position: static;            /* 일반 문서 흐름으로 */
+    background: none;            /* 배경 제거 */
+    padding: 0;                  /* 패딩 제거 */
+    border: none;                /* 테두리 제거 */
+    box-shadow: none;            /* 그림자 제거 */
+  }
+
+  /* 네비게이션 리스트: 가로 배치 */
+  .nav-list {
+    flex-direction: row;         /* 가로 방향으로 전환 */
+    gap: 4px;                    /* 메뉴 사이 간격 */
+    align-items: center;         /* 수직 가운데 정렬 */
+  }
+
+  /* 네비게이션 링크 스타일 */
+  .nav-link {
+    padding: 8px 14px;           /* 패딩 조정 */
+    white-space: nowrap;         /* 텍스트 줄바꿈 방지 */
+  }
+
+  /* 햄버거 버튼: 태블릿 이상에서 숨김 */
+  .hamburger {
+    display: none;               /* 햄버거 메뉴 숨김 */
+  }
+
+  /* 피처 카드: 2열 그리드 */
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
+  }
+
+  /* 갤러리: 3열 (33.33%) */
+  .gallery-item {
+    width: calc(33.333% - 8px);  /* 3열: 33.33% - gap 계산 */
+  }
+
+  .gallery-img {
+    height: 220px;               /* 이미지 높이 증가 */
+  }
+
+  /* About 텍스트: 좌측 정렬 유지 */
+  .about-text .section-tag {
+    display: block;              /* 블록으로 표시 */
+  }
+
+  /* Contact 레이아웃: 2열 그리드 */
+  .contact-layout {
+    grid-template-columns: 1fr 1.5fr; /* 정보(1fr) + 폼(1.5fr) */
+  }
+
+  /* 섹션 패딩 증가 */
+  .section-padding {
+    padding-top: var(--space-xxl);    /* 100px */
+    padding-bottom: var(--space-xxl); /* 100px */
+  }
+
+}
+/* ── end 768px ── */
+
+
+/* ============================================================
+   💻 미디어 쿼리 3: min-width 1024px (노트북/소형 데스크탑 이상)
+   대상 기기: 13인치 노트북, 소형 모니터
+   변경 사항: About 2열, Features 3열, Footer 가로 배치
+============================================================ */
+@media (min-width: 1024px) {
+
+  /* 컨테이너 패딩 증가 */
+  .container {
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+
+  /* 히어로 텍스트: 왼쪽 정렬 (데스크탑) */
+  .hero-content {
+    text-align: left;            /* 왼쪽 정렬로 변경 */
+  }
+
+  .hero-desc {
+    margin-left: 0;              /* 자동 가운데 정렬 해제 */
+    margin-right: 0;
+  }
+
+  .hero-actions {
+    justify-content: flex-start; /* 왼쪽 정렬 */
+  }
+
+  .hero-stats {
+    justify-content: flex-start; /* 왼쪽 정렬 */
+  }
+
+  /* 피처 카드: 3열 그리드 */
+  .features-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3열로 변경 */
+  }
+
+  /* About 섹션: 2열 Grid */
+  .about-grid {
+    grid-template-columns: 1fr 1fr; /* 텍스트 / 이미지 2열 */
+    gap: var(--space-xxl);          /* 섹션 사이 넓은 간격 */
+  }
+
+  /* 갤러리 이미지 높이 */
+  .gallery-img {
+    height: 250px;               /* 더 높은 이미지 */
+  }
+
+  /* 푸터 그리드: 3열 가로 배치 */
+  .footer-grid {
+    flex-direction: row;         /* 가로 방향으로 전환 */
+    align-items: flex-start;     /* 상단 정렬 */
+  }
+
+  /* 푸터 브랜드 열: 더 넓게 */
+  .footer-col-brand {
+    flex: 1.5;                   /* 다른 열보다 1.5배 넓게 */
+  }
+
+  /* 푸터 일반 열 */
+  .footer-col {
+    flex: 1;                     /* 균등 너비 */
+  }
+
+}
+/* ── end 1024px ── */
+
+
+/* ============================================================
+   🖥️ 미디어 쿼리 4: min-width 1200px (데스크탑/대형 모니터)
+   대상 기기: 일반 데스크탑 모니터 (1920×1080 포함)
+   변경 사항: 최대 너비 고정, 여백 최대화
+============================================================ */
+@media (min-width: 1200px) {
+
+  /* 컨테이너: 최대 너비 고정 */
+  .container {
+    padding-left: 40px;          /* 충분한 좌우 패딩 */
+    padding-right: 40px;
+  }
+
+  /* 피처 카드 패딩 증가 */
+  .feature-card {
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  /* 갤러리 이미지 높이 */
+  .gallery-img {
+    height: 280px;               /* 가장 높은 이미지 높이 */
+  }
+
+  /* 히어로 영역 최소 높이 증가 */
+  .hero {
+    min-height: 100vh;
+  }
+
+}
+/* ── end 1200px ── */
+
+
+/* ====================================================
+   접근성 & 특수 미디어 쿼리
+==================================================== */
+
+/* 움직임 감소 모드: 애니메이션 비활성화 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important; /* 애니메이션 즉시 완료 */
+    transition-duration: 0.01ms !important; /* 전환 즉시 완료 */
+  }
+
+  .scroll-top {
+    transition: none;            /* 스크롤 버튼 전환 효과 제거 */
+  }
+}
+
+/* 포커스 스타일 (키보드 내비게이션 접근성) */
+:focus-visible {
+  outline: 3px solid var(--color-primary); /* 파란색 아웃라인 */
+  outline-offset: 2px;          /* 요소와의 간격 */
+  border-radius: 4px;           /* 살짝 둥근 아웃라인 */
+}
+
+/* 인쇄 미디어 쿼리: 헤더/푸터/배경 최적화 */
+@media print {
+  /* 인쇄 시 불필요한 요소 숨김 */
+  .site-header,
+  .hero-blob,
+  .gallery-overlay,
+  .scroll-top,
+  .hero-actions,
+  .btn {
+    display: none !important;   /* 인쇄에서 숨김 */
+  }
+
+  /* 인쇄용 배경 제거 */
+  .hero {
+    background: none;           /* 배경 제거 */
+    color: var(--text-primary); /* 어두운 텍스트로 변경 */
+    min-height: auto;           /* 높이 초기화 */
+  }
+
+  .hero-title,
+  .hero-desc {
+    color: var(--text-primary); /* 어두운 텍스트 */
+  }
+
+  /* 인쇄용 폰트 크기 */
+  body {
+    font-size: 12pt;            /* 인쇄용 폰트 크기 */
+  }
+}
+
+/* ====================================================
+   🌙 8차시 추가: 다크모드 오버라이드 & 스위칭 버튼 스타일
+   ==================================================== */
+body.dark-mode {
+  /* 다크모드 색상 변수 오버라이드 */
+  --bg-primary:     #0f172a;  /* 어두운 네이비 배경 */
+  --bg-secondary:   #1e293b;  /* 중간 네이비 배경 */
+  --text-primary:   #f8fafc;  /* 거의 흰색 텍스트 */
+  --text-secondary: #cbd5e1;  /* 밝은 회색 보조 텍스트 */
+  --text-light:     #94a3b8;  /* 옅은 회색 */
+  
+  /* 다크모드 폼 배경 색상 변경 */
+  --form-input-bg:  #334155;
+}
+
+/* 다크모드 전환 시 개별 구역 배경 보완 */
+body.dark-mode .site-header {
+  background-color: #1e293b;
+  border-bottom-color: #334155;
+}
+
+body.dark-mode .feature-card,
+body.dark-mode .about-img,
+body.dark-mode .contact-form,
+body.dark-mode .gallery-item {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+body.dark-mode .form-input {
+  background-color: #334155;
+  border-color: #475569;
+  color: #f8fafc;
+}
+
+body.dark-mode .gallery-overlay {
+  background: rgba(15, 23, 42, 0.85);
+}
+
+body.dark-mode .contact-info {
+  background-color: #0f172a;
+}
+
+/* 다크모드 토글 스위치 버튼 스타일 */
+.btn-mode {
+  font-size: 1.25rem;
+  cursor: pointer;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  margin-left: 20px;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-mode:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.08);
+}
+
+body.dark-mode .btn-mode {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .btn-mode:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* 모바일 햄버거 메뉴 및 다크모드 버튼 간격 제어 */
+@media (max-width: 767px) {
+  .btn-mode {
+    margin-left: auto;
+    margin-right: 15px; /* 햄버거 버튼 왼쪽에 적절히 배치 */
+  }
+}
+
