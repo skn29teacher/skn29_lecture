@@ -188,7 +188,7 @@
         <div class="form-row">
           <input type="text" id="post-author" placeholder="작성자 이름">
           <textarea id="post-body" placeholder="방명록을 작성해 주세요..."></textarea>
-          <button id="btn-create" class="accent">등록</button>
+          <div id="btn-create" class="accent">등록</div>
         </div>
       </div>
 
@@ -218,6 +218,7 @@
   </div>
   <script src="../js/common.js"></script>
   <script>
+    console.log("스크립트 시작", Date.now());
     const API_URL ='http://127.0.0.1:8000/api/posts';
     const postListContainer = document.querySelector('#post-list-container');
     // 방명록 목록 불러오기
@@ -256,7 +257,7 @@
     document.querySelector('#btn-load-posts').addEventListener('click', loadPosts);
 
     // 등록버튼
-    document.querySelector('#btn-create').addEventListener('click',async ()=>{
+    document.querySelector('#btn-create').addEventListener('click',async (e)=>{        
         const authorInput = document.querySelector('#post-author');
         const bodyInput = document.querySelector('#post-body');
         const title = authorInput.value;
@@ -278,9 +279,9 @@
                 throw new Error(`등록오류 : ${err.detail}  상태코드 : ${response.status}`);
             }
             const result =  await response.json();
-            authorInput.textContent='';
-            bodyInput.textContent='';
-            loadPosts(); 
+            authorInput.value='';
+            bodyInput.value='';
+            await loadPosts();             
         }catch(e){
             log(`에러 : ${e.message}`);
         }
