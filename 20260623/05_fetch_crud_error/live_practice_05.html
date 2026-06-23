@@ -265,13 +265,25 @@
             log('작성자와 내용을 작성하세요');
             return;            
         }
-        fetch(API_URL, {
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            body : JSON.stringify( { title,body }  )
-        })
+        try{
+            const response =  await fetch(API_URL, {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body : JSON.stringify( { title,body }  )
+            })
+            if(!response.ok){
+                const err =  await response.json();
+                throw new Error(`등록오류 : ${err.detail}  상태코드 : ${response.status}`);
+            }
+            const result =  await response.json();
+            authorInput.textContent='';
+            bodyInput.textContent='';
+            loadPosts(); 
+        }catch(e){
+            log(`에러 : ${e.message}`);
+        }
     });
   </script>
   </body>
