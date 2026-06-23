@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> HTTP GET 요청과 쿼리 스트링 처리</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1> HTTP GET 요청과 쿼리 스트링 처리</h1>
+            <p>SQLite3 데이터베이스의 사용자 데이터를 비동기 조회하고, 검색어를 URL 쿼리 파라미터로 조립하여 전송해 봅니다.</p>
+        </header>
+
+        <main class="grid-layout">
+            <!-- 검색 영역 -->
+            <section class="card">
+                <h2 class="card-title">사용자 검색</h2>
+                <div class="form-group">
+                    <label for="search-input">검색 키워드 (이름 또는 아이디)</label>
+                    <input type="text" id="search-input" placeholder="예: 길동 또는 gildong (비워두면 전체 조회)">
+                </div>
+                <button type="button" id="btn-search" class="btn">검색 실행</button>
+            </section>
+
+            <!-- 결과 영역 -->
+            <section class="card">
+                <h2 class="card-title">데이터베이스 조회 결과</h2>
+                <div class="table-container">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>이름</th>
+                                <th>사용자명</th>
+                                <th>이메일</th>
+                                <th>회사</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-secondary);">검색 버튼을 클릭하세요.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
