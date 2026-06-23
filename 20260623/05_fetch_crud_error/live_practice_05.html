@@ -286,6 +286,27 @@
             log(`에러 : ${e.message}`);
         }
     });
+
+    // delete
+    postListContainer.addEventListener('click', async (e)=>{
+        // e.target // 이벤트가 실제 발생한 객체 --> button
+        // e.currentTarget // 이벤트를 감지한 객체 -->postListContainer
+        if(e.target.classList.contains('btn-delete')){  // 클릭된 자식이 삭제 버튼인지 확인
+            e.stopPropagation(); // 이벤트 버블링을 막음 
+            const postId = e.target.dataset.id;  // html에서 propery 가 data-id =  값을 가져옴
+            try{
+                const response = await fetch(`${API_URL}/${postId}`,{
+                    method : 'DELETE'
+                });
+                if(!response.ok){
+                    throw new Error('삭제 불가');
+                }
+            }catch(e){
+                log(`삭제 오류 : ${e.message}`)
+            }
+        }
+    });
+
   </script>
   </body>
   </html>
