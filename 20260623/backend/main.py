@@ -17,6 +17,7 @@ app.add_middleware(
 )
 
 DB_PATH = "lecture.db"
+VALID_TOKEN = 'secret-lecture-token'  # 테스트용인증 토큰
 
 # Pydantic 모델 정의
 class PostCreate(BaseModel):
@@ -326,6 +327,12 @@ def read_secure_data(authorization: Optional[str] = Header(None)):
         )
         
     token = authorization.split(" ")[1]
+    if token != VALID_TOKEN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='제시한 인증토큰이 만료되었거나 비정상적입니다.'
+        )
+
     return {
         "verified": True,
         "token_used": token,
