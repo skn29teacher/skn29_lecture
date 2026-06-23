@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 서버-클라이언트 연결 테스트</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>웹 서버-클라이언트 아키텍처와 연결 테스트</h1>
+            <p>자바스크립트의 Promise 기반 Fetch API를 통해 로컬에서 가동 중인 FastAPI 백엔드 서버와의 비동기 통신을 검증합니다.</p>
+        </header>
+
+        <main class="card">
+            <h2 class="card-title">연결 제어 패널</h2>
+            <div class="form-group">
+                <button type="button" id="btn-connect" class="btn btn-primary">서버에 연결 확인 요청 보내기</button>
+            </div>
+            
+            <div class="result-viewer">
+                <h3>서버 응답 결과 (JSON)</h3>
+                <pre id="response-output">대기 중...</pre>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
