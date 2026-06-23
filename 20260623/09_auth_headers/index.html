@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP 헤더 제어와 Authorization Bearer 토큰 연동</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HTTP 헤더 제어와 Authorization Bearer 토큰 연동</h1>
+            <p>요청 헤더 객체에 Authorization Bearer 규격으로 토큰을 추가해 비동기 API 요청을 보내고, 백엔드 검증을 거칩니다.</p>
+        </header>
+
+        <main class="grid-layout">
+            <!-- 토큰 설정 패널 -->
+            <section class="card">
+                <h2 class="card-title">인증 토큰 구성 패널</h2>
+                <div class="form-group">
+                    <label for="token-input">Bearer 토큰 값</label>
+                    <input type="text" id="token-input" placeholder="토큰 값을 입력하세요" value="secret-lecture-token">
+                </div>
+                <div class="btn-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button type="button" id="btn-request" class="btn btn-primary">보안 데이터 요청 전송</button>
+                    <button type="button" id="btn-wrong-schema" class="btn btn-secondary">잘못된 스키마 전송 (Bearer 누락)</button>
+                    <button type="button" id="btn-clear" class="btn btn-secondary">토큰 완전히 비우고 전송</button>
+                </div>
+            </section>
+
+            <!-- 상태 및 바디 뷰어 -->
+            <section class="card">
+                <h2 class="card-title">HTTP 헤더 및 응답 검증 결과</h2>
+                <div class="status-box">
+                    <span class="status-label">HTTP Status Code:</span>
+                    <span id="response-status" class="status-code">N/A</span>
+                </div>
+                <div class="result-viewer">
+                    <h3>서버 응답 결과 (JSON)</h3>
+                    <pre id="response-body">대기 중...</pre>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
