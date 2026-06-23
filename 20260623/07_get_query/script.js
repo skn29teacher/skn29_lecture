@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', ()=>{
     const btnSearch = document.querySelector('#btn-search');
     const searchInput = document.querySelector('#search-input');  
+    const usersTbody = document.querySelector('#users-tbody');
 
     function fetchUsers(){
         const query = searchInput.value.trim();
@@ -24,9 +25,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
             }
             // 사용자정보들
             users.forEach(user => { 
-                console.log( `id : ${user.id} name:${user.username} email:${user.email} 
-                    company:${user.company_name}`
-                )
+                const tr = document.createElement('tr')
+                tr.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.name}</td>
+                <td>${user.username}</td>
+                <td>${user.email}</td>
+                <td>${user.company_name}</td>`
+                usersTbody.appendChild(tr);
             });
         })
         .catch(e=>{
