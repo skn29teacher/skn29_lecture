@@ -6,18 +6,19 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     // get 방식
     function loadPosts(){
-        fetch('http://127.0.0.1/api/posts')
+        fetch('http://127.0.0.1:8000/api/posts')
         .then( response=>{
             if(!response.ok) throw new Error(`오류 : 코드 : ${response.status}`);            
             return response.json();
         })
         .then( posts =>{
+            postsContainer.innerHTML = '';
             if(posts.length === 0){
                 postsContainer.innerHTML = '<p style="text-align: center; color: \
                     var(--text-secondary);">방명록 없음</p>'
                 return;
             }
-            posts.array.forEach(element => {
+            posts.forEach(element => {
                 const div = document.createElement('div');
                 div.className = 'post-item';
                 div.innerHTML = `
@@ -31,4 +32,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
             postsContainer.textContent = e.message;
         });
     }
+
+    loadPosts();
+
+
 })
