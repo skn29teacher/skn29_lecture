@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP POST 요청과 리퀘스트 바디 처리</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1> HTTP POST 요청과 리퀘스트 바디 처리</h1>
+            <p>방명록 등록 양식을 작성하고 데이터를 JSON 객체로 직렬화하여 HTTP POST 바디 영역에 담아 전송합니다.</p>
+        </header>
+
+        <main class="grid-layout">
+            <!-- 방명록 등록 폼 -->
+            <section class="card">
+                <h2 class="card-title">방명록 남기기</h2>
+                <div class="form-group">
+                    <label for="post-title">작성자</label>
+                    <input type="text" id="post-title" placeholder="이름을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label for="post-body">방명록 본문</label>
+                    <textarea id="post-body" rows="4" placeholder="내용을 입력하세요"></textarea>
+                </div>
+                <button type="button" id="btn-submit" class="btn">방명록 등록하기</button>
+            </section>
+
+            <!-- 방명록 목록 -->
+            <section class="card">
+                <h2 class="card-title">방명록 목록</h2>
+                <div id="posts-container" class="posts-list">
+                    <p style="text-align: center; color: var(--text-secondary);">로딩 중...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
