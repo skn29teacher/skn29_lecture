@@ -275,7 +275,7 @@ def search_countries(search: Optional[str] = Query(None)):
             detail=f"검색 결과에 부합하는 국가 정보가 존재하지 않습니다. (검색어: {search})"
         )
         
-    countries = []
+    countries = []  
     for row in rows:
         # DB 저장용 언어 스트링을 프론트엔드가 요구하는 언어 해시 객체 형태로 변환
         lang_list = [lang.strip() for lang in row["languages"].split(",")]
