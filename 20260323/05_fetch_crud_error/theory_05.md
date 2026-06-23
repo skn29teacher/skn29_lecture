@@ -91,6 +91,8 @@ fetch("http://127.0.0.1:8000/api/invalid-address")
   });
 ```
 
+*   **적용 실습**: practice_05.html -> 1번, 2번 섹션
+
 ---
 
 ## 학습 정리 체크리스트
