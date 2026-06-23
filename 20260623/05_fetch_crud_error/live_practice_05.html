@@ -259,8 +259,8 @@
     document.querySelector('#btn-create').addEventListener('click',async ()=>{
         const authorInput = document.querySelector('#post-author');
         const bodyInput = document.querySelector('#post-body');
-        const title = authorInput.textContent;
-        const body = bodyInput.textContent;
+        const title = authorInput.value;
+        const body = bodyInput.value;
         if(!title || !body){
             log('작성자와 내용을 작성하세요');
             return;            
