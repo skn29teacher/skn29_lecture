@@ -36,4 +36,22 @@ document.addEventListener('DOMContentLoaded', ()=>{
     loadPosts();
 
 
+    btnSubmit.addEventListener('click',()=>{
+        fetch("http://127.0.0.1:8000/api/posts",{
+            method = 'POST',
+            headers = {'Content-Type':'application/json'},
+            body : JSON.stringify({title:postTitle.value.tirm(), body:postBody.value.trim()})
+        })
+        .then(response=>{
+            return response.json();
+        })
+        .then(data=>{
+            postTitle.value='';
+            postBody.value='';
+            loadPosts();
+        })
+        .catch(e=>{
+            alert(e.message);
+        });        
+    });
 })
