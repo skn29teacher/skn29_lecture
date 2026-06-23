@@ -24,10 +24,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
             }
             // 사용자정보들
             users.forEach(user => { 
-                // user.id
-                // user.username
-                // user.email
-                // user.company_name
+                console.log( `id : ${user.id} name:${user.username} email:${user.email} 
+                    company:${user.company_name}`
+                )
             });
         })
         .catch(e=>{
