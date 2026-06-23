@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoader',()=>{
+document.addEventListener('DOMContentLoaded',()=>{
     const btnConnect = document.querySelector('#btn-connect');
     const responseOutput = document.querySelector('#response-output');
 
