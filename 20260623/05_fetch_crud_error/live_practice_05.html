@@ -216,5 +216,44 @@
       <button onclick="clearLog()" style="margin-top: 0.5rem; background-color: var(--danger);">로그 리셋</button>
     </div>
   </div>
+  <script src="../js/common.js"></script>
+  <script>
+    const API_URL ='http://127.0.0.1:8000/api/posts';
+    const postListContainer = document.querySelector('#post-list-container');
+    // 방명록 목록 불러오기
+    async function loadPosts(){
+        log('[방명록 GET]... ');
+        try{
+            const response = await fetch(API_URL);
+            if(!response.ok){
+                throw new Error(`목록 조회 에러발생 : ${response.status}`);
+            }
+            const posts = await response.json(); // 문자열을 객체로 변환(json문자열 -> 딕셔너리)
+            postListContainer.innerHTML = '';
+            if(posts.length === 0){
+                postListContainer.innerHTML = '<div style="text-align: center; color: #64748b; padding: 1rem;">방명록의 데이터가 없습니다.</div>'
+            }
+            posts.forEach(element => {
+                const item = document.createAttribute('div');
+                item.className = 'post-item';
+                item.innerHTML = `
+                <div class="post-content">
+                    <span class="post-author">${element.title}</span>
+                    <span class="post-text">${element.body}</span>
+                </div>
+                <button class="btn-delete danger" data-id="${element.id}">삭제</button>
+                `;
+                item.addEventListener('click', ()=>{
+                    log(`방명록 카드 행 자체에 클릭이 감지 : 글 id : ${element.id}`);
+                });
+                postListContainer.appendChild(item);
+            });
+
+        }catch(e){
+            log(`[에러] : ${e.message}`)
+        }
+    }
+
+  </script>
   </body>
   </html>
