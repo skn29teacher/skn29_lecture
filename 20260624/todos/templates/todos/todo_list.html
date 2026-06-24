@@ -1,19 +1,31 @@
-<!-- 첫번째 줄에 부모템플릿 파일을 상속 받을 것을 선언 -->
 {% extends 'todos/base.html' %}
 
 {% block content %}
 <div class="content-header">
-    <h2 class="section-title">할일 목록 화면</h2>
-    <p class="section-desc">오늘도 알찬 하루를 보냅시다</p>
-    {% for todo in todos  %}
-        {% if todo.is_completed %} 완료 {% else %} 대기중 {% endif %} <br>
-        {{ todo.created_at|date:"Y-m-d H:i" }} <br>
-        {{ todo.title }}<br>
-        {% if todo.content %}
-            {{ todo.content }}
-        {% endif %}
-    {% empty %}
-        <p>등록된 할일이 없습니다</p>
-    {% endfor %}
+    <h2 class="section-title">나의 할일 관리</h2>
+    <p class="section-desc">체계적이고 직관적인 오늘 하루의 할일 목록입니다.</p>
+</div>
+
+<div class="todo-board-container">
+    <div class="todo-grid">
+        {% for todo in todos %}
+            <div class="todo-card {% if todo.is_completed %}completed{% endif %}">
+                <div class="todo-card-header">
+                    <span class="status-badge">
+                        {% if todo.is_completed %}완료{% else %}대기중{% endif %}
+                    </span>
+                    <span class="todo-date">{{ todo.created_at|date:"Y-m-d H:i" }}</span>
+                </div>
+                <h3 class="todo-title">{{ todo.title }}</h3>
+                {% if todo.content %}
+                    <p class="todo-body">{{ todo.content }}</p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                <p>등록된 할일이 없습니다. 다음 장에서 등록 기능을 구현해 보세요.</p>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
