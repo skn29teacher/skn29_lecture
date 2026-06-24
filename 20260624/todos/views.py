@@ -11,8 +11,13 @@ def todo_list_welcom(request):
 
 
 def todo_create(request):
-    new_todo = Todo(title='개발계획 세우기', content='한달반정도의 기간동안 개발할 내용')
-    new_todo.save()  # sql insert가 장고 프레임웍에서 내부적으로 자동으로 변환됨
+    try:
+        new_todo = Todo(title='개발계획 세우기', content='한달반정도의 기간동안 개발할 내용')
+        new_todo.save()  # sql insert가 장고 프레임웍에서 내부적으로 자동으로 변환됨
+        return HttpResponse("<h3>데이터생성 성공</h3>")
+    except Exception as e:
+        return HttpResponse(f"데이터 생성 실패 : {e.messages}")
+
 
 class AboutView(View):
     # 클라이언트가 get 요청을 보냈을때 자동으로 실행되는 메소드
