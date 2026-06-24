@@ -18,6 +18,18 @@ def todo_update(request):
     todo.save() # 저장 (update)
     return todo_read(request)  # 조회
 
+def todo_delete(request):
+    try:
+        todo_id = request.GET.get("id")
+        todo = Todo.objects.get(id = todo_id)
+        todo.delete()
+        return todo_read(request)  # 조회
+    except Exception as e:
+        return HttpResponse(e)
+    
+
+    
+
 def todo_create(request):
     try:
         new_todo = Todo(title='개발계획 세우기', content='한달반정도의 기간동안 개발할 내용')
