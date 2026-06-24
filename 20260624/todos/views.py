@@ -16,7 +16,7 @@ def todo_update(request):
     todo.title = '변경된 제목'
     todo.is_completed = True
     todo.save() # 저장 (update)
-    todo_read(request)  # 조회
+    return todo_read(request)  # 조회
 
 def todo_create(request):
     try:
