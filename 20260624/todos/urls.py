@@ -23,5 +23,5 @@ urlpatterns = [
     path('', views.todo_list_welcom, name='todo_welcome'),
     # 'http://127.0.0.1:8000/about/  주소요청시 viewes.AboutView 클래스 뷰  실행
     path('about/', views.AboutView.as_view(), name='about'),
-
+    path('todos/create', views.todo_create,name='todo_create'),
 ]
