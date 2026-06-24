@@ -19,12 +19,14 @@ from . import views
 # 앱의 네임스페이스를 지정해서 템플릿 주소를 역추적할때 식별자로 사용
 app_name = 'todos'
 urlpatterns = [    
-    # 'http://127.0.0.1:8000/  주소요청시 viewes.todo_list_welcom 함수 실행
-    path('', views.todo_list_welcom, name='todo_welcome'),
-    # 'http://127.0.0.1:8000/about/  주소요청시 viewes.AboutView 클래스 뷰  실행
-    path('about/', views.AboutView.as_view(), name='about'),
-    path('todos/create', views.todo_create,name='todo_create'),
-    path('todos/read', views.todo_read, name='todo_read'),
-    path('todos/update',views.todo_update, name='todo_update'),
-    path('todos/delete',views.todo_delete, name='todo_delete'),
+    # # 'http://127.0.0.1:8000/  주소요청시 viewes.todo_list_welcom 함수 실행
+    # path('', views.todo_list_welcom, name='todo_welcome'),
+    # # 'http://127.0.0.1:8000/about/  주소요청시 viewes.AboutView 클래스 뷰  실행
+    # path('about/', views.AboutView.as_view(), name='about'),
+    # path('todos/create', views.todo_create,name='todo_create'),
+    # path('todos/read', views.todo_read, name='todo_read'),
+    # path('todos/update',views.todo_update, name='todo_update'),
+    # path('todos/delete',views.todo_delete, name='todo_delete'),
+    path('',views.todo_read,name='todo_list'),
+    path('about',views.AboutView.as_view(),name='about'),
 ]
