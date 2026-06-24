@@ -12,4 +12,4 @@ class Todo(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     #객체를 문자열로 표현할때 기본 출력값을 지정
     def __str__(self):
-        return self.title
+        return f'title:{self.title} content:{self.content} created_at:{self.created_at}'
