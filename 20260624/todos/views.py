@@ -1,52 +1,52 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .models import Todo
+from .models import Todo  # 데이터베이스 테이블
+from .forms import TodoForm  # 폼유효성 검사
 
-# Create your views here.
-def todo_list_welcom(request):
-    # request : 클라이언트로 부터 들어온 HTTP 요청 메타데이터가 담긴 객체
-    # HttpResponse : 클라이언트 브라우저 텍스트나 html을 담아 내보내는 객체   
-    return HttpResponse("<h3>할일 관리 애플리케이션 방문을 환영합니다.<p>(함수기반 뷰)</p></h3>")
-
-def todo_update(request):
-    todo_id = request.GET.get("id")
-    todo = Todo.objects.get(id = todo_id)
-
-    todo.title = '변경된 제목'
-    todo.is_completed = True
-    todo.save() # 저장 (update)
-    return todo_read(request)  # 조회
-
-def todo_delete(request):
-    try:
-        todo_id = request.GET.get("id")
-        todo = Todo.objects.get(id = todo_id)
-        todo.delete()
-        return todo_read(request)  # 조회
-    except Exception as e:
-        return HttpResponse(e)
-    
-
-    
+def todo_list(request):
+    # 등록된 전체 할 일을 최신순으로 가져와 리스트 템플릿에 전달
+    todos = Todo.objects.all().order_by('-created_at')
+    return render(request, 'todos/todo_list.html', {'todos': todos})
 
 def todo_create(request):
-    try:
-        new_todo = Todo(title='개발계획 세우기', content='한달반정도의 기간동안 개발할 내용')
-        new_todo.save()  # sql insert가 장고 프레임웍에서 내부적으로 자동으로 변환됨
-        return HttpResponse("<h3>데이터생성 성공</h3>")
-    except Exception as e:
-        return HttpResponse(f"데이터 생성 실패 : {e.messages}")
+    if request.method == 'POST':
+        # 사용자가 폼에 채워 전송(POST)한 원시 데이터를 폼 인스턴스에 밀어 넣습니다.
+        form = TodoForm(request.POST)
+        # 데이터 유효성(빈 값 검사, 글자 수 한도, 형식 일치 등)을 점검합니다.
+        if form.is_valid():
+            # 유효성 검증을 통과한 데이터를 DB에 저장합니다.
+            form.save()
+            # 저장 완료 후 목록 화면으로 리다이렉트합니다.
+            return redirect('todos:todo_list')
+    else:
+        # GET 요청일 때는 입력을 위한 빈 폼 객체를 생성합니다.
+        form = TodoForm()
+        
+    return render(request, 'todos/todo_form.html', {'form': form, 'action': '등록'})
 
-def todo_read(request):
-    all_list = Todo.objects.all().order_by('-created_at')  # 전부 다가져오기
-    return render(request, 'todos/todo_list.html', {'todos':all_list})
+def todo_update(request, pk):
+    # 수정할 대상을 기본 키(pk)로 조회
+    todo = get_object_or_404(Todo, pk=pk)
+    
+    if request.method == 'POST':
+        # 기존 인스턴스(instance=todo)에 새로운 POST 데이터를 덮어씌웁니다.
+        form = TodoForm(request.POST, instance=todo)
+        if form.is_valid():
+            form.save()
+            return redirect('todos:todo_list')
+    else:
+        # 수정 화면 조회 시 기존 값을 채워 폼을 생성합니다.
+        form = TodoForm(instance=todo)
+        
+    return render(request, 'todos/todo_form.html', {'form': form, 'action': '수정'})
+
+def todo_delete(request, pk):
+    todo = get_object_or_404(Todo, pk=pk)
+    # POST 방식으로 요청이 들어오면 삭제를 처리합니다.
+    if request.method == 'POST':
+        todo.delete()
+    return redirect('todos:todo_list')
 
 class AboutView(View):
-    # 클라이언트가 get 요청을 보냈을때 자동으로 실행되는 메소드
-    def get(self,request):
-        # return HttpResponse("이 애플리케이션은 사용자 기반의 할일 관리 웹앱입니다.(클래스 뷰 기반)")
+    def get(self, request):
         return render(request, 'todos/about.html')
-    # 클라이언트가 post 요청을 보냈을때 자동으로 실행되는 메소드
-    def post(self, request):
-        return HttpResponse('데이터가 제출되었습니다.')

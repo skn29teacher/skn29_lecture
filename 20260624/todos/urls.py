@@ -27,6 +27,6 @@ urlpatterns = [
     # path('todos/read', views.todo_read, name='todo_read'),
     # path('todos/update',views.todo_update, name='todo_update'),
     # path('todos/delete',views.todo_delete, name='todo_delete'),
-    path('',views.todo_read,name='todo_list'),
+    path('',views.todo_list,name='todo_list'),
     path('about/',views.AboutView.as_view(),name='about'),
 ]
