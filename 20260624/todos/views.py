@@ -9,6 +9,14 @@ def todo_list_welcom(request):
     # HttpResponse : 클라이언트 브라우저 텍스트나 html을 담아 내보내는 객체   
     return HttpResponse("<h3>할일 관리 애플리케이션 방문을 환영합니다.<p>(함수기반 뷰)</p></h3>")
 
+def todo_update(request):
+    todo_id = request.GET.get("id")
+    todo = Todo.objects.get(id = todo_id)
+
+    todo.title = '변경된 제목'
+    todo.is_completed = True
+    todo.save() # 저장 (update)
+    todo_read(request)  # 조회
 
 def todo_create(request):
     try:

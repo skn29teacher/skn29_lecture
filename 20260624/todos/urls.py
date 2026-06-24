@@ -24,5 +24,6 @@ urlpatterns = [
     # 'http://127.0.0.1:8000/about/  주소요청시 viewes.AboutView 클래스 뷰  실행
     path('about/', views.AboutView.as_view(), name='about'),
     path('todos/create', views.todo_create,name='todo_create'),
-    path('todos/read', views.todo_read, name='todo_read')
+    path('todos/read', views.todo_read, name='todo_read'),
+    path('todos/update',views.todo_update, name='todo_update'),
 ]
