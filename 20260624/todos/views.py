@@ -40,10 +40,7 @@ def todo_create(request):
 
 def todo_read(request):
     all_list = Todo.objects.all().order_by('-created_at')  # 전부 다가져오기
-    htmls = ''
-    for todo in all_list:
-        htmls += str(todo) + '<br>'
-    return HttpResponse(htmls)
+    return render(request, 'todos/todo_list.html', {'todos':all_list})
 
 class AboutView(View):
     # 클라이언트가 get 요청을 보냈을때 자동으로 실행되는 메소드

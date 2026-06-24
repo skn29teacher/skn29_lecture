@@ -2,6 +2,18 @@
 {% extends 'todos/base.html' %}
 
 {% block content %}
-    <h2>할일 목록 화면</h2>
-    <p>오늘도 알찬 하루를 보냅시다</p>
+<div class="content-header">
+    <h2 class="section-title">할일 목록 화면</h2>
+    <p class="section-desc">오늘도 알찬 하루를 보냅시다</p>
+    {% for todo in todos  %}
+        {% if todo.is_completed %} 완료 {% else %} 대기중 {% endif %} <br>
+        {{ todo.created_at|date:"Y-m-d H:i" }} <br>
+        {{ todo.title }}<br>
+        {% if todo.content %}
+            {{ todo.content }}
+        {% endif %}
+    {% empty %}
+        <p>등록된 할일이 없습니다</p>
+    {% endfor %}
+</div>
 {% endblock %}
