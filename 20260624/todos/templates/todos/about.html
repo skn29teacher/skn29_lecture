@@ -1,0 +1,15 @@
+<!-- 첫번째 줄에 부모템플릿 파일을 상속 받을 것을 선언 -->
+{% extends 'todos/base.html' %}
+
+{% block content %}
+    <div class="about-container">
+        <div class="about-card">
+            <h2 class="about-title">TodoBoard 프로젝트</h2>
+            <p class="about-lead">Django 프레임워크 학습을 위한 화면입니다</p>
+            <div class="about-detail">
+                <p>본 프로젝트는...... </p>
+                <p>장점과 단점이 ......</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
