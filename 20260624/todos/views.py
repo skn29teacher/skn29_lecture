@@ -11,7 +11,7 @@ def todo_list_welcom(request):
 class AboutView(View):
     # 클라이언트가 get 요청을 보냈을때 자동으로 실행되는 메소드
     def get(self,request):
-        return HttpResponse("이 애플리케이션은 사용자 기반의 할일 관리 웹앱입니다.(classView)")
+        return HttpResponse("이 애플리케이션은 사용자 기반의 할일 관리 웹앱입니다.(클래스 뷰 기반)")
     # 클라이언트가 post 요청을 보냈을때 자동으로 실행되는 메소드
     def post(self, request):
         return HttpResponse('데이터가 제출되었습니다.')
