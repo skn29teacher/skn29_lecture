@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import api_views
 
 app_name = 'todos'
 
@@ -12,4 +13,7 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    # 신규 추가: REST API 백엔드 호출 전용 매핑 경로
+    path('api/', api_views.TodoListAPIView.as_view(), name='api_todo_list'),
+    path('api/<int:pk>/', api_views.TodoDetailAPIView.as_view(), name='api_todo_detail'),
 ]
