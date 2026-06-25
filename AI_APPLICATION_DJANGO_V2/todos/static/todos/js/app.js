@@ -3,8 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const todoForm = document.getElementById('spa-todo-form');
     const titleInput = document.getElementById('spa-title');
     const contentInput = document.getElementById('spa-content');
+    const imageInput = document.getElementById('spa-image');
 
-    // 1. 비동기 할일 목록 수집 함수
+    // 할일 목록 로드 함수
     const loadTodos = async () => {
         try {
             const response = await fetch(apiBaseUrl, {
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // 2. 수집된 JSON 리스트를 DOM 엘리먼트로 동적 생성 및 화면 가공 출력
+    // 할일 목록 화면 렌더링
     const renderTodos = (todos) => {
         if (todos.length === 0) {
             todoListContainer.innerHTML = `
@@ -44,12 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = `todo-card ${todo.is_completed ? 'completed' : ''}`;
             
+            // 날짜 포맷팅
             const createdDate = new Date(todo.created_at);
             const dateString = `${createdDate.getFullYear()}-${String(createdDate.getMonth()+1).padStart(2, '0')}-${String(createdDate.getDate()).padStart(2, '0')} ${String(createdDate.getHours()).padStart(2, '0')}:${String(createdDate.getMinutes()).padStart(2, '0')}`;
 
             card.innerHTML = `
                 <div class="todo-card-header">
-                    <!-- 클릭 시 완료 상태 토글 버튼 실행 -->
                     <button class="status-badge btn-toggle" data-id="${todo.id}" data-completed="${todo.is_completed}" style="border: none; cursor: pointer;">
                         ${todo.is_completed ? '완료' : '대기중'}
                     </button>
@@ -57,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <h3 class="todo-title">${todo.title}</h3>
                 ${todo.content ? `<p class="todo-body">${todo.content}</p>` : ''}
+                ${todo.image ? `<div class="todo-image" style="margin-top: 10px;"><img src="${todo.image}" alt="${todo.title}" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 6px;"></div>` : ''}
                 <div class="todo-actions">
                     <button class="btn-text btn-delete-spa" data-id="${todo.id}" style="color: #ef4444;">삭제</button>
                 </div>
@@ -65,13 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
             todoListContainer.appendChild(card);
         });
 
-        // 렌더링 완료 후 각 카드의 버튼에 클릭 리스너 연결
+        // 비동기 삭제 및 완료 상태 토글 리스너 연동
         attachCardListeners();
     };
 
-    // 3. 동적 생성된 버튼에 대한 클릭 리스너 바인딩
+    // 카드 내부 이벤트 리스너 바인딩
     const attachCardListeners = () => {
-        // [비동기 삭제 버튼 이벤트 처리]
+        // 삭제 버튼 처리
         document.querySelectorAll('.btn-delete-spa').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 const todoId = e.target.getAttribute('data-id');
@@ -85,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     });
                     if (response.ok) {
-                        loadTodos(); // 화면 갱신을 위해 데이터 재수집
+                        loadTodos();
                     } else {
                         alert('삭제에 실패했습니다.');
                     }
@@ -96,16 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // [비동기 완료상태 토글(PATCH) 이벤트 처리]
+        // 상태 토글 처리
         document.querySelectorAll('.btn-toggle').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 const todoId = e.target.getAttribute('data-id');
                 const isCompleted = e.target.getAttribute('data-completed') === 'true';
 
                 try {
-                    // 부분 수정을 의미하는 PATCH 방식 호출
                     const response = await fetch(`${apiBaseUrl}${todoId}/`, {
-                        method: 'PATCH',
+                        method: 'PATCH', // 부분 수정을 위한 PATCH 메소드 활용
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRFToken': csrfToken
@@ -125,32 +126,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // 4. 할일 비동기 등록 양식(Form Submit) 이벤트 처리
+    // 할일 비동기 등록 이벤트 처리
     todoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const title = titleInput.value.trim();
         const content = contentInput.value.trim();
+        const file = imageInput.files[0];
 
         if (!title) return;
+
+        // multipart/form-data 처리를 위한 FormData 객체 사용
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('content', content);
+        if (file) {
+            formData.append('image', file);
+        }
 
         try {
             const response = await fetch(apiBaseUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken // 중요: 장고 POST는 세션 인증 상태에서도 반드시 CSRF 헤더를 실어야 함
+                    // FormData를 전송할 때는 브라우저가 Boundary를 자동 계산하도록 Content-Type 헤더를 작성하지 않습니다.
+                    'X-CSRFToken': csrfToken
                 },
-                body: JSON.stringify({
-                    title: title,
-                    content: content,
-                    is_completed: false
-                })
+                body: formData
             });
 
             if (response.ok) {
-                // 입력 항목 비우고 리스트 다시 로딩
+                // 폼 리셋 및 목록 다시 로드
                 titleInput.value = '';
                 contentInput.value = '';
+                imageInput.value = ''; // 파일 인풋 리셋
                 loadTodos();
             } else {
                 const errors = await response.json();
@@ -162,6 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 5. 최초 페이지 진입 시 목록 자동 로드 가동
+    // 최초 진입 시 데이터 수집
     loadTodos();
 });
