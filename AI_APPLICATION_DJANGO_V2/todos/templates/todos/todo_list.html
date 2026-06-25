@@ -1,0 +1,41 @@
+{% extends 'todos/base.html' %}
+
+{% block content %}
+<div class="content-header">
+    <div class="header-text">
+        <h2 class="section-title">나의 할일 관리</h2>
+        <p class="section-desc">체계적이고 직관적인 오늘 하루의 할일 목록입니다.</p>
+    </div>
+    <a href="{% url 'todos:todo_create' %}" class="btn btn-primary">새 할일 등록</a>
+</div>
+
+<div class="todo-board-container">
+    <div class="todo-grid">
+        {% for todo in todos %}
+            <div class="todo-card {% if todo.is_completed %}completed{% endif %}">
+                <div class="todo-card-header">
+                    <span class="status-badge">
+                        {% if todo.is_completed %}완료{% else %}대기중{% endif %}
+                    </span>
+                    <span class="todo-date">{{ todo.created_at|date:"Y-m-d H:i" }}</span>
+                </div>
+                <h3 class="todo-title">{{ todo.title }}</h3>
+                {% if todo.content %}
+                    <p class="todo-body">{{ todo.content }}</p>
+                {% endif %}
+                <div class="todo-actions">
+                    <a href="{% url 'todos:todo_update' todo.pk %}" class="btn-text">수정</a>
+                    <form action="{% url 'todos:todo_delete' todo.pk %}" method="post" class="delete-form" onsubmit="return confirm('정말 이 할일을 삭제하시겠습니까?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-text btn-delete">삭제</button>
+                    </form>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                <p>등록된 할일이 없습니다. 상단의 '새 할일 등록' 버튼을 눌러 추가해 보세요.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

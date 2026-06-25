@@ -1,0 +1,50 @@
+{% extends 'todos/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content-header">
+    <div class="header-text">
+        <h2 class="section-title">비동기 할일 관리 (SPA)</h2>
+        <p class="section-desc">페이지 새로고침 없이 실시간으로 할일을 조작할 수 있는 풀스택 SPA 모드입니다.</p>
+    </div>
+</div>
+
+<div class="spa-layout" style="display: grid; grid-template-columns: 350px 1fr; gap: 30px; margin-top: 24px;">
+    <!-- 비동기 입력 폼 카드 -->
+    <div class="spa-form-column">
+        <div class="form-card" style="padding: 24px; max-width: 100%; box-shadow: var(--shadow-sm);">
+            <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">새 할일 추가</h3>
+            <form id="spa-todo-form" class="todo-form-body" style="gap: 16px;">
+                <div class="form-group" style="gap: 6px;">
+                    <label class="form-label" style="font-size: 13px;">할 일 제목</label>
+                    <input type="text" id="spa-title" class="form-input" placeholder="비동기로 등록할 일을 적으세요" required>
+                </div>
+                <div class="form-group" style="gap: 6px;">
+                    <label class="form-label" style="font-size: 13px;">상세 메모</label>
+                    <textarea id="spa-content" class="form-input form-textarea" placeholder="상세 내용을 적어주세요" style="min-height: 80px;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">비동기 저장</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 비동기 목록 뷰 영역 -->
+    <div class="spa-list-column">
+        <div id="spa-todo-list" class="todo-grid" style="grid-template-columns: 1fr;">
+            <!-- 자바스크립트로 실시간 렌더링될 영역 -->
+            <div class="empty-state">
+                <p>할일을 비동기로 불러오는 중입니다...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSRF 토큰 및 API 주소를 JS 전역 변수로 전달 -->
+<script>
+    const csrfToken = "{{ csrf_token }}";
+    // DefaultRouter는 뷰셋 연동 시 '모델명-list', '모델명-detail' 역추적 네이밍 규칙을 자동 적용함
+    const apiBaseUrl = "{% url 'todos:api_todo-list' %}"; 
+</script>
+<!-- 비동기 DOM 통제 스크립트 연결 -->
+<script src="{% static 'todos/js/app.js' %}"></script>
+{% endblock %}

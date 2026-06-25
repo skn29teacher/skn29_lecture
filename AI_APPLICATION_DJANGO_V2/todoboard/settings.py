@@ -37,10 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'todos',
+    'corsheaders',
+    'todos',  # 추가
+    'rest_framework', # rest api 추가
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # 최상단 배치 권장
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -127,3 +130,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 외래키 관련
+# 1. Custom User 모델 등록 (앱이름.모델명)
+AUTH_USER_MODEL = 'todos.CustomUser'
+
+# 2. 로그인 필수 접근 제어 시 리다이렉트할 경로 지정
+LOGIN_URL = 'todos:login'
