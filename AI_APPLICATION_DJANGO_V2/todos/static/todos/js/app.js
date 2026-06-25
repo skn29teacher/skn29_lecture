@@ -42,11 +42,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         todoListContainer.innerHTML = '';
-        todos.forEach(todo => {
+    
+        // 1. forEach 루프에 index 인자를 공급받아 순서 식별
+        todos.forEach((todo, index) => {
             const card = document.createElement('div');
-            card.className = `todo-card ${todo.is_completed ? 'completed' : ''}`;
             
-            // 날짜 포맷팅
+            // 2. 인덱스 번호를 바탕으로 card-even 또는 card-odd 클래스 결정
+            const rowClass = index % 2 === 0 ? 'card-even' : 'card-odd';
+            
+            // 3. 동적 계산된 클래스를 카드 엘리먼트 클래스 리스트에 주입
+            card.className = `todo-card ${todo.is_completed ? 'completed' : ''} ${rowClass}`;
+            
             const createdDate = new Date(todo.created_at);
             const dateString = `${createdDate.getFullYear()}-${String(createdDate.getMonth()+1).padStart(2, '0')}-${String(createdDate.getDate()).padStart(2, '0')} ${String(createdDate.getHours()).padStart(2, '0')}:${String(createdDate.getMinutes()).padStart(2, '0')}`;
 
@@ -64,11 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="btn-text btn-delete-spa" data-id="${todo.id}" style="color: #ef4444;">삭제</button>
                 </div>
             `;
-
             todoListContainer.appendChild(card);
         });
-
-        // 비동기 삭제 및 완료 상태 토글 리스너 연동
         attachCardListeners();
     };
 

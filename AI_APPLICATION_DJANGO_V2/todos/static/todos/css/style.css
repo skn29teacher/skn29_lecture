@@ -445,6 +445,31 @@ a {
     margin: 0 auto;
 }
 
+/* 비동기 렌더링 카드 스타일 고도화 */
+
+/* 4. 짝수 인덱스 카드: 기본 화이트 배경에 브랜드 테마 주컬러 좌측 보더 설정 */
+.card-even {
+    background-color: #ffffff;
+    border-left: 4px solid var(--primary-color);
+}
+
+/* 5. 홀수 인덱스 카드: 미세한 연회색 배경에 세컨더리 퍼플 컬러 좌측 보더 설정 */
+.card-odd {
+    background-color: #fafbfc;
+    border-left: 4px solid #818cf8;
+}
+
+/* 6. 호버 시 3D 팝업 인터랙션 및 부드러운 곡선 효과 지정 */
+.todo-card {
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.todo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+}
+
+
 /* 반응형 모바일 환경 지원 */
 @media (max-width: 640px) {
     .header-container {
