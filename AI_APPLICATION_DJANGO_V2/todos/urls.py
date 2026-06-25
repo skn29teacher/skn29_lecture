@@ -8,6 +8,16 @@ router = DefaultRouter()
 # 2. todos 라는 식별자 경로 뒤에 뷰셋 바인딩 등록
 router.register('todos', api_views.TodoViewSet, basename='api_todo')
 
+# HTTP  Method	    URL	            URL Name
+# ---------------------------------------------------------
+# GET	            /todos/	        api_todo-list
+# POST	            /todos/	        api_todo-list
+# GET	            /todos/<pk>/	api_todo-detail
+# PUT	            /todos/<pk>/	api_todo-detail
+# PATCH	            /todos/<pk>/	api_todo-detail
+# DELETE	        /todos/<pk>/	api_todo-detail
+
+
 app_name = 'todos'
 
 urlpatterns = [
@@ -27,4 +37,7 @@ urlpatterns = [
     # 신규 추가: 라우터가 계산한 REST API 경로 세트 일괄 주입
     # 이 매핑으로 인해 /todos/api/todos/ 및 /todos/api/todos/<pk>/ 주소가 자동 개설됩니다.
     path('api/', include(router.urls)),
+
+    # /api/todos/       api_todo-list  ← 목록(List)  TodoViewSet.list()
+    # /api/todos/<pk>/  api_todo-detail ← 상세(Detail)  
 ]

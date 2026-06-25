@@ -50,6 +50,8 @@
     const csrfToken = "{{ csrf_token }}";
     // DefaultRouter는 뷰셋 연동 시 '모델명-list', '모델명-detail' 역추적 네이밍 규칙을 자동 적용함
     const apiBaseUrl = "{% url 'todos:api_todo-list' %}"; 
+    //  const apiBaseUrl = "/api/todos"
+    
 </script>
 <!-- 비동기 DOM 통제 스크립트 연결 -->
 <script src="{% static 'todos/js/app.js' %}"></script>
