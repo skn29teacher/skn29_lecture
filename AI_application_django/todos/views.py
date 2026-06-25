@@ -97,3 +97,8 @@ def logout_view(request):
 class AboutView(View):
     def get(self, request):
         return render(request, 'todos/about.html')
+    
+@login_required
+def spa_index(request):
+    # 비동기로 동작하게 될 spa 템플릿 호출
+    return render(request, 'todos/spa.html')    
