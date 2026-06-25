@@ -1,0 +1,99 @@
+# 클라이언트 사이드 동적 날짜 필터 구현
+
+비동기 통신을 통해 백엔드(Django REST Framework)로부터 수신한 JSON 원시 데이터를 화면에 바인딩할 때, 사용자가 읽기 불편한 원시 날짜 규격(ISO 8601) 데이터를 브라우저 런타임에서 자바스크립트를 이용해 분석하고 동적으로 상대 시간 텍스트("방금 전", "N분 전")로 변환하여 출력하는 클라이언트 사이드 필터 기법을 학습합니다.
+
+---
+
+## 1. ISO 8601 원시 날짜 데이터의 이해
+
+REST API 호출 결과 전달되는 날짜 정보는 일반적으로 아래와 같은 국제 규격 형태로 표기됩니다.
+- **예시**: `2026-06-25T11:53:19.123456Z`
+- **의미**: `'T'`는 날짜와 시간의 구분선이며, 맨 뒤의 `'Z'`는 UTC(협정 세계시) 기준 시간임을 천명하는 식별자입니다.
+- **문제점**: 이 원시 텍스트를 여과 없이 브라우저에 그대로 출력하면, 가독성이 현저히 떨어지며 사용자가 게시물이나 할 일의 생성 시점을 직관적으로 인지하기 어렵습니다.
+
+---
+
+## 2. 브라우저 시간 계산과 상대 시각 변환 알고리즘
+
+서버 사이드 렌더링(SSR)에서는 장고의 템플릿 필터가 계산을 전담했지만, API 기반 비동기 화면에서는 브라우저가 직접 현재 시간과 수신한 시각 데이터를 연산해야 합니다.
+
+1. **파싱**: `new Date(ISO_문자열)` 명령어로 원시 텍스트를 브라우저 시간 객체로 변환합니다.
+2. **차이 산출**: 현재 브라우저의 시간 객체에서 목표 날짜 객체를 뺄셈 처리하여 밀리초(ms) 단위의 시차를 구합니다.
+3. **분기 가공**: 밀리초 단위 값을 초, 분, 시간, 일 단위로 환산하여 1시간 이내면 "N분 전", 1일 이내면 "N시간 전", 그 이상은 표준 날짜 문자열로 전환하는 분기 로직을 처리합니다.
+
+---
+
+## 3. 프론트엔드 필터 적용 코드 구성
+
+### 1단계: 자바스크립트 상대 시간 계산 함수 정의
+파일명: `todos/static/todos/js/app.js`
+```javascript
+// 자바스크립트 기반 날짜 필터 함수 선언
+const getRelativeTimeString = (dateInput) => {
+    const date = new Date(dateInput);
+    const now = new Date();
+    const diffMs = now - date; // 밀리초 시차 계산
+    const diffSec = Math.floor(diffMs / 1000); // 초 단위 변환
+    
+    if (diffSec < 0) return '방금 전';
+    
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHour = Math.floor(diffMin / 60);
+    const diffDay = Math.floor(diffHour / 24);
+    
+    // 1분 미만
+    if (diffMin < 1) {
+        return '방금 전';
+    } 
+    // 1시간 미만
+    else if (diffMin < 60) {
+        return `${diffMin}분 전`;
+    } 
+    // 24시간 미만
+    else if (diffHour < 24) {
+        return `${diffHour}시간 전`;
+    } 
+    // 7일 미만
+    else if (diffDay < 7) {
+        return `${diffDay}일 전`;
+    } 
+    // 그 이상의 기간은 날짜 포맷 적용
+    else {
+        return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+};
+```
+
+### 2단계: 동적 렌더링 영역에 함수 매핑
+수신받은 JSON 리스트의 날짜 데이터(`todo.created_at`)를 위의 필터 함수에 통과시켜 출력 스트링으로 대체합니다.
+파일명: `todos/static/todos/js/app.js`
+```javascript
+const renderTodos = (todos) => {
+    // ... (중략)
+    todoListContainer.innerHTML = '';
+    todos.forEach((todo, index) => {
+        const card = document.createElement('div');
+        const rowClass = index % 2 === 0 ? 'card-even' : 'card-odd';
+        card.className = `todo-card ${todo.is_completed ? 'completed' : ''} ${rowClass}`;
+        
+        // 1. 기존 Date 파싱 코드를 상대 시간 가공 함수 호출로 대체
+        const dateString = getRelativeTimeString(todo.created_at);
+
+        card.innerHTML = `
+            <div class="todo-card-header">
+                <button class="status-badge btn-toggle" data-id="${todo.id}" data-completed="${todo.is_completed}" style="border: none; cursor: pointer;">
+                    ${todo.is_completed ? '완료' : '대기중'}
+                </button>
+                <!-- 2. 계산된 상대 시간 텍스트 출력 -->
+                <span class="todo-date">${dateString}</span>
+            </div>
+            <h3 class="todo-title">${todo.title}</h3>
+            <!-- 중략 -->
+        `;
+        todoListContainer.appendChild(card);
+    });
+    attachCardListeners();
+};
+```
+
+이를 통해 브라우저는 실시간으로 변동하는 데이터를 읽어 들일 때마다 매번 복잡한 캘린더 연산을 처리하지 않고, 순수 스크립트로 동작하는 빠른 알고리즘을 거쳐 UI 일관성을 완벽히 만족시킬 수 있게 됩니다.
