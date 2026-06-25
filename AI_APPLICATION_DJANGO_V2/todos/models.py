@@ -11,6 +11,8 @@ class CustomUser(AbstractUser):
 
 # Create your models here.
 class Todo(models.Model):
+    # 이미지 저장을 위한 ImageField 추가 (upload_to 경로 설정)
+    image = models.ImageField(upload_to='todos/images/', blank=True, null=True)
     # settings.AUTH_USER_MODEL을 외래키의 대상 모델로 지정하여 Custom User를 바인딩합니다.
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
