@@ -5,9 +5,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const contentInput = document.getElementById('spa-content');
     const imageInput = document.getElementById('spa-image');
 
+// 1. 통계 수치 노출용 DOM 노드 레퍼런스 확보
+    const statTotal = document.getElementById('stat-total');
+    const statPending = document.getElementById('stat-pending');
+    const statCompleted = document.getElementById('stat-completed');
+    const statRate = document.getElementById('stat-rate');
+
+    // 2. 비동기 수신한 데이터를 활용한 전역 통계 계산 및 화면 주입 함수 정의
+    const updateDashboard = (todos) => {
+        const total = todos.length;
+        const completed = todos.filter(todo => todo.is_completed).length;
+        const pending = total - completed;
+        // 나눗셈 분모 분기 예외 처리
+        const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+        // innerText 를 사용해 마크업은 건드리지 않고 텍스트값만 조작
+        if (statTotal) statTotal.innerText = total;
+        if (statPending) statPending.innerText = pending;
+        if (statCompleted) statCompleted.innerText = completed;
+        if (statRate) statRate.innerText = `${rate}%`;
+    };
+
     // 할일 목록 로드 함수
     const loadTodos = async () => {
-        console.log(`apiBaseUrl : ${apiBaseUrl}`);
         try {
             const response = await fetch(apiBaseUrl, {
                 method: 'GET',
@@ -20,15 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const todos = await response.json();
             renderTodos(todos);
+            
+            // 3. API 목록 호출 및 갱신 완료 후 실시간 수치 동기화
+            updateDashboard(todos);
         } catch (error) {
             console.error(error);
-            todoListContainer.innerHTML = `
-                <div class="empty-state">
-                    <p style="color: #ef4444;">데이터를 불러오는 중 오류가 발생했습니다.</p>
-                </div>
-            `;
         }
     };
+    
 
     // 할일 목록 화면 렌더링
     const renderTodos = (todos) => {
@@ -39,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             return;
-        }
+        }        
 
         todoListContainer.innerHTML = '';
     
@@ -54,7 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = `todo-card ${todo.is_completed ? 'completed' : ''} ${rowClass}`;
             
             const createdDate = new Date(todo.created_at);
-            const dateString = `${createdDate.getFullYear()}-${String(createdDate.getMonth()+1).padStart(2, '0')}-${String(createdDate.getDate()).padStart(2, '0')} ${String(createdDate.getHours()).padStart(2, '0')}:${String(createdDate.getMinutes()).padStart(2, '0')}`;
+            // 1. 기존 Date 파싱 코드를 상대 시간 가공 함수 호출로 대체
+            const dateString = getRelativeTimeString(todo.created_at);
 
             card.innerHTML = `
                 <div class="todo-card-header">
@@ -172,6 +192,41 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('저장 중 통신 에러 발생');
         }
     });
+
+    // 자바스크립트 기반 날짜 필터 함수 선언
+    const getRelativeTimeString = (dateInput) => {
+        const date = new Date(dateInput);
+        const now = new Date();
+        const diffMs = now - date; // 밀리초 시차 계산
+        const diffSec = Math.floor(diffMs / 1000); // 초 단위 변환
+        
+        if (diffSec < 0) return '방금 전';
+        
+        const diffMin = Math.floor(diffSec / 60);
+        const diffHour = Math.floor(diffMin / 60);
+        const diffDay = Math.floor(diffHour / 24);
+        
+        // 1분 미만
+        if (diffMin < 1) {
+            return '방금 전';
+        } 
+        // 1시간 미만
+        else if (diffMin < 60) {
+            return `${diffMin}분 전`;
+        } 
+        // 24시간 미만
+        else if (diffHour < 24) {
+            return `${diffHour}시간 전`;
+        } 
+        // 7일 미만
+        else if (diffDay < 7) {
+            return `${diffDay}일 전`;
+        } 
+        // 그 이상의 기간은 날짜 포맷 적용
+        else {
+            return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+    };
 
     // 최초 진입 시 데이터 수집
     loadTodos();

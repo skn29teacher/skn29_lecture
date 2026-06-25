@@ -5,7 +5,9 @@ from django.conf import settings
 # 1. Django 기본 User 모델을 확장하여 nickname 필드가 추가된 Custom User 정의
 class CustomUser(AbstractUser):
     nickname = models.CharField(max_length=50, blank=True)
-
+    # 회원용 프로필 아바타 이미지 필드 추가 (미디어 루트 하위 avatars 폴더에 적재)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    
     def __str__(self):
         return self.username
 

@@ -2,11 +2,27 @@
 {% load static %}
 
 {% block content %}
-<div class="content-header">
-    <div class="header-text">
-        <!-- 1. 컨텍스트 프로세서의 SITE_META_TITLE 변수 동적 출력 -->
-        <h2 class="section-title">{{ SITE_META_TITLE }}</h2>
-        <p class="section-desc">페이지 새로고침 없이 실시간으로 할일을 조작할 수 있는 풀스택 SPA 모드입니다.</p>
+<!-- 실시간 비동기 집계가 바인딩될 대시보드 위젯 영역 -->
+<div class="stats-dashboard" style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+    <div class="stat-card" style="flex: 1; min-width: 120px; background: #ffffff; padding: 15px; border-radius: 10px; box-shadow: var(--shadow-sm); text-align: center; border-left: 5px solid var(--primary-color);">
+        <div class="stat-label" style="font-size: 13px; color: #666; margin-bottom: 5px;">전체 할일</div>
+        <!-- 자바스크립트가 추적할 id='stat-total' 배치 -->
+        <div id="stat-total" class="stat-value" style="font-size: 24px; font-weight: bold; color: #333;">0</div>
+    </div>
+    <div class="stat-card" style="flex: 1; min-width: 120px; background: #ffffff; padding: 15px; border-radius: 10px; box-shadow: var(--shadow-sm); text-align: center; border-left: 5px solid #f5a623;">
+        <div class="stat-label" style="font-size: 13px; color: #666; margin-bottom: 5px;">대기중</div>
+        <!-- 자바스크립트가 추적할 id='stat-pending' 배치 -->
+        <div id="stat-pending" class="stat-value" style="font-size: 24px; font-weight: bold; color: #f5a623;">0</div>
+    </div>
+    <div class="stat-card" style="flex: 1; min-width: 120px; background: #ffffff; padding: 15px; border-radius: 10px; box-shadow: var(--shadow-sm); text-align: center; border-left: 5px solid var(--success-color);">
+        <div class="stat-label" style="font-size: 13px; color: #666; margin-bottom: 5px;">완료됨</div>
+        <!-- 자바스크립트가 추적할 id='stat-completed' 배치 -->
+        <div id="stat-completed" class="stat-value" style="font-size: 24px; font-weight: bold; color: var(--success-color);">0</div>
+    </div>
+    <div class="stat-card" style="flex: 1; min-width: 120px; background: #ffffff; padding: 15px; border-radius: 10px; box-shadow: var(--shadow-sm); text-align: center; border-left: 5px solid #9b59b6;">
+        <div class="stat-label" style="font-size: 13px; color: #666; margin-bottom: 5px;">달성률</div>
+        <!-- 자바스크립트가 추적할 id='stat-rate' 배치 -->
+        <div id="stat-rate" class="stat-value" style="font-size: 24px; font-weight: bold; color: #9b59b6;">0%</div>
     </div>
 </div>
 

@@ -125,6 +125,10 @@ STATICFILES_DIRS = [    # 루트디레터리의 static
     BASE_DIR / 'static',
 ]
 
+# 3. 배포용 정적 자원 수집 최종 물리 디렉토리 경로 정의 (기존 설정과 중복되지 않는 고유 명칭 부여 권장)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
