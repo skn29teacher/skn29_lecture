@@ -1,7 +1,24 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+
+# 1. Django 기본 User 모델을 확장하여 nickname 필드가 추가된 Custom User 정의
+class CustomUser(AbstractUser):
+    nickname = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return self.username
 
 # Create your models here.
 class Todo(models.Model):
+    # settings.AUTH_USER_MODEL을 외래키의 대상 모델로 지정하여 Custom User를 바인딩합니다.
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='todos',
+        null=True, 
+        blank=True
+    )
     title = models.CharField(max_length=200)
     # 폼 검사시 값이 비어있어도 허용
     content = models.TextField(blank=True)

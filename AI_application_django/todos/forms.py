@@ -1,6 +1,21 @@
 from django import forms
 from .models import Todo
 
+from django.contrib.auth.forms import UserCreationForm
+from .models import CustomUser
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        # 대상 모델을 CustomUser로 지정
+        model = CustomUser
+        # 회원 가입 데이터 수집 시 이메일과 닉네임을 기본 필드 뒤에 덧붙여 출력
+        fields = UserCreationForm.Meta.fields + ('email', 'nickname')
+        labels = {
+            'email': '이메일 주소',
+            'nickname': '닉네임'
+        }
+
+
 class TodoForm(forms.ModelForm):
     class Meta:
         # 1. 폼과 1대1로 연동할 데이터 모델 클래스 지정

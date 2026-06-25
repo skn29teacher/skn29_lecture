@@ -1,0 +1,38 @@
+{% extends 'todos/base.html' %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h2 class="form-title">회원가입</h2>
+        <p class="form-desc">새로운 계정을 만들고 TodoBoard 일정을 관리해 보세요.</p>
+        
+        <form method="post" class="todo-form-body">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <span class="field-help" style="font-size: 11px; color: var(--text-muted); line-height: 1.3;">{{ field.help_text|safe }}</span>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="field-errors">
+                            {% for error in field.errors %}
+                                <span class="error-text">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">가입하기</button>
+            </div>
+        </form>
+        
+        <div class="form-footer-link" style="margin-top: 24px; text-align: center; font-size: 14px; color: var(--text-muted);">
+            이미 계정이 있으신가요? <a href="{% url 'todos:login' %}" style="color: var(--primary-color); font-weight: 700;">로그인</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

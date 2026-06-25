@@ -1,0 +1,43 @@
+{% extends 'todos/base.html' %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h2 class="form-title">로그인</h2>
+        <p class="form-desc">TodoBoard 서비스를 이용하시려면 계정 정보를 입력하세요.</p>
+        
+        <form method="post" class="todo-form-body">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="field-errors">
+                            {% for error in field.errors %}
+                                <span class="error-text">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            {% if form.non_field_errors %}
+                <div class="field-errors">
+                    {% for error in form.non_field_errors %}
+                        <span class="error-text">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">로그인</button>
+            </div>
+        </form>
+        
+        <div class="form-footer-link" style="margin-top: 24px; text-align: center; font-size: 14px; color: var(--text-muted);">
+            계정이 없으신가요? <a href="{% url 'todos:signup' %}" style="color: var(--primary-color); font-weight: 700;">회원가입</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
