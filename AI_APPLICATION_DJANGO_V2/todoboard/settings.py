@@ -118,8 +118,8 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
+STATIC_URL = 'static/'  # 각 어플하위의 static
+STATICFILES_DIRS = [    # 루트디레터리의 static
     BASE_DIR / 'static',
 ]
 
