@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',        
 ]
 
 ROOT_URLCONF = 'todoboard.urls'
@@ -65,6 +65,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 개발한 전역 변수 공급용 컨텍스트 프로세서 함수 등록
+                'todos.context_processors.global_spa_config',
             ],
         },
     },

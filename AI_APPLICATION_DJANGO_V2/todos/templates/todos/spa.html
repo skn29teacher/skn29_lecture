@@ -4,7 +4,8 @@
 {% block content %}
 <div class="content-header">
     <div class="header-text">
-        <h2 class="section-title">비동기 할일 관리 (SPA)</h2>
+        <!-- 1. 컨텍스트 프로세서의 SITE_META_TITLE 변수 동적 출력 -->
+        <h2 class="section-title">{{ SITE_META_TITLE }}</h2>
         <p class="section-desc">페이지 새로고침 없이 실시간으로 할일을 조작할 수 있는 풀스택 SPA 모드입니다.</p>
     </div>
 </div>
@@ -45,14 +46,13 @@
     </div>
 </div>
 
-<!-- CSRF 토큰 및 API 주소를 JS 전역 변수로 전달 -->
+<!-- CSRF 토큰 및 API 주소 바인딩 -->
 <script>
     const csrfToken = "{{ csrf_token }}";
-    // DefaultRouter는 뷰셋 연동 시 '모델명-list', '모델명-detail' 역추적 네이밍 규칙을 자동 적용함
-    const apiBaseUrl = "{% url 'todos:api_todo-list' %}"; 
-    //  const apiBaseUrl = "/api/todos"
-    
+    // 2. 컨텍스트 프로세서에서 동적으로 역산해 준 API 경로 변수를 JS 상수에 대입
+    const apiBaseUrl = "{{ API_BASE_URL }}";
 </script>
-<!-- 비동기 DOM 통제 스크립트 연결 -->
 <script src="{% static 'todos/js/app.js' %}"></script>
 {% endblock %}
+
+
