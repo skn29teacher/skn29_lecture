@@ -1,0 +1,105 @@
+# 유저 확장 및 아바타 미디어 관리
+
+Django의 회원 모델(`AbstractUser`)을 상속받아 커스텀 유저 모델을 구축한 상태에서, 유저 프로필 아바타 이미지 같은 미디어 자원을 추가로 관리하는 기법을 학습합니다. 또한 장고 어드민(Admin) 사이트에 이를 등록하여 회원 관리를 고도화하고, 템플릿 상속 골격 내에서 아바타 이미지를 동적으로 렌더링하는 조건 분기 구조를 구축합니다.
+
+---
+
+## 1. 커스텀 유저 모델에 미디어 필드 확장
+
+이미 장고 프로젝트 초기 설정 단계에서 `AUTH_USER_MODEL`을 `AbstractUser`를 상속받은 커스텀 유저 클래스로 지정해두었다면, 해당 클래스에 일반 모델 필드와 마찬가지로 `ImageField`를 추가하여 회원 프로필 사진(아바타)을 수용할 수 있습니다.
+
+### 모델 및 어드민 연동의 필요성
+- **모델 필드 추가**: `avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)` 변수를 정의합니다.
+- **마이그레이션**: 스키마 도면을 새로 뽑아 데이터베이스에 반영합니다.
+- **UserAdmin 오버라이드**: 장고 어드민은 기본 `User` 모델 전용 어드민 템플릿을 내장하고 있어, 커스텀 필드(`nickname`, `avatar` 등)를 어드민 화면에 나타나게 하려면 `UserAdmin` 클래스를 상속받아 `fieldsets` 튜플을 반드시 재구성(Override)해 주어야 합니다.
+
+---
+
+## 2. 템플릿 내 미디어 객체 유무 판별 및 디폴트 배지 처리
+
+로그인한 사용자의 아바타가 데이터베이스에 등록되어 있는 경우와 그렇지 않은 경우를 분기 처리하여 자연스러운 사용자 경험을 연출합니다.
+- **아바타 존재 시**: `{{ user.avatar.url }}` 경로를 추출해 `<img src="...">` 태그로 아바타 원형 레이아웃에 맞춰 노출합니다.
+- **아바타 부재 시**: 장고 템플릿 필터인 `slice`와 `upper`를 활용해 사용자 아이디의 첫 글자를 영문 대문자로 변환하여 디폴트 문자 배지로 가상 표현합니다 (`{{ user.username|slice:":1"|upper }}`).
+
+---
+
+## 3. 코드 구성 요약
+
+### 1단계: 모델 확장
+파일명: `todos/models.py`
+```python
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+class CustomUser(AbstractUser):
+    nickname = models.CharField(max_length=50, blank=True)
+    # 회원용 프로필 아바타 이미지 필드 추가 (미디어 루트 하위 avatars 폴더에 적재)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+
+    def __str__(self):
+        return self.username
+```
+
+도면을 갱신하고 반영합니다.
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 2단계: 어드민 설정 변경
+파일명: `todos/admin.py`
+```python
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from .models import CustomUser
+
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    list_display = ['username', 'email', 'nickname', 'is_staff']
+    # 어드민 상세 보기 화면의 필드 셋 그룹에 avatar 항목을 추가 등록합니다.
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('nickname', 'avatar')}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {'fields': ('nickname', 'avatar')}),
+    )
+
+admin.site.register(CustomUser, CustomUserAdmin)
+```
+
+### 3단계: 부모 템플릿 헤더 영역에 아바타 동적 바인딩
+파일명: `todos/templates/todos/base.html`
+```html
+<header class="app-header">
+    <div class="header-container">
+        <h1 class="logo"><a href="{% url 'todos:todo_list' %}">TodoBoard</a></h1>
+        <nav class="nav-links" style="display: flex; align-items: center; gap: 20px;">
+            <a href="{% url 'todos:todo_list' %}" class="nav-item">할일 목록</a>
+            <a href="{% url 'todos:about' %}" class="nav-item">소개</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'todos:spa_index' %}" class="nav-item" style="color: var(--primary-color); font-weight: 700;">비동기 모드(SPA)</a>
+                
+                <!-- 유저 아바타 영역 분기 출력 -->
+                <span class="user-avatar-wrapper" style="display: flex; align-items: center; gap: 8px;">
+                    {% if user.avatar %}
+                        <!-- 1. 아바타 이미지가 등록된 경우 이미지 서빙 -->
+                        <img src="{{ user.avatar.url }}" alt="avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color);">
+                    {% else %}
+                        <!-- 2. 등록 이미지가 없는 경우 아이디 첫 문자 대문자 배지 구성 -->
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--primary-light); color: var(--primary-color); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; border: 1px solid var(--border-color);">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                    {% endif %}
+                    <span class="user-greeting" style="font-weight: 700; color: var(--primary-color); font-size: 14px;">{{ user.nickname|default:user.username }}님</span>
+                </span>
+                <a href="{% url 'todos:logout' %}" class="nav-item" style="color: #ef4444;">로그아웃</a>
+            {% else %}
+                <a href="{% url 'todos:login' %}" class="nav-item">로그인</a>
+                <a href="{% url 'todos:signup' %}" class="nav-item">회원가입</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+```
+
+이렇게 구성하면 Django 데이터베이스에 보관되는 회원의 고유 프로필 이미지가 내비게이션 바 영역에 원형 형태로 동적으로 반영되어, 모던하고 고도화된 웹 서비스 특유의 개인화된 레이아웃 연출을 구현할 수 있습니다.
