@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 할일 목록 로드 함수
     const loadTodos = async () => {
+        console.log(`apiBaseUrl : ${apiBaseUrl}`);
         try {
             const response = await fetch(apiBaseUrl, {
                 method: 'GET',
