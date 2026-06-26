@@ -14,4 +14,6 @@ DATABASES = {
 
 #운영환경용 정적 파일 수집 경로 설정
 # collectstatic 실행 시 앱 내부 및 STATICFILES_DIRS 안의 파일들이 지정한 폴더로 모임
+# python manange.py collectstatic --settings=todoboard.settings.production
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
