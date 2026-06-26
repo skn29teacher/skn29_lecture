@@ -3,6 +3,9 @@ from django.core.wsgi import get_wsgi_application
 from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.views.static import serve as django_static_serve
 from django.conf import settings
+import os
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'todoboard.settings.local')
 
 # Waitress 단독 구성시 정적(static)파일과 미디어(Media) 파일을 모두 서빙 핸들러
 class StaticAndMeidaFilesHandler(StaticFilesHandler):
