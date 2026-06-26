@@ -7,7 +7,7 @@ from django.views.static import serve as django_static_serve
 from django.conf import settings
 
 # 중요: Django 설정 모듈(Settings)을 가리키는 환경 변수를 최상단에서 기본값으로 지정합니다.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'todoboard.settings.local')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'todoboard.settings.production')
 
 # Waitress 단독 구동 시 정적(Static) 파일과 미디어(Media) 파일을 모두 서빙하기 위한 커스텀 WSGI 핸들러
 class StaticAndMediaFilesHandler(StaticFilesHandler):
