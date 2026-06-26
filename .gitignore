@@ -13,3 +13,4 @@ staticfiles
 !*.js
 !requirements.txt
 !django.conf
+!nginx\
