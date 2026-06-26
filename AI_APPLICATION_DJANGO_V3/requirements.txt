@@ -1,0 +1,6 @@
+Django>=5.0, <6.0
+django-cors-headers
+djangorestframework
+django-environ
+Pillow
+psycopg2-binary
