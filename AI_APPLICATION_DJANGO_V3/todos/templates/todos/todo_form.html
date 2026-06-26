@@ -1,0 +1,33 @@
+{% extends 'todos/base.html' %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h2 class="form-title">할일 {{ action }}</h2>
+        <p class="form-desc">오늘 마쳐야 할 할일의 상세한 내용을 등록하거나 수정합니다.</p>
+        
+        <form method="post" class="todo-form-body">
+            {% csrf_token %}
+            
+            {% for field in form %}                
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="field-errors">
+                            {% for error in field.errors %}
+                                <span class="error-text">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">저장하기</button>
+                <a href="{% url 'todos:todo_list' %}" class="btn btn-secondary">취소</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

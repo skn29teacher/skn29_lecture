@@ -1,0 +1,74 @@
+{% extends 'todos/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- 실시간 비동기 집계가 바인딩될 대시보드 위젯 영역 -->
+<div class="stats-dashboard" style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+    <div class="stat-card" style="flex: 1; min-width: 120px; background: #ffffff; padding: 15px; border-radius: 10px; box-shadow: var(--shadow-sm); text-align: center; border-left: 5px solid var(--primary-color);">
+        <div class="stat-label" style="font-size: 13px; color: #666; margin-bottom: 5px;">전체 할일</div>
+        <!-- 자바스크립트가 추적할 id='stat-total' 배치 -->
+        <div id="stat-total" class="stat-value" style="font-size: 24px; font-weight: bold; color: #333;">0</div>
+    </div>
+    <div class="stat-card" style="flex: 1; min-width: 120px; background: #ffffff; padding: 15px; border-radius: 10px; box-shadow: var(--shadow-sm); text-align: center; border-left: 5px solid #f5a623;">
+        <div class="stat-label" style="font-size: 13px; color: #666; margin-bottom: 5px;">대기중</div>
+        <!-- 자바스크립트가 추적할 id='stat-pending' 배치 -->
+        <div id="stat-pending" class="stat-value" style="font-size: 24px; font-weight: bold; color: #f5a623;">0</div>
+    </div>
+    <div class="stat-card" style="flex: 1; min-width: 120px; background: #ffffff; padding: 15px; border-radius: 10px; box-shadow: var(--shadow-sm); text-align: center; border-left: 5px solid var(--success-color);">
+        <div class="stat-label" style="font-size: 13px; color: #666; margin-bottom: 5px;">완료됨</div>
+        <!-- 자바스크립트가 추적할 id='stat-completed' 배치 -->
+        <div id="stat-completed" class="stat-value" style="font-size: 24px; font-weight: bold; color: var(--success-color);">0</div>
+    </div>
+    <div class="stat-card" style="flex: 1; min-width: 120px; background: #ffffff; padding: 15px; border-radius: 10px; box-shadow: var(--shadow-sm); text-align: center; border-left: 5px solid #9b59b6;">
+        <div class="stat-label" style="font-size: 13px; color: #666; margin-bottom: 5px;">달성률</div>
+        <!-- 자바스크립트가 추적할 id='stat-rate' 배치 -->
+        <div id="stat-rate" class="stat-value" style="font-size: 24px; font-weight: bold; color: #9b59b6;">0%</div>
+    </div>
+</div>
+
+<div class="spa-layout" style="display: grid; grid-template-columns: 350px 1fr; gap: 30px; margin-top: 24px;">
+    <!-- 비동기 입력 폼 카드 -->
+    <div class="spa-form-column">
+        <div class="form-card" style="padding: 24px; max-width: 100%; box-shadow: var(--shadow-sm);">
+            <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">새 할일 추가</h3>
+            <form id="spa-todo-form" class="todo-form-body" style="gap: 16px;">
+                <div class="form-group" style="gap: 6px;">
+                    <label class="form-label" style="font-size: 13px;">할 일 제목</label>
+                    <input type="text" id="spa-title" class="form-input" placeholder="비동기로 등록할 일을 적으세요" required>
+                </div>
+                <div class="form-group" style="gap: 6px;">
+                    <label class="form-label" style="font-size: 13px;">상세 메모</label>
+                    <textarea id="spa-content" class="form-input form-textarea" placeholder="상세 내용을 적어주세요" style="min-height: 80px;"></textarea>
+                </div>
+                <!-- 이미지 첨부 필드 -->
+                <div class="form-group" style="gap: 6px;">
+                    <label class="form-label" style="font-size: 13px;">첨부이미지</label>
+                    <input type="file" id="spa-image" class="form-input" accept="image/*"></inpu>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">비동기 저장</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 비동기 목록 뷰 영역 -->
+    <div class="spa-list-column">
+        <div id="spa-todo-list" class="todo-grid" style="grid-template-columns: 1fr;">
+            <!-- 자바스크립트로 실시간 렌더링될 영역 -->
+            <div class="empty-state">
+                <p>할일을 비동기로 불러오는 중입니다...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSRF 토큰 및 API 주소 바인딩 -->
+<script>
+    const csrfToken = "{{ csrf_token }}";
+    // 2. 컨텍스트 프로세서에서 동적으로 역산해 준 API 경로 변수를 JS 상수에 대입
+    const apiBaseUrl = "{{ API_BASE_URL }}";
+</script>
+<script src="{% static 'todos/js/app.js' %}"></script>
+{% endblock %}
+
+
