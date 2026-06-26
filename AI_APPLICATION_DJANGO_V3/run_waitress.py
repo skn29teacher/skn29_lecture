@@ -14,7 +14,9 @@ class StaticAndMeidaFilesHandler(StaticFilesHandler):
         self.media_url = settings.MEDIA_URL
     def _should_handle(self, path):
         # 요청경로가 static_url 또는 media_url로 시작하는지 검사
-        return path.startswith(settings.STATIC_URL) or path.startswith(settings.MEDIA_URL)
+        res = path.startswith(settings.STATIC_URL) or path.startswith(settings.MEDIA_URL)
+        print(f"[DEBUG] path: {repr(path)}, STATIC_URL: {repr(settings.STATIC_URL)}, MEDIA_URL: {repr(settings.MEDIA_URL)}, result: {res}")
+        return res
     
     def serve(self, request):
         # 미디어 파일 요청인경우 미디어 루트에서 찾아 서비
