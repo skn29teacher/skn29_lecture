@@ -14,11 +14,12 @@ class StaticAndMeidaFilesHandler(StaticFilesHandler):
         self.media_url = settings.MEDIA_URL
     def _should_handle(self, path):
         # 요청경로가 static_url 또는 media_url로 시작하는지 검사
-        return path.startswith(self.base_url) or path.statswith(self.media_url)
+        return path.startswith(settings.STATIC_URL) or path.startswith(settings.MEDIA_URL)
+    
     def serve(self, request):
         # 미디어 파일 요청인경우 미디어 루트에서 찾아 서비
-        if request.path.startswith(self.media_url):
-            path = request.path[len(self.media_url) : ]
+        if request.path.startswith(settings.MEDIA_URL):
+            path = request.path[len(settings.MEDIA_URL) : ]
             return django_static_serve(request,path,document_root=settings.MEDIA_ROOT)
         # 정적파일인 경우 부모클래스의 서빙로직
         return super().serve(request)
