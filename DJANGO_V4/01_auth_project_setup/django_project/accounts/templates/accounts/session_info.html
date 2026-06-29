@@ -20,7 +20,7 @@
     <span>{{expiry_date}}</span>
     <br>
     <span>세션 저장소 내용 </span>
-    {% for key,val in  session_data.items() %}
+    {% for key,val in  session_data.items %}
         {{key}} : {{val}}
     {% endfor %}
     <a href="{% url 'home' %}">홈으로 돌아가기</a>
