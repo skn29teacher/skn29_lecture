@@ -67,3 +67,18 @@ def logout_view(request):
 def profile_view(request):
     return render(request, 'accounts/profile.html')
 
+# 새션 진단 및 제어 정보 뷰
+@login_required
+def session_info_view(request):
+    # 세션 키 및 유효성 정보 획득
+    session_key = request.session.session_key
+    expiry_age = request.session.get_expiry_age() # 남은 수명(초)
+    expiry_date = request.session.get_expiry_date() # 만료시점
+
+    context = {
+        'session_key' : session_key,
+        'expiry_age' : expiry_age,
+        'expiry_date' : expiry_date,
+        'session_data' : dict(request.session.items())  # 세션에 담긴 정보 딕셔너리 변환
+    }
+    return render(request,'accounts/session_info.html', context)

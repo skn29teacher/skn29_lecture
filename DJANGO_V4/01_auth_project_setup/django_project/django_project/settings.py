@@ -127,3 +127,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.CustomerUser'
 
 LOGIN_URL='login' # 로그인 뷰의 url 네임을 지정
+
+# 세션관련 제어
+SESSION_COOKIE_AGE = 60  # 60초
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # 브라우져 종료시 세션 즉시 만료
+SESSION_SAVE_EVERY_REQUEST = True # 매 요청시 세션 만료일자를 최신 시점으로 갱신
