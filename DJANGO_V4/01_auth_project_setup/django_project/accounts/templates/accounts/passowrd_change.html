@@ -10,7 +10,7 @@
     <form method="POST">
         {% csrf_token %}
         {% for field in form %}
-            <label>{{}field.label}</label>
+            <label>{{field.label}}</label>
             {{field}}
             {% if field.errors %}
                 {% for error in field.errors %}
