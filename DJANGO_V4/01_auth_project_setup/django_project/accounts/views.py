@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from .forms import CustomerUserCreationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages  # 성공/실패 메세지 전달용
 from .forms import CustomerUserCreationForm
+from .models import Notice
 
 # 비밀번호 변경 뷰
 @login_required
@@ -82,3 +83,23 @@ def session_info_view(request):
         'session_data' : dict(request.session.items())  # 세션에 담긴 정보 딕셔너리 변환
     }
     return render(request,'accounts/session_info.html', context)
+
+#공지사항 목록 조회  : 로그인만 되면 가능
+@login_required
+def notice_list_view(request):
+    notices = Notice.object.all().order_by('-created_at')
+    return render(request, 'accounts/notice_list.html', {'notices':notices})
+
+# 공지사항 생성
+@permission_required('accounts.can_publish_notice',raise_exception=True)
+def notice_create_view(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        if title and content:
+            Notice.objects.create(title = title, content=content)
+            return redirect('notice_list')
+    else:
+        return render(request, 'accounts/notice_create.html')
+
+
