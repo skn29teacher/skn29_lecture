@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비밀번호 변경</title>
+</head>
+<body>
+    <h2>비밀번호 변경</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            <label>{{}field.label}</label>
+            {{field}}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    {{error}}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        <a href="{% url 'profile' %}">취소</a>
+        <button type="submit">변경완료</button>
+    </form>
+</body>
+</html>

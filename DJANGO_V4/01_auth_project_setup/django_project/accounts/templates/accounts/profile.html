@@ -1,3 +1,11 @@
+{% if messages %}
+    {% for message in  messages %}
+        <div class="btn-primary">
+            {{message}}
+        </div>
+    {% endfor %}
+{% endif %}
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>

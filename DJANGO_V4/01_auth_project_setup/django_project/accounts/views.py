@@ -6,7 +6,23 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages  # 성공/실패 메세지 전달용
 from .forms import CustomerUserCreationForm
 
-
+# 비밀번호 변경 뷰
+@login_required
+def password_change_view(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # 중요 : 비밀번호 해시값 세션 동기화(자동 로그아웃 방지)
+            update_session_auth_hash(request,user)
+            # 메세지 프레임웍크에 성공알림 추가
+            messages.success(request,'비밀번호가 성공적으로 변경되었습니다.')
+            return redirect('profile')
+        else:
+            messages.error(request,'입력 정보를 다시한번 확인해 주세요')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'accounts/passowrd_change.html', {'form':form})
 
 def home(request):
     return render(request,'main.html')
