@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>세션 정보 진단</title>
+</head>
+<body>
+    <strong>{{user.nickname|default:user.username}}</strong>
+    <a href="{% url 'logout' %}">로그아웃</a>
+    <h2>실시간 세션 모니터링</h2>
+    <p>Django Session Engine에 보관된 사용자 세션 데이터 정보</p>
+    <span>현재 세션키 </span>
+    <span>{{session_key}}</span>
+    <br>
+    <span>남은 유효시간 </span>
+    <span>{{expiry_age}}</span>
+    <br>
+    <span>세션 만료시점 </span>
+    <span>{{expiry_date}}</span>
+    <br>
+    <span>세션 저장소 내용 </span>
+    {% for key,val in  session_data.items() %}
+        {{key}} : {{val}}
+    {% endfor %}
+    <a href="{% url 'home' %}">홈으로 돌아가기</a>
+</body>
+</html>
