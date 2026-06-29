@@ -8,7 +8,7 @@
 <body>
     <h2>공지사항</h2>
     {%  for notice in notices %}
-        {{str(notice)}}
+        {% str(notice)% }
     {% endfor %}
     <!-- can_publish_notice 권한을 가진 사용자에게만 작성 버튼 노출 -->
     {% if perms.accounts.can_publish_notice %}
