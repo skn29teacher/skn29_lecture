@@ -314,7 +314,7 @@
                                 </li>
                                 <li>
                                     <span class="info-label">남은 유효시간</span>
-                                    <span class="info-val">{{ expiry_age }} 초</span>
+                                    <span class="info-val" id="info-val">{{ expiry_age }} 초</span>
                                 </li>
                                 <li>
                                     <span class="info-label">만료 일시</span>
@@ -400,5 +400,17 @@
     </div>
 
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded',()=>{
+        const infoVal = document.querySelector('#info-val')
+        let currnetSecond = 60;
+
+        setInterval(() => {
+            currnetSecond--;
+            infoVal.textContent = currnetSecond + ' 초';
+        }, 1000);
+
+    });
+</script>
 </html>
 ```
