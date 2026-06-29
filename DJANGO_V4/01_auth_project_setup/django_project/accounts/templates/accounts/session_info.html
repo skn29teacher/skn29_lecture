@@ -4,25 +4,199 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>세션 정보 진단</title>
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background:#f5f7fb;
+        }
+
+        .navbar{
+            box-shadow:0 2px 10px rgba(0,0,0,.08);
+        }
+
+        .session-card{
+            max-width:900px;
+            margin:50px auto;
+            border:none;
+            border-radius:20px;
+            overflow:hidden;
+            box-shadow:0 10px 30px rgba(0,0,0,.1);
+        }
+
+        .card-header{
+            background:linear-gradient(135deg,#0d6efd,#4f8cff);
+            color:white;
+            padding:25px;
+        }
+
+        .table td:first-child{
+            width:220px;
+            font-weight:600;
+            color:#6c757d;
+        }
+
+        code{
+            word-break:break-all;
+            font-size:.9rem;
+        }
+
+        .btn{
+            border-radius:10px;
+            font-weight:600;
+        }
+
+        @media(max-width:576px){
+
+            .table td:first-child{
+                width:120px;
+            }
+
+        }
+    </style>
 </head>
 <body>
-    <strong>{{user.nickname|default:user.username}}</strong>
-    <a href="{% url 'logout' %}">로그아웃</a>
-    <h2>실시간 세션 모니터링</h2>
-    <p>Django Session Engine에 보관된 사용자 세션 데이터 정보</p>
-    <span>현재 세션키 </span>
-    <span>{{session_key}}</span>
-    <br>
-    <span>남은 유효시간 </span>
-    <span>{{expiry_age}}</span>
-    <br>
-    <span>세션 만료시점 </span>
-    <span>{{expiry_date}}</span>
-    <br>
-    <span>세션 저장소 내용 </span>
-    {% for key,val in  session_data.items %}
-        {{key}} : {{val}}
-    {% endfor %}
-    <a href="{% url 'home' %}">홈으로 돌아가기</a>
+
+<nav class="navbar navbar-expand-lg bg-white">
+    <div class="container">
+
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+            MySite
+        </a>
+
+        <div class="ms-auto">
+
+            <span class="fw-semibold me-3">
+                <i class="bi bi-person-circle"></i>
+                {{ user.nickname|default:user.username }}
+            </span>
+
+            <a href="{% url 'logout' %}" class="btn btn-outline-danger">
+                <i class="bi bi-box-arrow-right"></i>
+                로그아웃
+            </a>
+
+        </div>
+
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="card session-card">
+
+        <div class="card-header">
+            <h3 class="mb-1">
+                <i class="bi bi-shield-lock-fill"></i>
+                실시간 세션 모니터링
+            </h3>
+
+            <small>
+                Django Session Engine에 저장된 현재 세션 정보를 확인합니다.
+            </small>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered align-middle">
+
+                <tr>
+                    <td>
+                        <i class="bi bi-key-fill"></i>
+                        현재 세션 키
+                    </td>
+                    <td>
+                        <code>{{ session_key }}</code>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <i class="bi bi-clock-history"></i>
+                        남은 유효시간
+                    </td>
+                    <td>
+                        {{ expiry_age }} 초
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <i class="bi bi-calendar-event"></i>
+                        세션 만료 시각
+                    </td>
+                    <td>
+                        {{ expiry_date }}
+                    </td>
+                </tr>
+
+            </table>
+
+            <h5 class="mt-4 mb-3">
+                <i class="bi bi-database"></i>
+                세션 저장소 데이터
+            </h5>
+
+            <div class="table-responsive">
+
+                <table class="table table-striped table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th width="35%">Key</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for key, val in session_data.items %}
+
+                        <tr>
+                            <td>
+                                <code>{{ key }}</code>
+                            </td>
+
+                            <td>
+                                <code>{{ val }}</code>
+                            </td>
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">
+                                저장된 세션 데이터가 없습니다.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="text-end mt-4">
+
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-house"></i>
+                    홈으로
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </body>
 </html>
