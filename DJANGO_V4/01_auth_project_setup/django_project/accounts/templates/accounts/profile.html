@@ -158,6 +158,9 @@
 
                 <span>
                     {{ user.nickname|default:"없음" }}
+                    {% if user.email %}
+                        <h>이메일 있음</h>
+                    {% endif %}
                 </span>
             </div>
 
