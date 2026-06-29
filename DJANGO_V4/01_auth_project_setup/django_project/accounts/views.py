@@ -1,7 +1,12 @@
 from django.shortcuts import render, redirect
 from .forms import CustomerUserCreationForm
-from django.contrib.auth import login as auth_login, logout as auth_logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages  # 성공/실패 메세지 전달용
+from .forms import CustomerUserCreationForm
+
+
 
 def home(request):
     return render(request,'main.html')
@@ -41,7 +46,7 @@ def logout_view(request):
     return redirect('home')
 
 # 보호대상 뷰(마이페이지)
-from django.contrib.auth.decorators import login_required
+
 @login_required  # 로그인하지 않은 방문자는 settings.py의 LOGIN_URL로 리다이렉션 처리
 def profile_view(request):
     return render(request, 'accounts/profile.html')
