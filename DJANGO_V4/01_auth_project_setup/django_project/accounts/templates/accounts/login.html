@@ -13,7 +13,7 @@
             <label>{{field.label}}</label>
             {{field}}
             <br>
-            {if field.errors}
+            {% if field.errors %}
                 {% for error in field.errors %}
                     {{error}}
                 {% endfor %}
