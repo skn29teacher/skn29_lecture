@@ -121,7 +121,7 @@
                         남은 유효시간
                     </td>
                     <td>
-                        <span id='count'>{{ expiry_age }} 초</span>
+                        <span id='count'>{{ expiry_age }}</span>
                     </td>
                 </tr>
 
@@ -204,7 +204,7 @@
     setInterval(() => {
         if(sec!=0){
             sec--;
-            countVal.textContentsec;
+            countVal.textContent = sec;
         }
     }, 1000);
 </script>
