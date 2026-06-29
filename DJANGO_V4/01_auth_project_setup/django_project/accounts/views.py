@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from .forms import CustomerUserCreationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import CustomerUserCreationForm
 
 def home(request):
     return render(request,'main.html')
