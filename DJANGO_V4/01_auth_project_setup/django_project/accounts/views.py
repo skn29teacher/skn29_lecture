@@ -88,6 +88,7 @@ def session_info_view(request):
 @login_required
 def notice_list_view(request):
     notices = Notice.objects.all().order_by('-created_at')
+    print(f'notices : {notices}')
     return render(request, 'accounts/notice_list.html', {'notices':notices})
 
 # 공지사항 생성
