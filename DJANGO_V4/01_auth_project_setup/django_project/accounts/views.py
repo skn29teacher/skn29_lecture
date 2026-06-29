@@ -87,7 +87,7 @@ def session_info_view(request):
 #공지사항 목록 조회  : 로그인만 되면 가능
 @login_required
 def notice_list_view(request):
-    notices = Notice.object.all().order_by('-created_at')
+    notices = Notice.objects.all().order_by('-created_at')
     return render(request, 'accounts/notice_list.html', {'notices':notices})
 
 # 공지사항 생성
