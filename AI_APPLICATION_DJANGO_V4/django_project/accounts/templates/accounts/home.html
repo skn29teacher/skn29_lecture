@@ -402,13 +402,14 @@
 </body>
 <script>
     document.addEventListener('DOMContentLoaded',()=>{
-        const infoVal = document.querySelector('#info-val')
+        const infoVal = document.querySelector('#info-val');
         let currnetSecond = 60;
-
-        setInterval(() => {
-            currnetSecond--;
-            infoVal.textContent = currnetSecond + ' 초';
-        }, 1000);
+        if (infoVal){
+            setInterval(() => {
+                currnetSecond--;
+                infoVal.textContent = currnetSecond + ' 초';
+            }, 1000);
+        }
 
     });
 </script>
