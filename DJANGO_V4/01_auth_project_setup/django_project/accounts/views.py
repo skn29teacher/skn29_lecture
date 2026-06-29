@@ -37,5 +37,5 @@ def login_view(request):
 def logout_view(request):
     # 현재 세션데이터를 데이터베이스에서 만료시키고 쿠키를 삭제
     auth_logout(request)
-    return request('home')
+    return redirect('home')
 
