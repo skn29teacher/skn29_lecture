@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>세션 정보 진단</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            text-decoration: none;
+        }
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 60px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #4f46e5;
+            color: #ffffff;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .info-body {
+            padding: 30px;
+        }
+        .info-row {
+            display: flex;
+            flex-direction: column;
+            padding: 15px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
+        .info-value {
+            color: #1f2937;
+            word-break: break-all;
+            background-color: #f9fafb;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .btn-box {
+            padding: 20px 30px;
+            background-color: #f9fafb;
+            text-align: right;
+            border-top: 1px solid #f3f4f6;
+        }
+        .btn-back {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #6b7280;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .btn-back:hover {
+            background-color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="{% url 'home' %}" class="logo">인증 시스템 테스트 포털</a>
+        <div class="nav-links">
+            <span>반갑습니다, <strong>{{ user.nickname|default:user.username }}</strong>님</span>
+            <a href="{% url 'logout' %}">로그아웃</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h2>실시간 로그인 세션 모니터링</h2>
+            <p>Django Session Engine에 보관된 사용자 세션 데이터 정보입니다.</p>
+        </div>
+        <div class="info-body">
+            <div class="info-row">
+                <span class="info-label">현재 세션 키 (Session Key)</span>
+                <span class="info-value">{{ session_key }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">남은 유효시간 (Expiry Age)</span>
+                <span class="info-value">{{ expiry_age }} 초</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">세션 만료 시점 (Expiry Date)</span>
+                <span class="info-value">{{ expiry_date|date:"Y-m-d H:i:s" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">세션 저장소 내용 (Session Data)</span>
+                <span class="info-value">
+                    {% for key, val in session_data.items %}
+                        <strong>{{ key }}</strong>: {{ val }}<br>
+                    {% empty %}
+                        세션 데이터가 존재하지 않습니다.
+                    {% endfor %}
+                </span>
+            </div>
+        </div>
+        <div class="btn-box">
+            <a href="{% url 'home' %}" class="btn-back">홈으로 돌아가기</a>
+        </div>
+    </div>
+
+</body>
+</html>

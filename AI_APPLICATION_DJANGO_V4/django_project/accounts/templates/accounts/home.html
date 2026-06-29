@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>인증 통합 관리 대시보드</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-sub: #4b5563;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links span {
+            font-size: 14px;
+            color: var(--text-sub);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-sub);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links .btn-login {
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 8px;
+        }
+
+        .nav-links .btn-login:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .dashboard-header {
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+        }
+
+        .dashboard-header p {
+            color: var(--text-sub);
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            color: var(--dark);
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-content {
+            font-size: 14px;
+            color: var(--text-sub);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .info-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .info-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--text-sub);
+        }
+
+        .info-val {
+            font-family: monospace;
+            color: var(--text-main);
+        }
+
+        .btn-card-action {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            background-color: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: background-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .btn-card-action:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--success);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #059669;
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .notice-item {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .notice-item h4 {
+            margin: 0 0 6px 0;
+            color: var(--text-main);
+        }
+
+        .notice-date {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="{% url 'home' %}" class="logo">인증 & 권한 통합 포털</a>
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <span>반갑습니다, <strong>{{ user.nickname|default:user.username }}</strong>님</span>
+                <a href="{% url 'profile' %}">마이페이지</a>
+                <a href="{% url 'session_info' %}">세션 진단</a>
+                <a href="{% url 'notice_list' %}">공지사항</a>
+                <a href="{% url 'logout' %}">로그아웃</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-login">로그인</a>
+                <a href="{% url 'signup' %}">회원가입</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>통합 보안 및 제어 대시보드</h1>
+            <p>Django의 내장 인증(Auth), 세션(Session), 인가(Permission) 제어가 통합 적용된 실시간 모니터링 화면입니다.</p>
+        </div>
+
+        <div class="dashboard-grid">
+            
+            <!-- 1번 카드: 사용자 계정 상태 -->
+            <div class="card">
+                <div>
+                    <div class="card-title">
+                        <span>사용자 프로필 정보</span>
+                        {% if user.is_authenticated %}
+                            <span class="badge badge-success">인증됨</span>
+                        {% else %}
+                            <span class="badge badge-danger">미인증</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-content">
+                        {% if user.is_authenticated %}
+                            <ul class="info-list">
+                                <li>
+                                    <span class="info-label">사용자 아이디</span>
+                                    <span class="info-val">{{ user.username }}</span>
+                                </li>
+                                <li>
+                                    <span class="info-label">닉네임</span>
+                                    <span class="info-val">{{ user.nickname|default:"없음" }}</span>
+                                </li>
+                                <li>
+                                    <span class="info-label">이메일</span>
+                                    <span class="info-val">{{ user.email }}</span>
+                                </li>
+                                <li>
+                                    <span class="info-label">스태프 여부 (is_staff)</span>
+                                    <span class="info-val">{{ user.is_staff }}</span>
+                                </li>
+                            </ul>
+                        {% else %}
+                            <p>현재 비로그인 상태입니다. 회원 등록 후 로그인하시면 대시보드의 실시간 세션 정보 및 중요 공지사항 게시판 접근 권한 제어 현황을 테스트하실 수 있습니다.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'profile' %}" class="btn-card-action">상세 프로필 보기 (마이페이지)</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn-card-action">로그인 페이지 이동</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 2번 카드: 실시간 세션 모니터링 -->
+            <div class="card">
+                <div>
+                    <div class="card-title">
+                        <span>실시간 세션 상태</span>
+                        {% if user.is_authenticated %}
+                            <span class="badge badge-success">활성화</span>
+                        {% else %}
+                            <span class="badge badge-danger">비활성화</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-content">
+                        {% if user.is_authenticated %}
+                            <p>settings.py 설정에 따라 세션 쿠키는 <strong>60초</strong>간 유효하며, 브라우저가 닫히면 파기됩니다.</p>
+                            <ul class="info-list">
+                                <li>
+                                    <span class="info-label">세션 키</span>
+                                    <span class="info-val" style="font-size: 11px;">{{ session_key }}</span>
+                                </li>
+                                <li>
+                                    <span class="info-label">남은 유효시간</span>
+                                    <span class="info-val">{{ expiry_age }} 초</span>
+                                </li>
+                                <li>
+                                    <span class="info-label">만료 일시</span>
+                                    <span class="info-val" style="font-size: 11px;">{{ expiry_date|date:"Y-m-d H:i:s" }}</span>
+                                </li>
+                            </ul>
+                        {% else %}
+                            <p>세션 데이터는 로그인 세션이 생성된 이후에 조회 및 진단이 가능합니다.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'session_info' %}" class="btn-card-action btn-secondary">상세 세션 진단 도구</a>
+                    {% else %}
+                        <a href="{% url 'signup' %}" class="btn-card-action">신규 회원 등록</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 3번 카드: 최근 공지사항 & 권한 필터링 -->
+            <div class="card">
+                <div>
+                    <div class="card-title">
+                        <span>공지사항 게시판 현황</span>
+                        {% if perms.accounts.can_publish_notice %}
+                            <span class="badge badge-success">공지 쓰기 가능</span>
+                        {% else %}
+                            <span class="badge badge-danger">쓰기 권한 없음</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-content">
+                        <p style="margin-bottom: 15px;">등록된 최신 공지사항 목록입니다. 공지 발행 권한(`can_publish_notice`)을 가진 유저로 로그인해야만 새 공지를 쓸 수 있습니다.</p>
+                        {% for notice in notices %}
+                            <div class="notice-item">
+                                <h4>{{ notice.title }}</h4>
+                                <span class="notice-date">작성일시: {{ notice.created_at|date:"Y-m-d H:i:s" }}</span>
+                            </div>
+                        {% empty %}
+                            <p style="color: #94a3b8; text-align: center; padding: 10px;">등록된 공지사항이 없습니다.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'notice_list' %}" class="btn-card-action">공지사항 목록 이동</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn-card-action">로그인하여 확인</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 4번 카드: 권한 테스트 안내 -->
+            <div class="card">
+                <div>
+                    <div class="card-title">
+                        <span>인가 및 권한 제어 가이드</span>
+                    </div>
+                    <div class="card-content">
+                        <p>본 포털의 모든 보안 요소는 Django 권한 시스템을 기준으로 안전하게 동작합니다.</p>
+                        <ul class="info-list" style="font-size: 13px;">
+                            <li>
+                                <strong>일반 계정 가입 시</strong>
+                                <span style="text-align: right; color: var(--danger);">Notice 작성 권한 없음 (접근 시 403 Forbidden)</span>
+                            </li>
+                            <li>
+                                <strong>관리자 페이지(`admin/`) 생성 시</strong>
+                                <span style="text-align: right; color: var(--success);">Notice 작성 권한(can_publish_notice) 그룹 부여 가능</span>
+                            </li>
+                            <li>
+                                <strong>비정상 접근 보호</strong>
+                                <span style="text-align: right;">데코레이터 및 settings.py 연계 강제 차단 제어 완료</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <a href="/admin/" target="_blank" class="btn-card-action btn-secondary" style="background-color: var(--dark);">장고 관리자 페이지(Admin) 새창 열기</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
+```

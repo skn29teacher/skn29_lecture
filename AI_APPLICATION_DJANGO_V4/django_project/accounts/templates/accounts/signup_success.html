@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입 완료</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 {
+            color: #10b981;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        p {
+            color: #4b5563;
+            font-size: 15px;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        .btn-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #2563eb;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .btn-link:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>가입이 완료되었습니다</h2>
+        <p>축하합니다. 회원가입이 성공적으로 완료되었습니다. 등록하신 정보로 로그인하실 수 있습니다.</p>
+        <a href="{% url 'login' %}" class="btn-link">로그인하러 가기</a>
+    </div>
+</body>
+</html>
