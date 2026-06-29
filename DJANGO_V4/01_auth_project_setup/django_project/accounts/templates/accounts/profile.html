@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+</head>
+<body>
+    {{user.username}}<br>
+    {{user.nickname|default:'없음'}}<br>
+    {{user.email'}}<br>
+    {{user.date_joined|data:"Y-m-d H:i:s"}}<br>
+    <a href="{% url 'home' %}">홈으로 돌아가기</a>
+</body>
+</html>

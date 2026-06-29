@@ -125,3 +125,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 인증에사용할 유저 모델 지정(앱이름.모델클래스명)
 AUTH_USER_MODEL = 'accounts.CustomerUser'
+
+LOGIN_URL='login' # 로그인 뷰의 url 네임을 지정
