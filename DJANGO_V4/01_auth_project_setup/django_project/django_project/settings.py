@@ -55,7 +55,8 @@ ROOT_URLCONF = 'django_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 'DIRS': [], --> account\template만 검색
+        'DIRS': [BASE_DIR / 'templates'],  # --> 루트의 template부터 검색
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from .forms import CustomerUserCreationForm
 
+def home(request):
+    return render(request,'main.html')
+
 def signup(request):
     if request.method == 'POST':
         form = CustomerUserCreationForm(request.POST)
