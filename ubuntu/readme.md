@@ -14,3 +14,11 @@ wsl --install
 ```
 docker --version
 ```
+5. 우분투 공식 이미지 원격 다운로드
+```
+docker pull ubuntu:22.04
+```
+6. 컨테이터 실행 및 접속(대화형 즉 interactive) 접속
+```
+docker run -it --name ubuntu-study ubuntu:22.04 bash
+```
