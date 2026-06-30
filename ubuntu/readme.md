@@ -6,3 +6,11 @@
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 ```
+3. WSL 최신 커널 업데이트 설치 및 재부팅
+```
+wsl --install
+```
+4. 설치 검증
+```
+docker --version
+```
