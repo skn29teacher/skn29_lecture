@@ -7,5 +7,9 @@ apt install python3 python3-pip -y
 
 apt install python3-venv -y
 
+cd workspace
+
+python3 -m venv venv
+
 pip3 install django
 ```
