@@ -22,3 +22,10 @@ docker pull ubuntu:22.04
 ```
 docker run -it --name ubuntu-study ubuntu:22.04 bash
 ```
+7. exit 를 입력하면 컨터이너에서 윈도우로 복귀
+8. 재 진입
+```
+doker ps
+docker exec -it ubuntu-study bash
+docker exec -it [컨테이너아이디] bash
+```
