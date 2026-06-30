@@ -25,5 +25,6 @@ python3 manage.py migrate
 # 관리자 계정 생성
 python3 manage.py createsuperuser
 
-
+# 개발서버 실행
+python3 manage.py  runserver 0.0.0.0:8000
 ```
