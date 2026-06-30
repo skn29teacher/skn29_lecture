@@ -11,5 +11,8 @@ cd workspace
 
 python3 -m venv venv
 
+# 가상환경 활성화
+source venv/bin/activate
+
 pip3 install django
 ```
