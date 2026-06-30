@@ -22,10 +22,14 @@ docker pull ubuntu:22.04
 ```
 docker run -it --name ubuntu-study ubuntu:22.04 bash
 ```
-7. exit 를 입력하면 컨터이너에서 윈도우로 복귀
+7. exit 를 입력하면 컨터이너에서 윈도우로 복귀( 컨테이너 중지)
 8. 재 진입
 ```
-doker ps
-docker exec -it ubuntu-study bash
+doker ps  #현재 실행중이 컨터네이 디스플레이
+doker ps --all  # 중지된 컨테이 모두 
+docker start ubuntu-study   # 컨테이너 실행(만약에 중지되었다면)
+
+docker exec -it [컨테이너 이름] bash
 docker exec -it [컨테이너아이디] bash
+ex) docker exec -it ubuntu-study bash
 ```
