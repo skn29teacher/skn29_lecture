@@ -19,5 +19,11 @@ pip install django
 # django 프로젝트 생성
 django-admin startproject config .
 
+# database 생성
+python3 manage.py migrate
+
+# 관리자 계정 생성
+python3 manage.py createsuperuser
+
 
 ```
