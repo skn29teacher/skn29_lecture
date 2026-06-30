@@ -15,4 +15,9 @@ python3 -m venv venv
 source venv/bin/activate
 
 pip install django
+
+# django 프로젝트 생성
+django-admin startproject config .
+
+
 ```
