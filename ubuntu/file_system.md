@@ -1,4 +1,5 @@
 ```
+# 컨터이서 생성시 볼륨을 셋팅.. 일반생성후 볼륨연결 안됨
 docker run -it --name django-dev -p 8000:8000 -v c:\DjangoProject:/workspace ubuntu bash
 
 apt update
