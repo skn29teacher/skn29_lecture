@@ -140,6 +140,8 @@ STORAGES = {
     },
 }
 ```
+# 정적파일 수집 및 동기화
+python manage.py collectstatic --noinput
 
 
 
