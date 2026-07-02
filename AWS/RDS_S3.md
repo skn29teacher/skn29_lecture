@@ -64,9 +64,24 @@ DATABASES = {
 ```
 vim ~/myproject/.env
 
-DB_NAME=skn29-db
+DB_NAME=skn29db
 DB_USER=postgres
 DB_PASSWORD=admin1234
 DB_HOST=skn29-django-db.xxxxxx.ap-northeast-2.rds.amazonaws.com
 # --> RDS->DB클릭->엔드포인트항목
+```
+
+# 마이그레이션 수행
+```
+python manage.py migrate
+# Django 서비스 재시작
+sudo systemctl restart gunicorn
+
+# DB 접속
+psql -h <RDS엔드포인트> -U postgres -d <내DB이름>
+# 테이블 목록 조회
+\dt
+
+# 특정 테이블 조회
+select * from <테이블명>;
 ```
