@@ -114,6 +114,33 @@ for bocket in response['Buckets']:
     print(bucket['Name'])
 ```
 
+# Django s3패키지 설치  통신을 위해서
+pip install django-storages
+
+config/settings.py 수정
+```
+INSTALLED_APPS = [
+    # ... 기존 앱 ...
+    'storages',
+]
+
+# S3 버킷 정보 설정 (IAM 역할로 인증하므로 AWS_ACCESS_KEY_ID 등은 필요 없습니다)
+AWS_STORAGE_BUCKET_NAME = 'skn29-django-static-<내 고유값>'
+AWS_S3_REGION_NAME = 'ap-northeast-2'
+
+# Django 4.2+ 권장 STORAGES 설정 방식
+STORAGES = {
+    # 미디어 파일 (업로드 이미지 등) 백엔드 설정
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    # 정적 파일 (css, js 등) 백엔드 설정
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+    },
+}
+```
+
 
 
 
