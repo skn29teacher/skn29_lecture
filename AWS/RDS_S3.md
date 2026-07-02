@@ -163,16 +163,18 @@ pip freeze > requirements.txt
 ```
 메뉴상단의 settings - secrets and variables - Actions -Secrets(tab) - new repository secret
 
-EC2_HOST
-EC2_USER
-EC2_SSH_KEY
+EC2_HOST   탄력적ip(없으면 퍼블릭ip)
+EC2_USER   ubuntu
+EC2_SSH_KEY  .pem 키 파일 전체... --BEGIN 부터 --END 전부
 각각 등록
 ```
+
+# 보안그룹에서 SSH 의 인바운드를 Anyware ipv4(0.0.0.0) 허용( 내 아피가 아님)
 
 # EC2에서 Github Actions ssh 배포 허용설정
 sudo cat /etc/sudoers.d/90-cloud-init-users
 
-# 워크플로작성 - 로컬pc에 작성
+# 워크플로작성 - 로컬pc에 작성(git과 동기화 후에.. 또는 없으면 git clone)
 .github/worflows/deploy.yml
 ```
 name: Deploy to EC2
