@@ -100,4 +100,7 @@ select * from <테이블명>;
  1. IAM 검색 및 이동 - 왼쪽 역확(Role) - 역활 만들기
  2. 서비스  : EC2선택 - 권한 정책추가:AmazonS3FullAccess
  3. 역활이름 : skn29-ec2-s3-role - 생성
- 
+
+# ec2 인스턴트 클릭
+1. 오른쪽 상단에 IAM역활 수정 - 만든 IAM을 선택하고 - 업데이트
+
