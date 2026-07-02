@@ -71,6 +71,9 @@ DB_HOST=skn29-django-db.xxxxxx.ap-northeast-2.rds.amazonaws.com
 # --> RDS->DB클릭->엔드포인트항목
 ```
 
+# gitignore 설정
+echo ".env" >> ~/myproject/.gitignore
+
 # 마이그레이션 수행
 ```
 python manage.py migrate
