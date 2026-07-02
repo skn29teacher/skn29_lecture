@@ -15,7 +15,7 @@
 # 연결테스트
 ```
 sudo apt install -y postgresql-client
-psql - h <RDS엔트포인트> -U postgres -d skn29db
+psql -h <RDS엔트포인트> -U postgres -d skn29db
 ```
 
 # 엔드포인트 확인
