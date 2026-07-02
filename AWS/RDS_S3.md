@@ -143,6 +143,5 @@ STORAGES = {
 # 정적파일 수집 및 동기화
 python manage.py collectstatic --noinput
 
-
-
-
+# 의존성 패키지 생성 및 업데이트
+pip freeze > requirements.txt
