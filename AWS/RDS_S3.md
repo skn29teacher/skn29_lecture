@@ -12,6 +12,23 @@
  - 유형 PostgreSQL
  - 소스:검색버튼- EC2용 보안그룹 skn29-sg 클릭 후 저장
 
+# 연결테스트
+```
+sudo apt install -y postgresql-client
+psql - h <RDS엔트포인트> -U postgres -d skn29db
+```
+
+# 엔드포인트 확인
+생성된 RDS 클릭하면 다음과 같은 화면이 보임 - "skn29-db2.cnwkm602y18u.ap-northeast-2.rds.amazonaws.com"
+```
+연결 단계
+아래 단계에 따라 도구에 각 단계의 코드를 붙여넣고 명령을 실행하세요. 스니펫은 인증 구성을 동적으로 반영합니다.
+curl -o global-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
+
+export RDSHOST="skn29-db2.cnwkm602y18u.ap-northeast-2.rds.amazonaws.com" 
+psql "host=$RDSHOST port=5432 dbname=skn29db user=postgres sslmode=verify-full sslrootcert=./global-bundle.pem"
+```
+
 
 # Django RDS 연결
 ```
