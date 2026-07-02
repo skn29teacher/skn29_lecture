@@ -95,6 +95,26 @@ select * from <테이블명>;
 
 # S3 버킷생성
  - 이름만 고유하게 작성하고 생성
+```
+권한탭에서
+
+퍼블릭엑세스 차단 모두 해제
+버킷 정책을다음과 같이 설정
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicRead",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::skn29-static-43200181169/*"
+        }
+    ]
+}
+```
+
 
  # EC2에 S3 접근용 IAM 역활 연결
  1. IAM 검색 및 이동 - 왼쪽 역확(Role) - 역활 만들기
