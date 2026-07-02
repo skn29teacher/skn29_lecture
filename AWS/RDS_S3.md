@@ -125,7 +125,7 @@ INSTALLED_APPS = [
 ]
 
 # S3 버킷 정보 설정 (IAM 역할로 인증하므로 AWS_ACCESS_KEY_ID 등은 필요 없습니다)
-AWS_STORAGE_BUCKET_NAME = 'skn29-django-static-<내 고유값>'
+AWS_STORAGE_BUCKET_NAME = 'skn29-static-<내 고유값>'
 AWS_S3_REGION_NAME = 'ap-northeast-2'
 
 # Django 4.2+ 권장 STORAGES 설정 방식
