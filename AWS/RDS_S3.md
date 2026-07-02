@@ -145,3 +145,9 @@ python manage.py collectstatic --noinput
 
 # 의존성 패키지 생성 및 업데이트
 pip freeze > requirements.txt
+
+# 탄력적ip(Elastic IP) 할당
+- 주의사항 EC2하고 연결된 상태에서는 무료 하지만. 연결하지않으면 또는 방치하면 시간 당 과금됨
+- ec2-네트웍 및 보안(왼쪽메뉴) - 탄력적ip - 할당
+- 생성된 ip클릭 - 작업- 탄력적ip주소연결
+- 인스턴스선택- skn29-server -연결
