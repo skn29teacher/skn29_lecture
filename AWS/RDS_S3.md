@@ -172,8 +172,8 @@ EC2_SSH_KEY
 # EC2에서 Github Actions ssh 배포 허용설정
 sudo cat /etc/sudoers.d/90-cloud-init-users
 
-# 워크플로작성
-vim .github/worflows/deploy.yml
+# 워크플로작성 - 로컬pc에 작성
+.github/worflows/deploy.yml
 ```
 name: Deploy to EC2
 
