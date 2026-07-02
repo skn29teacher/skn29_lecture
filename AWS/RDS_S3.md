@@ -97,4 +97,7 @@ select * from <테이블명>;
  - 이름만 고유하게 작성하고 생성
 
  # EC2에 S3 접근용 IAM 역활 연결
+ 1. IAM 검색 및 이동 - 왼쪽 역확(Role) - 역활 만들기
+ 2. 서비스  : EC2선택 - 권한 정책추가:AmazonS3FullAccess
+ 3. 역활이름 : skn29-ec2-s3-role - 생성
  
