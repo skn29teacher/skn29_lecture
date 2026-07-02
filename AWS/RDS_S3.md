@@ -85,3 +85,7 @@ psql -h <RDS엔드포인트> -U postgres -d <내DB이름>
 # 특정 테이블 조회
 select * from <테이블명>;
 ```
+
+# DBeaver 등 외부 tool 연결
+- host : 엔드포인트
+- ssh탭을 클릭해서 pem 파일 연결  -모바텀x 연결과정과 비슷
