@@ -104,6 +104,8 @@ select * from <테이블명>;
 # ec2 인스턴트 클릭
 1. 오른쪽 상단에 IAM역활 수정 - 만든 IAM을 선택하고 - 업데이트
 
+# ec2, s3 연동테스트
+pip install boto3
 ```iam_test.py
 import boto3
 s3 = boto3.client('s3')
@@ -111,7 +113,7 @@ response = s3.list_buckets()
 for bocket in response['Buckets']:
     print(bucket['Name'])
 ```
-    
+
 
 
 
