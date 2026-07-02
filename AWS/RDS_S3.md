@@ -202,3 +202,5 @@ jobs:
             python manage.py collectstatic --noinput
             sudo systemctl restart gunicorn
 ```
+
+# github 의 actions 탭에서 오류 없는지 확인
