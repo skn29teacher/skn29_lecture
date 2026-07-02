@@ -152,3 +152,51 @@ pip freeze > requirements.txt
 - 생성된 ip클릭 -  탄력적ip주소연결
 - 인스턴스선택- skn29-server -연결
 - ec2 인스턴스 세부정보에서 탄력적ip에 보이는지 확인
+
+#  배포자동화 아키텍처
+```
+로컬에서 코드 수정 -> github actions 트리거 -> ec2 ssh접속(actions가 자동수행)
+-> git pull -> pip install -> migrate ->collectstatic->gunicorn 재시작
+```
+
+# github Secrets등록
+```
+메뉴상단의 settings - secrets and variables - Actions -Secrets(tab) - new repository secret
+
+EC2_HOST
+EC2_USER
+EC2_SSH_KEY
+각각 등록
+```
+
+# EC2에서 Github Actions ssh 배포 허용설정
+sudo cat /etc/sudoers.d/90-cloud-init-users
+
+# 워크플로작성
+vim .github/worflows/deploy.yml
+```
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/myproject
+            source venv/bin/activate
+            git pull origin main
+            pip install -r requirements.txt
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput
+            sudo systemctl restart gunicorn
+```
